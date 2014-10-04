@@ -1,0 +1,109 @@
+PL Runtime Systems
+
+I. Runtime Systems
+
+[[ Diagram of system hierarchy, incl. runtime system ]]
+
+- Runtime systems are very core to a programming language, and are a "grab bag" for programming languages features that are not directly supported by the architecture. One such feature is a garbage collector (GC); if no GC is available, then memory management mechanisms (i.e., malloc, free) must be used.
+
+- Threads are also often embedded into runtime systems.
+
+- For other embedded runtime system mechanism, see /usr/lib/ (for the most part)
+
+- Runtime systems are generally composed of libraries (such as, libc.so, libstdcpp.so, libm.so, etc.)
+
+II. Garbage Collection in an Uncooperative Environment (Boehm et al., 1991)
+
+- The goal of this work was to decouple GC from the program's interpretation; the design was that it should be a standalone module. Previously, GC required 'intimacy' with a particular programming language(s).
+
+- Precise GC: Garbage collectors in which pointers must be explicitly known.
+	[[ Example: Java class Foo { ... } ]] (-Would show ex. that GC stores a ptr map and must know certain var's are ptrs.)
+
+- Why must we be able to distinguish a pointer from a non-pointer?
+[[ pointer graph showing Roots and stack pointers .. GC can scramble the pointers]]
+
+- Soundness: no reachable memory is ever reclaimed (could be just not reclaiming)
+- Completeness: unreachable memory is eventually reclaimed (should be overly aggresive).
+
+- Mark-sweep garbage collection:
+	- Mark: recursively 'blacken' nodes
+	- Sweep: reclaim all 'white' nodes; color reachable nodes 'white'. Store 'color' in variable such that the GC can make 	all current 'black' nodes the new 'white' nodes.
+
+	- Real pointers ∩ discovered pointers = real pointers
+
+- Conservative garbage collection: Does not require a map for roots and each function require a stack map (error prone).
+	- Motivation: Writing efficient concurrent GC is a difficult problem
+	- Issue: "Duck test"
+		Look at all allocated memory
+		1) x < min, x > max can not be a pointer
+		2) pointers not aligned at multiples* [Aligned for performance reasons. The error 'SIGBUS alignment error' refers to this sort of misalignment; this allignment is implement at the chip-level] of 4 or 8 (%4 = 0, etc.)
+
+	- 0 ... 2^48
+	- Concern: There is sufficient address space to store pointers in such a way
+
+		3) Then, walk through "chain of pointers"
+			- blacklisting: chains that ultimately do not end in a pointer, stored to not allocate memory here again (Ex: integers that satisfied conditions (1) and (2)). [This is a heuristic: it is not unsound].
+
+	- Sweep "lazily": Instead of being strewn in memory, chunks and data structures are mapped where objects are located in memory. This also allows GC to ientify ranges of allocated memory quickly.	
+	- "B;BOP" (Big Bag o' Pointers)
+	[[ diagram ]]
+
+	- "Stop the world": the program must 'pause' to garbage collect
+		- This approach is unpopular with projects require higher amounts of memory due to heap size
+		- Worst case: We must allocate large object of size n, but only blocks of size n-1 or less are free
+		- (Aside: this type of GC was originally used in emacs, since it is written in lisp)
+		- This technique has no optimization faster than requiring O(n) time; unless some heuristic is applied
+
+	- Mark-sweep GC can result in a porous memory space (fragmented)
+		- Requiring: 1) More space
+			     2) Underlying architecture optimizations
+
+				Locality: property of things being close
+				GC cannot choose specific objects to keep in RAM, must sends 'chunks' to cache; fetching memory is expensive and can incur a penalty of ~100 cycles
+		- Spacial locality is desired: Generally, similar items should be stored in close proximity (Ex: If we use byte 1, it is likely that we'll also use byte 2).
+		- On the other hand, temporal locality: items should be used in close time range, before objects are then changed again
+			- One technique to this end could be to move pointers (compaction). The problem is that it is possible to overwrite integers by doing so. Conservative GC will only reclaim pointers, but might accidentally overwrite in this way.
+
+	(Aside: "All problems in computer science can be solved by another level of indirection" -David Wheeler
+			Corollary: "...except for the problem of too many layers of indirection." -Kevlin Henney (Paraphrased in class as, "Optimization is removing a layer of indirection").)
+
+		- This problem can be solved with handles. Handles make it easier to relocate memory; this is because only the 'handle table' points to actual objects. [[diagram]]
+		- However, this multiplies the number of operations (i.e., dereferences), resulting in poor performance in practice
+		- If you can allocate relatively small amounts of memory, GC overhead can be made small. This is not possible with handles. 
+		- Handles interact poorly with prefetchers -- implemented at architecture level (i.e., a stride prefetchers, which learns loops by observing the memory stream)
+
+	- Conclusion: While conservative GC cannot overcome fragmentation, using handles has other performance overheads about conservative GC.
+
+- From the outset, Boehm's goal was to write an external GC, which would be a novel idea.
+
+- The evolution of a GC:
+	interpreter   --->     JIT compiler   --->   "fancy GC"
+
+	Interpreter: (i.e., Python, Javascript, Ruby, etc.)
+		- Easy to write
+		- Terrible GC: use reference counting (also invented by McCarthy (LISP)); using mark-sweep in an interpreter is too slow
+
+	Fancy GC: precise, but require a lot of fine-tuning
+
+[[reference counting diagram]]
+
+pointer update
+	increment RC destination
+	
+	decrement RC origin
+	if RC orgin = 0
+		recursively: decrement_references(..)
+		reclaim objects
+
+- Reference counting cannot handle circular data structures
+- Reference counting is sound, but not complete
+
+[[virtual, physical, swap diagram]]
+
+3.3.2 - 3.3.3 : between, fragmentation, locality, handles
+ref counting diagram
+	
+
+
+	- 4 types of GC: concurrent, parallel, incremental, precise
+

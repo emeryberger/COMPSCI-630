@@ -1,0 +1,194 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Fall 2014} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{6}{September 18}{Emery Berger}{Arpita Raveendran, Patrick Pegus}
+
+\section{Architecture}
+
+We began the discussion about architectures with a description of the timeline of processors (chips) released over time. 
+
+Intel  released an 8-bit processor, in 1974, called 8080. It had no cache. Having no cache was actually advantageous:
+\begin{enumerate}
+\item We knew exactly how long each instruction in the assembly code would take, so the programs had a deterministic execution time. 
+\item Simplified Performance analysis.
+\item Simplified Optimization analysis. 
+\item Instruction scheduling.
+\end {enumerate}
+However, the maximum RAM size was only 64K.\\
+So, After 8080, Intel wanted to make chips which accommodate larger address sizes , which led to the release of 8088 in 1979( The chip used in IBM’s PC). 8088 (a variant of 8086) had 640 K of RAM, along with some rudimentary memory protection.\\
+
+IBM continued its development of faster, better chips with bigger word-sizes:  80286 in 1982 (16 bit microprocessors), 80386 in 1985 (32 bit microprocessor), 80486 in 1989.\\
+
+The x-86 architecture was developed by Intel in the 8086 series. It was primarily a CISC architecture.\\
+
+Way after the paper favoring RISC over CISC written by Patterson, Intel invented a separate chip called 8087 (A math floating point co-processor) which could be plugged onto the mother board alongside the 8086. This x87 architecture would work alongside x86.
+Instead of hacking into the software to optimize things, the 8087 co processor was included to perform operations with complex instructions.  At that time, the problem was that the processor and co-processor communicated slowly as they did not share cache. Nowadays, they are closely integrated.  
+Continuing the timeline, Intel went on to develop the Pentium microprocessors. 
+
+On a side note, we also discussed a bit of Operating Systems: 
+IBM’s PC worked a DOS 1.0 OS. It was a single user, flat file system with no file permissions.  Lisa was a PC developed by Apple, in the early 1980s, with a 16-bit chip, lots of RAM and also was the first PC with a GUI. However, it was too expensive and a toned down version of that was the MACINTOSH, released in 1985. 
+Around 1986, Windows 3.1 was released which dominated PCs for 15 to 20 years.  Windows 95 followed. 
+
+\section{CISC vs. RISC}
+\begin{enumerate}
+	\item CISC Complex Instruction Set Computer. A current example is x86.
+	\item RISC Reduced Instruction Set Computer. A current example is ARM.
+	\item There is no technical definition of either, but RISCs have a uniform instruction size while
+		CISCs are often variable.
+	\item With CISCs, it is difficult to differentiate between code and data, which is inherently insecure.
+		Some examples of exploits are:
+		\begin{description}
+			\item[Drive-By malware] Visit a web page with your browser. The browser downloads JavaScipt
+				with embedded x86 code. Computer executes code through buffer overflow.
+			\item[Morris worm] Self-replicating malware created by Robert Morris took down the internet
+				in 1988. Morris was convicted of a felony and is now a professor at MIT.
+		\end{description}
+	\item x86 is by the most well known CISC.
+		\begin{enumerate}
+			\item Examples of complex x86 instruction sets:
+				\begin{description}
+					\item[SIMD] Single Instruction Multiple Data such as vector operations
+					\item[MIMD] Multiple Instruction Multiple Data
+				\end{description}
+			\item Why has Intel's x86 continued to be so popular?
+				\begin{enumerate}
+					\item Intel makes really good silicon. The $n$ in their $n$ nm process continues
+						to decrease, which is the distance between traces on their chips. This makes
+						their chips faster, regardless of instruction set.
+					\item They started from scratch, teaming up with HP to make the Itanium, which is
+						RISC like. It used very long instruction words (VLIWs) and relied on compiler
+						optimization, which did not work.
+					\item Although it easier to write a complier for reduced instruction sets, compiler
+						writers are an insignificant portion of a processor maker's market.
+					\item Intel's complex instruction set is only an interface whose operations are
+						implemented in RISC like micro-ops or hardware. This is not a leaky abstraction.
+						It allows Intel to introduce a complex instruction implemented in micro-ops
+						and switch to a hardware implementation in later generations. There is a compiler
+						on chip.
+				\end{enumerate}
+		\end{enumerate}
+	\item Coprocessor evolution
+		\begin{enumerate}
+			\item The industry often creates discrete processors for specialized tasks that are eventually
+				incorporated into the CPU.
+			\item Examples:
+				\begin{description}
+					\item[FPU] The Intel 8087 math coprocessor or floating point unit was an optional processor
+						that shared memory with the 8088 CPU and was located in a socket next to it.
+					\item[GPU] Graphics cards contain GPUs, but GPUs are often now included in the CPU.
+					\item[Other examples] Translation lookaside buffer (TLB) and vector machines
+				\end{description}
+		\end{enumerate}
+	\item Loop unrolling is process of replacing jumps with repeated code. It results in less
+		condition checking and more instruction level parallelism extraction.
+\end{enumerate}
+
+\end{document}

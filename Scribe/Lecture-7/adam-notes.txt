@@ -1,0 +1,210 @@
+SCRIBE NOTES 9/23/14
+
+There were quite a few questions about threads:
+
+The first paper: half the class thought it was great, half the class hated it.
+
+Why was it significant? People didn't really know what to do with abstractions like threads. The way that things evolved weren't necessarily the best way to structure them. Mesa tried to iron out the semantics of the synchronization primitives.
+
+Onme of the biggest challenges in PL is interaction of features. For example: if you have objects, then synchronization, then exceptions... how do they interact? This is why designing good languages is hard, and what motivates the use of formal methods. When people design languages in academia, they design these languages using formal methods to prove behavior. Without this, undefined behavior is common. Behavior is often "defined by the compiler," which used to be OK, but can lead to bugs becoming part of the standard.
+
+Let's back up a bit, and talk about the evolution of threads and parallelism.
+
+In the beginning, there was the process. And the process was good.
+
+A process is just one thing:
+
+process
+- PC
+- registers
+- stack
+- address space
+
+Process switching is accomplished with a queue; the OS takes a process off the queue, runs it for a bit, then puts it back on the queue. But, we run into one problem: when is a process "done"?
+
+- time slicing
+- blocking
+- on exit
+
+For example, if a process tries to read from a tape, this will take a long time, so the OS should put it back on the queue and let something else run. This happens if the call is _synchronous_, like read().
+
+write() is usually asynchronous, although fsync() is *supposed* to make it synchronous.
+
+But what if a thread just runs, without blocking? In an infinite loop? Other processes could be waiting (keyboard requests, browser)... so we cut it off after a set amount of time (time slicing, aka preemptive scheduling). Processes are stopped after a period of time known as a "quantum," or on a blocking call, whichever comes first.
+
+A hardware timer sends an interrupt signal to the scheduler, which stores the process's state in the queue, and then restores the next process's state from the queue.
+
+     quantum expiration
+            |
+process ----|----> save state -----> load state from next proc on queue -----> run it
+
+An alternative, which is not used much anymore: cooperative scheduling ("coop multitasking"): threads tell the scheduler when they can pause ("yield").
+
+coop is the optimist's view, preemptive is the pessimist's view.
+
+yield does not mean a program is done, just that it can take a break.
+
+for (i = 0; i < 1e9; i++)
+  ...
+  yield()
+
+Round-robin scheduling: everyone gets a turn in a fixed order, no prioritization. A FIFO queue is round-robin. Round-robin scheduling is nice, everyone understands it... and no one uses it.
+
+Co-op multitasking is nice, but impractical. Consider the "threat model": it's easy for a malicious program to never yield, and take up the whole CPU. A careless programmer might also do this. An infinite loop can take down the machine.
+
+UNIX machines use preemptive scheduling with optional co-op scheduling. The "hint" sched_yield() is like a yield.
+
+Why co-op scheduling was originally used: lack of hardware interrupts. Computers didn't have timers!
+
+Preemptive scheduling and cooperative scheduling differ in a way that makes coop scheduling look really nice:
+
+- Cooperative scheduling is more general than preemptive scheduling?
+
+Let's think about it in terms of the possible schedules:
+
+a = 1;
+b = 2;
+c = 3;
+sched_yield();
+
+How many ways are there of putting in breaks in this program?
+In cooperative: only one, the sched_yield.
+In preemptive: anywhere.
+
+Now, let's say we have threads. The difference between processes and threads: threads can share an address space. (Threads are "lightweight processes." Switching is faster when the address space is the same.)
+
+t1              t2
+_____________   ______________
+a = 1;          a = 2;
+b = 2;          b = 4;
+c = 3;          c = 6;
+sched_yield();  sched_yield();
+print(a,b,c);
+
+In cooperative: 2,4,6 (Assuming t1 runs first) or 1,2,3 (Assuming t2 runs first)
+In preemptive: who knows? Depends on where the breaks are. Every interleaving is possible, and this is just with two threads! With more threads, the possibilities grow exponentially.
+
+Aside: What a process stores when unscheduled: PC, registers, stack, file descriptors, and the mapping from virtual to physical addresses (page table). This is why threads are lighter-weight than processes: the page table remains the same, file descriptors remain the same, and the hardware cache (TLB) of the page table isn't invalidated. Keeping the cache is the most important part, performance-wise.
+
+TLB = Translation Lookaside Buffer. Basically a hash table. A cache that maps virtual pages to physical pages.
+
+The TLB is a _fully associative cache_. TLB is an awesome cache, it uses the best possibe caching scheme: full LRU. The least-recently-used item in the cache is the first one to be evicted. This situation is called "fully associative": it's great, but it's expensive. Requires a huge hardware queue of the cache entries.
+
+Hardware L1, L2, etc. caches are not as nice. They do something that's kind of a hack. Suppose I go look up a page. Instead of doing LRU, all I do is hash the page entry to some bucket. If there's nothing there, I can store it there; if there's something, I evict it. So now this is basically a hash table.
+
+hash: (pg/4096)%8
+
+ 4096 16384
+   |   |
+   V   V
+-----------------
+| | | | | | | | |
+-----------------
+
+Try adding 4096^2: it will trash the entry in 4096 and replace it with something else.
+
+This flat hash table is called "direct mapping." It's a really simple strategy, but there's no LRU-ness at all. Things could keep getting evicted, back-and-forth. This is ugly, and terrible, and fast.
+
+So LRU is the best, direct mapping is the worst, and there's a spectrum in between. For example, we can extend the direct mapping by giving two slots to each bucket, and maintaining them in LRU order. (2-way LRU) This is called set-associative. Each bucket is called a set.
+
+                      ---
+                      | |
+                      ---
+                      | |
+             -----    ---
+             | | |    | |
+---------    -----    ---
+| | | | | -> | | | -> | |
+---------    -----    ---
+    $         $$      $$$
+
+The deeper the LRU, the more expensive it is.
+
+8-way set-associative caches are considered the "sweet spot." This has been determined (somewhat) empirically.
+
+---------------- fully associative
+        -------- set associative
+       /
+     --
+    /
+  --
+ /
+/
+1 2   4       8
+
+TLBs are almost uniformly fully-associative, because speed is that important. A TLB lookup is on the critical path of every single memory access, because userland programs only know about virtua accesses. Frequent TLB misses can cause performance to plummet.
+
+The page table is like a giant B-tree (actually called an inverted index) in memory. Walking the page table is a huge cost
+
+---
+MISSED SOMETHING
+---
+
+For the first part of your process's runtime, it's doing nothing useful. The TLB is empty, and every reference is a cache miss. Once it's filled up, things get faster... but all of that gets lost when a process switch occurs. This has implications for scheduler design: you don't want to be switching processes often.
+
+For security reasons, the TLB must be wiped when processes are switched; we don't want Process 1 to have any way to access Process 2's memory. There's a hardware command that does this: it's called "TLB shootdown."
+
+So, every time you switch processes, it's not just caching the PC and stack, it's throwing away megabytes of cache. Because of this, for example, in Linux, the processor timeslice is 5ms--doesn't sound like much, but, in computer terms, it's REALLY long.
+
+Now, if round-robin scheduling was used, we might wait a full 5-10 seconds for each program to "come back around"... and that would be terrible. No one does this.
+
+With threads, when we switch to another thread, we don't shoot down the TLB. This is why they're lightweight.
+
+Instead of round-robin scheduling, we use several different wait queues, in order to implment a priority system. CPU priority is standard, although it's a terrible idea (I'll explain later). Priority is a "class system" for threads: if there's *anything* at the highest level, schedule it before I schedule *anything* at the lower levels.
+
+How is priority decided? In fact, it's inherited: when a process spawns a child process, the child process is the same priority. The OS process is the highest-priority process. inetd, etc. are high priority; the user processes are quite low. However, there is also a "virtual priority" system by which priority is adjusted. Priority is a hack, and it has deep problems, which people tried to fix.
+
+Imagine a process that uses hardly any CPU, and keeps doing IO. It keeps shooting down the TLB, to do hardly anything. This is bad for CPU utilization. The goal is high CPU utilization, which is accomplished by virtually lowering the priority of processes that aren't using the CPU much, or that don't use their full quantum.
+
+In UNIX, you can lower your programs' priority with "nice." (You can't raise it unless your're an administrator. Maybe this shoud be called "jerk." :P)
+
+For hard real-time systems, there's 30 years of literature on how to establish priorities.
+
+One reason to use threads is that you actually need them to share memory (two threads working on the same task); this is usually done with fork-join. Forking processes would require message passing, which is slow. The whole issue of communicating between processes is called IPC (inter-process communication). This is usually done like communication between two computers (sockets?), although there are tricky, sneaky ways to do it faster, which we won't talk about here.
+
+shared memory (threads) vs. distributed memory (processes)
+
+Distributed memory has problems too, like deadlock/livelock.
+
+Shared memory has a lot of superficial attractiveness, especially because a lot of algorithms can be made parallel without much change to the code. 
+
+Concurrency on one processor is still important, because of _latency hiding_. While waiting for I/O, the computer does something else. So, a browser, even on a single-CPU machine, has a thread pool, and the threads all try to load from the network simultaneously.
+
+Concurrency - Things that happen "at the same time," even if they don't. Latency hiding.
+Parallelism - Things that truly run at the same time, to increase performance.
+
+Synchronization problems:
+
+t1 (HIGH)     t2 (LOW)
+__________    __________
+              lock(a)
+lock(a)       .
+.             .
+.             .
+.             .
+
+t1 is now stuck waiting for t2; this is called "priority inversion." Locks are kind of a blunt instrument; they don't play well with priority. This can happen anytime there are shared resources.
+
+Dijkstra came up with the first provably-correct synchronization algorithm: semaphores. (If you know any Romance languages, it basically means a traffic light.) Dijkstra's version is known as a "counting semaphore"; a degenerate version with only two values is called a "binary semaphore."
+
+Dijkstra was crazy. And Dutch. Not a good combination. Semaphores have two operators: P and V.
+
+P = Prolagen = "try to decrease" (Dijkstra made this word up)
+V = Verlieren = "increase"
+
+Let's say a semaphore is initialized with value 1.
+
+seminit(1); // 1
+P();        // 0
+V();        // 1
+
+If someone else tries to issue a P and it's already 0, they block, and wake up again at some point to check if it's not zero anymore.
+
+Why use counting semaphores? Limiting number of users who can access something, for performance? We usually use binary semaphores, which are basically locks. However, the problem with locks is that they don't compose:
+
+lock(a);
+.
+.
+lock(a); // deadlock!
+
+This is solved with recursive locks: if you already "hold" a lock, locking it again causes it to "nest" and require another unlock. Java's "synchronized" keyword adds a recursive lock to a method. Once you do this, you're almost at monitors: Java has wait() and notify(), which gives you condition variables... but, since synchronized is not the default, it's not exactly monitors. This was done for performance reasons... which now no longer matter, because Java is smart enough to skip locks that aren't used.

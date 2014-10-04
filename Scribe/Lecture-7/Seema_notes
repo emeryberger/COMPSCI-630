@@ -1,0 +1,165 @@
+Mesa is a concurrent based programming language. It was introduced to overcome the shortcomings of monitors. There were several design constraints of monitors. For example, WAIT was not properly designed in a nested monitor call, there was no proper synchronization between monitors and also there was no mechanism to handle exceptions.
+
+
+Evolution of Threads.
+
+When a process is created, it has its own address space, PC, register s and stack. Each of these processes are added to the Wait Queue and the scheduler executes them one at a time. A process would only stop executing when it has been blocked due to a synchronous call.
+
+In case of multiple processes, the scheduler would have many processes waiting on it and thus the CPU’s performance is degraded.  Hence a time scheduling approach was proposed also known as preemptive scheduling. 
+
+In Preemptive scheduling, the process continues executing until a time scheduler interrupts it since the process quantum expires, stores the contents of the PC, stack, registers and address space into a Process Control Block. Retrieves the next process from the Wait Queue and executes it for the same amount of time.
+
+In order to avoid context switch, some systems are designed to use Non preemptive scheduling, also known as “Cooperative Multitasking”.  Here the process interrupts itself instead of waiting for quantum expiration and gives control to other process. Cooperative Scheduling hogs the CPU completely for a single task.
+
+
+Cooperative Scheduling 
+
+Thread 1                                      Thread 2
+a  =  1;                                       a = 2;
+b  =  2;                                       b = 4;
+c  =  3;                                       c = 6;
+sched_yeild()                                 sched_yield()
+print(a,b,c)
+
+Output
+If thread 2 executes first,
+123
+
+If thread 1 executes first
+246
+
+
+Preemptive Scheduling
+
+ Thread 1                   	Thread 2
+  a = 1;                         a = 2;
+  b = 2;                         b = 4;
+  c =  3;                        c  = 6;
+ print(a,b,c)
+ 
+Output
+Uncertain. There can be many interleavings and hence mutiple combinataions. As the mumber of threads increase, there are more possiblities.
+
+In contrast to process, threads have the same address space and are known as light weight process. Each thread has PC, registers and stack which are local to it and pointers to the address space which is being shared by all the threads.
+
+When there is a context switch from one process to another, scheduler copies the contents of the registers, stack, file descriptor table and the hash table.
+
+
+Translation Look Aside Buffer (Hash Table)
+
+TLB is a cache which has the page table entries to map the virtual address to physical address. This cache can be designed in various ways:
+• Hardware LRU Cache:
+  This has almost 512 slots available to be filled for every virtual to physical addressing mapping. This type of cache is      
+  sometimes referred to as direct mapping and is fully associative.  From hardware perspective, it’s an expensive cache.  If no   slot is available in the LRU, it swaps the contents of the least recently used with the new entry.
+• One way Set Associative LRU Cache:
+  Here the cache has 8 slots and it computes the slot where each new entry has to be written via (pg/4096) % 8.  If no space is   available for a new entry, the contents already present in the corresponding slot are directly scrapped out for the new entry.   This cache has the lowest  hardware cost.
+• Two way Set Associative LRU Cache:
+  This also consists of 8 slots, but the depth of the cache is 2. Hence two entries corresponding to the same slot could be   
+  entered in this type of cache. 
+
+If the depth of the cache increases, it tends to be more expensive. We conclude that depth of the cache is directly proportional to hardware cost.  A graph has been shown below which indicates that as the hardware cost increases, TLB hits also increase. Having a cache which has a depth of 8 is said considered to be “sweet spot ”,  the most optimal solution between cost and TLB Hits.
+
+
+TLB Miss:
+
+In the beginning, all the caches are cold which means virtual to physical address mapping is not found, TLB later establishes it Hence initially things are slow, then it gets faster. This is known as warm up.
+
+For every single access, program checks the page table for its physical address map. If requested entry is not found in the page table, it is a TLB miss and the OS walks through every address in RAM to compute the physical address. This involves more number of cycles when compared to accessing address from TLB. If we frequently encounter TLB miss, it leads to TLB Thrashing which degrades performance.
+
+
+Why Threads?
+
+When we switch from one process to another, there is “TLB Shootdown”, which discards all the previous cache entries and restart over for the new process.  Hence, process switching is not preferred.
+
+But this is not the same in case of threads. There is no TLB Shootdown , since threads share the same address space. This is one of the reasons, why threads are called as light weight process.
+
+Threads are executed according to the priorities assigned to them. These priorities are user defined or the scheduler assigns them.  Some threads even inherit these priorities from their parent thread or process. If a certain I/O thread has highest priority, it doesn’t utilize the CPU appropriately. Hence the scheduler needs to prioritize the threads well. If a certain thread is using the entire quantum well, scheduler assigns these threads higher priority. If quantum utilization is low, priority assigned would also be less. Scheduler process has the highest priority and user process have the lowest priority. 
+
+
+Concurrency versus parallelism
+
+Concurrency is about running parts of the code at the same time, whereas parallelism is about exploiting the usage of multiple processors.
+
+Concurrency is about simultaneously handling concurrent events, thereby hiding I/O latency. Parallelism is about computing calculations simultaneously, thereby increasing speedup.
+
+
+Problem with Threads and Priorities
+
+Threads share memory, whereas memory is distributed among process. Consider for example two threads:
+t1, start = 0                                  t1, end = 15
+t2, start = 0                                  t2, end = 31
+
+Problem with threads:
+•	They can end in deadlock
+•	They can end up in livelock, even if both the threads are doing something, they produce no result.
+
+Consider another example:
+    
+    T1(High)                                         T2(Low)
+        -                                            Lock(a);
+        -                                               -
+        -                                               -
+        -				  	        -
+	-				                -		
+     Lock(a);                                           -      
+        -	                      		        -
+        -	         			        -
+        -	                                        -
+        
+Even if T1 has higher priority, it is blocked, since T2 locks the condition variable first. This is known as “Priority Inversion”, where lower priority threads blocks the higher priority threads.
+
+
+Semaphore
+
+To solve problems associated with priorities, Semaphore was introduced. This counting semaphore is a variable which is used to control access by multiple processes. Semaphores which have two values, are known as binary semaphores. Semaphores consists of 2 operations:
+- Prolagen (try to decrease)
+- Verlieren (increase)
+
+If a semaphore is initialized to a  value 1,
+P( ) – sets the value of semaphore to 0
+V( ) – sets the value of semaphore to 1
+
+If a process calls locks twice, for example:
+          Lock(a);
+              -
+              -
+              -
+              If (......)
+                 Lock(a);
+              -
+              -
+In this case, the process blocks itself causing a deadlock.
+
+Recursive Locks  
+Due to the problem faced by semaphores, recursive locks were introduced. Here each thread could recursively acquire lock multiple times.
+
+
+For Example:
+   Class A
+   {
+          foo( )
+          {
+                 Lock (x);
+                  -----
+                  ------
+                  Unlock(a);
+          }
+
+           bar ()
+          {
+                  Lock(x);
+                   -----;
+                  foo( );
+                   -----;
+                   -----;
+                  Unlock(x);
+          }
+   }       
+ 
+Since foo() is called recursively, there is no deadlock.
+
+
+
+
+
+
