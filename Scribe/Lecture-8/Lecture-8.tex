@@ -12,7 +12,7 @@
 \usepackage{url}
 
 %
-% The following commands sets up the lecnum (lecture number)
+% The following sets up the lecnum (lecture number)
 % counter and make various numbering schemes work relative
 % to the lecture number.
 %
@@ -37,13 +37,13 @@
   \begin{center}
   \framebox{
      \vbox{\vspace{2mm}
-   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Concurrency
                        \hfill Fall 2014} }
       \vspace{4mm}
-      \hbox to 6.28in { {\Large \hfill Lecture #2  \hfill} }
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
 %       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
       \vspace{2mm}
-      \hbox to 6.28in { {\it Lecturer: #8 \hfill Scribe: #1} }
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
      \vspace{2mm}}
   }
   \end{center}
@@ -65,8 +65,8 @@
 %usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
 \newcommand{\fig}[4]{
            \vspace{0.2 in}
-           \setlength{\epsfxsize}{#2}
-           \centerline{\epsfbox{#4}}
+%           \setlength{\epsfxsize}{#2}
+           \centerline{\includegraphics{#4}}
            \begin{center}
            Figure \thelecnum.#1:~#3
            \end{center}
@@ -109,7 +109,7 @@
 
 %FILL IN THE RIGHT INFO.
 %\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
-\lecture{2}{September 4}{Emery Berger}{Amee Trivedi}
+\lecture{8}{September 4}{Emery Berger}{Amee Trivedi}
 
 \section{Lecture Summary}
 
@@ -178,12 +178,12 @@ The flow diagram would be as  follows:
 
 Inst 3 and Inst 4 result in 2 threads but inst 5 results in merge of flow.
 
-For synchronization in a "co-operative sync process" model we need atomic reads and writes. Amotic operation is defined as an indivisible operation based on the word size of the system.
+For synchronization in a "co-operative sync process" model we need atomic reads and writes. Atomic operation is defined as an indivisible operation based on the word size of the system.
 
 If there are regions in code that should be accessed only by a single thread at a given time then the region is called critical region. Locks are used to ensure that only one thread executes in a critical region. 
 
 Code to lock a resource would look as below:
-	TEST_AND_SET(l)
+	TEST\_AND\_SET(l)
 	if (l == 0) {
 		l = 1;
 		return true;
@@ -193,7 +193,7 @@ Code to lock a resource would look as below:
 So, a thread code for locking a resource would look like:
 lock(l):
 while (true) {
-	r = TEST_AND_SET(l);
+	r = TEST\_AND\_SET(l);
 	if (r)
 		return;
 } // This mecahnism of locking is called Spin lock
@@ -205,7 +205,7 @@ while (true) {
 	...
 } 
 sleep();
-sched_yield()
+sched\_yield()
 
 // This mechanism is called spin and block lock
 
