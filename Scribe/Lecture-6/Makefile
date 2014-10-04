@@ -1,7 +1,7 @@
 #adapted from http://www.fclose.com/1643/a-simple-makefile-for-latex/
 
 SHELL=/bin/bash
-FILE=scribe_notes
+FILE=Lecture-6.tex
 
 all: pdf
 pdf:
