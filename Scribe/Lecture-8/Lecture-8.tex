@@ -10,9 +10,11 @@
 
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage{multicol}
+\usepackage{listings}
 
 %
-% The following sets up the lecnum (lecture number)
+% The following commands sets up the lecnum (lecture number)
 % counter and make various numbering schemes work relative
 % to the lecture number.
 %
@@ -37,7 +39,7 @@
   \begin{center}
   \framebox{
      \vbox{\vspace{2mm}
-   \hbox to 6.28in { {\bf CMPSCI~630~~~Concurrency
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
                        \hfill Fall 2014} }
       \vspace{4mm}
       \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
@@ -65,8 +67,8 @@
 %usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
 \newcommand{\fig}[4]{
            \vspace{0.2 in}
-%           \setlength{\epsfxsize}{#2}
-           \centerline{\includegraphics{#4}}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
            \begin{center}
            Figure \thelecnum.#1:~#3
            \end{center}
@@ -109,31 +111,38 @@
 
 %FILL IN THE RIGHT INFO.
 %\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
-\lecture{8}{September 4}{Emery Berger}{Amee Trivedi}
+\lecture{8}{September 25}{Emery Berger}{Amee Trivedi}
 
-\section{Lecture Summary}
 
-Synchronization
-D-Threads
-THE system design
+\section*{Lecture Summary}
+%\section{Summary}
+\begin{itemize}
+	\item Synchronization
+	\item D-Threads
+	\item THE system design
+\end{itemize}
 
 \section{Synchronization}
 Non-determinism is the behaviour when the result of each run of a program is different. Eg:
  If there are 2 threads t1 and t2 such that:
 
+\begin{lstlisting}
 	t1			t2
       a = 1		      a = 2
+
+\end{lstlisting}
 
 and if a is global, the o/p can be 1 or 2
 
 Now,
-
-	t1			t2
+\begin{lstlisting}
+	  t1			t2
   			      a = 2
 				.
     	a = 1			.
 				.(after lapse of a day)
-			   print a
+			      print a
+\end{lstlisting}
 
 The results would be 1 or undefined in the case of C/C++ because C/C++ will get the value from "thin air".
 Access from RAM is in chunks of memory called cachelines. Protocol MESI takes care of cache-coherence.
@@ -142,14 +151,19 @@ E -> Exclusive
 S -> Shared
 I -> Invalid
 
-\fig{1}{FIGURE-SIZE}{MESI Transition states}{MESI.png}
+\begin{figure}[ht!]
+\center
+\includegraphics[width=40mm]{MESI.png}
+\caption{ MESI Transition states \label{MESI}}
+\end{figure}
 
 AMD added O for Ownership and made it MOESI.
 
-\subsection false sharing
+\subsection{False Sharing}
 
-int a = 0
-int b = 0
+\begin{lstlisting}[language=C]
+		int a = 0
+		int b = 0
 
    	  t1			  t2
 	a = 1			b = 2
@@ -158,86 +172,115 @@ int b = 0
 	... 			...
 	a++ 			b++
 	} 			}
+\end{lstlisting}
+
 
 The resultant values of a and b depend on wether they are in the same cache line or different.
 If t2 is executed first followed by t1 and they are in the same cacheline then the copy of t1 is always discarded. This is called false sharing. This happens though the values of a and b are logically unshared but are physically shared. This can result in cache line pingponging.
 
 To implement cache coherence Snoopy cache and Directory based protocols are used among other techniques.
 
-\subsection Sequential V/s Concurrency
-1: a=1
-2: b =2
-3. spawn f(a)
-4. spawn g(b)
-5. sync
-6. print a
+\subsection{Sequential V/s Concurrency}
+
+
+\begin{enumerate}
+	\item a=1
+	\item b=2
+	\item spawn f(a)
+	\item spawn f(b)
+	\item sync
+	\item print a
+\end{enumerate}
 
 The flow diagram would be as  follows:
 
-\fig{2}{FIGURE-SIZE}{Flow diagram}{seq_con.png}
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=24mm]{seq_con.png}
+\caption{Flow diagramn \label{Flow diagram}}
+\end{figure}
 
 Inst 3 and Inst 4 result in 2 threads but inst 5 results in merge of flow.
 
-For synchronization in a "co-operative sync process" model we need atomic reads and writes. Atomic operation is defined as an indivisible operation based on the word size of the system.
+For synchronization in a "co-operative sync process" model we need atomic reads and writes. Amotic operation is defined as an indivisible operation based on the word size of the system.
 
 If there are regions in code that should be accessed only by a single thread at a given time then the region is called critical region. Locks are used to ensure that only one thread executes in a critical region. 
 
 Code to lock a resource would look as below:
-	TEST\_AND\_SET(l)
+
+\begin{lstlisting}[language=C]
+	TEST_AND_SET(l)
 	if (l == 0) {
-		l = 1;
-		return true;
-		}
+	  l = 1;
+	  return true;
+	}
 	return false;
+\end{lstlisting}
 
 So, a thread code for locking a resource would look like:
+
+\begin{lstlisting}[language=C]
 lock(l):
 while (true) {
-	r = TEST\_AND\_SET(l);
-	if (r)
-		return;
-} // This mecahnism of locking is called Spin lock
+  r = TEST_AND_SET(l);
+  if (r)
+    return;
+} \\This mecahnism of locking is called Spin lock
+\end{lstlisting}
 
 or
 
+\begin{lstlisting}[language=C]
 lock(l):
 while (true) {
 	...
 } 
 sleep();
-sched\_yield()
+sched_yield() \\ This mechanism is called spin and block lock
 
-// This mechanism is called spin and block lock
+\end{lstlisting}
+
+
 
 To unlock all you do is reset 1 to 0, so, the code looks like:
 
+\begin{lstlisting}[language=C]
 unlock(l):
 {
-	l = 0;
+  l = 0;
 }
+\end{lstlisting}
 
-\section D-threads
-Removes race condition by updating the memory to global memory in a specific order. There are 2 ways of analysis : static and dynamic
+\section{D-threads}
 
-\subsection Static Analysis
-- It sees program instruction
-- Reports lots of false alarms(cases where it detects race conditions but only a few are true)
-- It has high coverage
+Removes race condition by updating the memory to global memory in a specific order. There are 2 ways of analysis, static and dynamic.
 
-\subsection Dynamic Analysis
-- It has lower coverage
-- Reports things that are only real
-- It misses a lot of scenarios which can result on a different system/environment/load conditions
+\subsection{Static Analysis}
+\begin{itemize}
+	\item It sees program instruction
+	\item Reports lots of false alarms(cases where it detects race conditions but only a few are true)
+	\item It has high coverage
+\end{itemize}
 
-\section THE
-- Introduced layered approach, which is currently used in networking stack. 
-- This approach is called "Separation of concerns". 
-- Advantages of layered approaches are:
-	a) Easy to test things independently
-	b) Composable
-	c) Modular
-- So, the system aproach went from Monolithic to layered approach.
+\subsection{Dynamic Analysis}
+\begin{itemize}
+	\item It has lower coverage
+	\item Reports things that are only real
+	\item t misses a lot of scenarios which can result on a different system/environment/load conditions
+\end{itemize}
 
+\section{THE}
+\begin{itemize}
+	\item Introduced layered approach, which is currently used in networking stack
+	\item This approach is called "Separation of concerns"
+	\item Advantages of layered approaches are:
+		\begin{itemize}
+			\item Easy to test things independently
+			\item Composable
+			\item Modular
+		\end{itemize}
+	\item So, the system aproach went from Monolithic to layered approach
+\end{itemize}
 Then came microkernels and the war between MINIX and LINUX.
 
 \end{document}
