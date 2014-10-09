@@ -202,7 +202,7 @@ The flow diagram would be as  follows:
 
 Inst 3 and Inst 4 result in 2 threads but inst 5 results in merge of flow.
 
-For synchronization in a "co-operative sync process" model we need atomic reads and writes. Amotic operation is defined as an indivisible operation based on the word size of the system.
+For synchronization in a "co-operative sync process" model we need atomic reads and writes. Atomic operation is defined as an indivisible operation based on the word size of the system.
 
 If there are regions in code that should be accessed only by a single thread at a given time then the region is called critical region. Locks are used to ensure that only one thread executes in a critical region. 
 
