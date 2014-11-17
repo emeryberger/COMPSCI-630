@@ -1,0 +1,210 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{listings}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Fall 2014} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{17}{November 6}{Emery Berger}{Ian Gemp, Puja Mishra}
+
+%\begin{lstlisting}
+%\end{lstlisting}
+
+%\begin{enumerate}
+	%\item a=1
+%\end{enumerate}
+
+%\begin{lstlisting}[language=C]
+%	TEST_AND_SET(l)
+%	if (l == 0) {
+%	  l = 1;
+%	  return true;
+%	}
+%	return false;
+%\end{lstlisting}
+
+\section*{Lecture Summary}
+\begin{itemize}
+	\item Byzantine Generals Problem
+	\item Distributed Systems: Definitions \& Techniques
+	\item Paxos
+	\item RAM Cloud Project
+	\item Handling Failures
+\end{itemize}
+
+\section{Byzantine Generals Problem}
+
+In the \textbf{Byzantine Generals problem}, the generals of the Byzantine army must reach a consensus on whether or not to attack an enemy army.  To do this, they send messages back and forth between each other, however, some of the generals may be traitors trying to trick the loyal generals.  How can the loyal generals reach the correct conclusion?\\
+\\
+Byzantine Behaviors (traitors):\\
+- System fails\\
+- System drops messages\\
+- System adds messages\\
+- System disappears\\
+- System colludes with other systems\\
+\\
+Lamport et al showed that an army of 3m+1 generals can handle at most m traitorous generals.\\
+\\
+A related problem is the consensus problem in asynchronous distributed systems.  Similar to above, the agents need to agree on 1 bit of information.  In this scenario, each agent votes 0 or 1 (flips a coin) and then broadcasts that message to all other agents.  Each agent waits for messages to arrive from all the other agents.  Once all messages have been received, the agents agree to use the majority value as their consensus value.\\
+\\
+Fischer, Lynch, and Paterson proved (\textbf{FLP Proof}) that it's impossible to guarantee a consensus in bounded time in a fully asynchronous distributed system.
+
+\section{Distributed Systems: Definitions \& Techniques}
+
+\textbf{Shared Clocks}: Having a shared clock is impossible in distributed systems.  Clocks exhibit drift (clocks fall out of sync) and skew (clock drifts in one direction).  Relativistic effects can also make a difference because computers are operating at such a high speed.  Google spanner actually uses atomic clocks to establish bounded time drift although this is a major engineering effort and not exactly a perfect solution.\\
+\\
+\textbf{Timeout Threshold}: How long should we wait for a system to respond before we ask for another response?  We cannot distinguish delay from failure in a distributed system.\\
+\textbf{Retry Threshold}: How many times should we request a response (retry) before we give up?  Both these design decisions are decided empirically.\\
+\\
+\textbf{Byzantine Fault Tolerance (BFT)}: This type of tolerance requires 3m+1 systems assuming m systems are potentially untrustworthy as described in the Byzantine Generals problem.  Usually this condition is too strong for most real world systems.  Moreover, the number, m, is usually unknown so you don't know how many replicas you need anyways.\\
+\\
+\textbf{Cryptography / Signatures}: By signing messages, the number of systems can be reduced to 2m+1 in the face of m traitors.  In general, cryptographic techniques can help to make malicious attacks more difficult.
+
+\section{Paxos}
+
+In the \textbf{Paxos} framework, the distributed system must decide on a leader through an election.  Many systems may decide to become a leader at once, but only one may be elected.  If two or more systems are acting as leaders simultaneously, then a consensus has not been agreed upon, which triggers a cascade of failures that could bring the whole system down.\\
+\\
+``Paxos Made Simple'' is not understandable and ``Paxos Made Live'' showed how hard it is to actually implement in practice.\\
+\\
+Since it's possible for the leader to fail at any time, distributed systems often use \textbf{leases} instead of locks which are simply locks with time limits.  If a distributed system uses a lock and the leader goes down, then the rest of they system will be waiting forever for the dead system to respond (person goes into a bathroom, locks the door, and dies).  In this case, the leader with the lock represents a {\em single point of failure}.  A lease fixes this so that the door will eventually unlock itself after a certain amount of time.  This time limit (timeout) is chosen empirically.  If the lease is too short, then the system will constantly be renewing leases (re-locking the bathroom door) and can be costly.  On the other hand, if the the lease is too long, then the system may go down for long periods of time.
+
+\section{RAM Cloud Project}
+
+The \textbf{RAM Cloud Project} was started by John Osterhout at Stanford as a solution similar to Paxos, but easier.  The idea is to build a system out of distributed RAM without any persistent memory (disks).  Logs are no longer written to disks and all logging and check pointing is done in RAM.  RAM Cloud uses an architecture similar to a log-structured file system described below.  Moving entirely to RAM effectively gets rid of OS and system call overhead and speeds up memory accesses.\\
+\\
+Some companies still desire some form of persistent memory, so periodic backups, or ``snapshots'', are sometimes done.  If the system were to backup up all the time, it would be the bottleneck in the process and make the switch to using RAM pointless.  Another attempt to improve reliability is using non-volatile RAM.  Some companies have banks of RAM with batteries attached so that the battery can run the RAM for 30 min or so in case of a power outage.\\
+\\
+\textbf{Log-Structured File System (LFS)}: The general idea is to just keep appending information to a log.  This can be an alternative to switching to RAM (although RAM Cloud does this too).  By always appending to the log, the seek latency in disks is dramatically reduced since the seek arm only needs to move to the adjacent free slot (think arms on a clock).  One issue with LFS is space consumption.  Since no system has infinite space, we'll need to reclaim some space at some point so we can keep appending.  Garbage collection can be used however, this can be expensive for disk.  Garbage collection works well for RAM though since it is so fast.\\
+\\
+{\em Aside} \textbf{Tcl}: Osterhout created Tcl which is a ``horrible'' programming language.  It has neither lexical or automatic dynamic scope so in order to get the scope of the function that called you, you actually had to walk up the stack which requires how many steps up the stack the function is.  Also, Tcl doesn't have classes which prompted the creation of incrTcl.
+
+\section{Handling Failures}
+
+Failures are usually detected after the fact, when either a system dies or a file is corrupted.  There are not general test suites for fault tolerant systems, so in practice people simulate failure by killing a machine for x number of days and observing the system's response.  The problem is that the search space is so huge, that this approach barely puts a dent in testing.\\
+\\
+One way to handle failures is through \textbf{Replicated State Machines (RSMs)}.  In an RSM, the same finite state automata is replicated across many systems and the majority rules which state to recover from in a failure.  Unfortunately, most programs that are multi-threaded are not deterministic and so can't be used here.  DThreads are deterministic though!  One group used DThreads to make RSMs work for multithreaded programs.  See \url{https://www.cs.cornell.edu/fbs/publications/SMSurvey.pdf} for Schneider's tutorial on RSMs.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
