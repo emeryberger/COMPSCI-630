@@ -1,0 +1,191 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Operating Systems
+                       \hfill Fall 2014} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+\usepackage{listings}
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{5}{September 16}{Emery Berger}{Ian Gemp, Kate Silverstein}
+
+\section{Character Representation}
+Binary Coded Decimal provides an explicit representation of every decimal number by representing each digit exactly.  For example, $3.3 = 33 \times 10^{-1} = \fbox{3} \fbox{3} \fbox{-1}$.  BCD is important for financial processing where large numbers of transactions are involved. Some programming languages, e.g. COBOL, guarantee fixed point BCD number representation and in the past, computers had explicit hardware to support BCD.
+
+Another binary number system is two's complement which you obtain by taking the original binary representation, flipping the bits, and adding 1. Two's complement also has a unique representation of zero. According to Wikipedia, 
+\begin{quote}
+The two's complement of an $N$-bit number is defined as the complement with respect to $2^N$; in other words, it is the result of subtracting the number from $2^N$, which in binary is $1$ followed by $N$ zeroes. ... In two's complement representation, positive numbers are simply represented as themselves, and negative numbers are represented by the two's complement of their absolute value ... This system is the most common method of representing signed integers on computers.
+\end{quote}
+
+
+\section{Virtualization}
+IBM 360 had first class support for virtualization.  This was possible due to its strict ring policies regarding various levels of privileged and unprivileged instructions (which was and still is important, as without a system of privileges, a user could e.g. access hardware that controls their computer monitor and melt it, or modify the memory of another user's process). 
+
+Virtualization was thought to be impossible for the x86 because of its transparency to low level processes (lack of strict ring structure), however, it was later achieved in the 90's. Notably, Mendel Rosenblum, made significant contributions to this pursuit. According to the ACM's citation for Rosenblum's Software System Award:
+\begin{quote}
+Although the concept of virtualization was first explored in the 1960's in the context of mainframe computers, it languished until Mendel Rosenblum and his students at Stanford University rediscovered the idea as a simulation tool for new multiprocessor architectures. Realizing that virtualization could be used for actual execution and not just simulation, Rosenblum along with [others] founded VMWare Inc. in 1998 ... and then designed and developed VMWare Workstation 1.0 for Linux, bringing virtualization technology to the Linux desktop, and creating a vibrant industry and research area around the technology."
+\end{quote}
+
+Today, virtual machines -- e.g. Oracle's VirtualBox (available for free) and various VMWare products -- can be layered arbitrarily "deep" to take advantage of modern hardware/architectures.  For this reason, COBOL still supports many financial institutions today by running virtually on machines 40 years old (physically on current machines).  
+
+\section{Instruction Set Architecture (ISA)}
+Intel maintains a conservative CISC policy - they will only add a new instruction if it is crucially important, yet once they do, they keep the instruction for life.  They will, however, disable an instruction, for example, if it presents a security flaw.  This approach makes their ISA's backwards compatible.\\
+
+In the past, ISA's were interpreted by the hardware in the form of microcode, but micro-ops or $\mu$ops are now used instead because they are a better format for the hardware. $\mu$-ops are proprietary to the ISA (i.e. "secret") and chips come with a built-in compiler to process them.\\
+
+Both register-oriented and stack-oriented ISA's were considered for the IBM 360.  Register-oriented means load/write commands specify certain registers which can be either floating point/integer or overlapping/non-overlapping (hybrid).  Stack oriented means simple push-pop commands are used to manipulate data.  Both these types were tested empirically on a series of representative workloads (aka benchmarks).  IBM actually had access to real user workloads since many of their customers ran jobs virtually on local IBM machines.
+
+\section{Benchmarks}
+Benchmarks are meant to provide real-world tests for prototype designs.  They range from toy/micro benchmarks which are small, fast, easy to run, and not representative,lk to real code on real inputs, which are usually more representative of real-world environments/workloads/memory access patterns.  The ideal benchmark is one that is small, easy to run, and representative of real-world scenarios.  
+
+The Sieve of Eratosthenes was an early, commonly used benchmark used to find prime numbers.  It turns out it was a horrible benchmark even though it exercised a diverse set of operations mainly because it had a very simple memory access pattern and didn't make use of linked data structures.
+
+The Sun Spider is a current, commonly relied upon, insufficient benchmark used to test browsers which in wide use (e.g. Google V8 people still use it) primarily because it's easy to implement (e.g. "compute $fib(n)$").
+
+It is also worth noting that there are problems with benchmarks based on "real-world" workloads, i.e. today's workload probably won't be the same as tomorrow's workload. For this reason (among others), statistical benchmarking techniques like introducing "jitter" into simulations have come into fashion
+
+\section{Moore's Law}
+Moore's law states that the number of transistors/semiconductors/gates will double roughly every 1.5 years.  The law is based on empirical observation and has almost become a self-fulfilling prophecy since some corporations (e.g. Intel) enforce its progress as a requirement for employment.  Although the law has held up for some time, it cannot last forever because of atomic limits.
+
+Other problems plague advances in chip technology such as heat.  For a number of years, processing speed or cycle frequency was increasing exponentially (Dennard scaling region), however, the associated effects of leakage and thermal runaway comprises circuit integrity destroying the chip.  Extrapolations predicted that the heat of chips would surpass that of the sun's core by 2035 based on current trends.  For these reasons, clocking up is no longer an option (referred to as the "power wall").
+
+New technology/form-factor demands also limit our ability to clock-up processors: since phones are too small to incorporate a fan and must run a battery for hours, phone designers have had to reduce clock speeds.
+
+\section{Multicore}
+Multicore is the current solution for the power wall discussed above, with the prevailing goal of keeping the CPU busy at all times. Instead of running one core at high frequency, multicore runs multiple cores at slower speeds staying within thermal and power limits.  This helps to drain batteries more slowly.  This trend is mimicked in pipeline changes as well - number of stages has decreased from ~26 (the Pentium IV) to 5 or 6 (most chips today).
+
+We will ultimately not need more than 8 or 16 cores since we are never running that many processes at once.  As humans, we have multitasking limits (browser, chat client, music, virus scanner, spotlight, etc).  In addition, parallel programs that can take advantage of large numbers of cores are hard to write.
+
+\section{Amdahl's Law}
+$T_1$ is the runtime for the parallelizable portion of the program run sequentially\\
+$T_p$ is the runtime for the entire program\\
+$T_{\infty}$ is the runtime for the sequential portion of the program\\
+$p$ is the number of processes that can be run in parallel on the machine\\
+$T_p \approx \frac{T_1}{p} + T_{\infty}$\\
+\\
+If $p \rightarrow \infty$, you're still left with the serial part, $T_{\infty}$.  Therefore, $T_1$ needs to be a large enough portion of the program to make increasing $p$ worth it.  
+
+Stated differently (from Wikipedia), if we let $n$ be the number of threads of execution, and $B$ be the fraction of the program that can't be parallelized, then the time $T(n)$ that a program takes to finish when being executed on $n$ threads is
+
+$$T(n) = T(1)(B + \frac{1}{n}(1-B))$$
+
+and the theoretical speedup from executing a program using $n$ threads over using just $1$ thread is:
+
+$$S(n) = \frac{T(1)}{T(n)} = \frac{1}{B + \frac{1}{n}(1 - B)}$$
+
+Certain situations do make this effort worthwhile such as data crunching on the scale of the global population. That is, Gufstafson noted that "computations involving arbitrarily large data sets can be efficiently parallelized" (Wikipedia). According to Gustafson's Law, if we let $P$ be the number of processors, $S$ be the speedup, and $\alpha$ be the non-parallelizable fraction of the program, then
+
+$$S(P) = P - \alpha (P-1)$$
+
+i.e. "if the problem size is allowed to grow monotonically with $P$, then the sequential fraction of the workload would not ultimately come to dominate". This has been borne out in reality: frameworks like MapReduce are used to distribute/parallelize computations on datasets that would be intractable without parallelization.
+
+
+\end{document}
+
+
+
+
+
+
