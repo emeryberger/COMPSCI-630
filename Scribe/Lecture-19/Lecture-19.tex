@@ -1,0 +1,292 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{easylist}
+
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Fall 2014} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{19}{November 18}{Emery Berger}{Patrick Pegus, Seema Guggari}
+
+\section{Concurrency Errors}
+
+Race condition is 
+\begin{itemize}
+  \item When you have multiple entities operating concurrently on a shared variable.
+  \item If atleast one of the access is a write
+\end{itemize}
+
+
+It is safe when you have multiple reads and not writes 
+
+\subsection{Locks}
+
+In order to ensure thread safety, shared resources should not be accessed concurrently. Thus we go for locks. When using locks on the same shared resource, one should use the same set of locks \\
+
+\begin{lstlisting}[language=C]
+ 	 T1			            T2
+  
+	lock(xl)			
+	x = 1		
+	unlock(xl) 		
+					   
+		
+					lock(xl)
+					y = x
+					unlock(xl)
+\end{lstlisting}
+
+Suppose the invariant is { x + y = 100 } such that
+\begin{itemize}
+  \item	x = 100, y = 0
+  \item	x = 99,   y = 1
+\end{itemize}
+
+Consider the two threads,
+
+
+\begin{lstlisting}[language=C]
+	   T1  				  T2
+		
+ 	 lock(xl)
+ 	 x = x-1
+	unlock(xl)
+					
+					lock(xl)
+					x = x-1
+					unlock(xl)
+
+	lock(yl)
+	y = y + 1
+	unlock(yl)
+					lock(yl)
+					y = y + 1
+					unlock (yl)
+ 
+
+\end{lstlisting}
+
+\begin{itemize}
+  \item	Inspite of locks, the invariant is broken. This race freedom is necessary, but not sufficient to satisfy the invariant.
+  \item	Hence, operations should happen in atomicity.
+\end{itemize}
+
+\begin{lstlisting}[language=C]
+	   T1				 T2
+	lock( l )
+	x = x-1
+	y = y + 1
+	unlock( l )
+					lock( l )
+					x = x - 1
+					y = y + 1
+					unlock( l )
+
+
+\end{lstlisting}
+
+\subsection{Atomicity}
+
+But locks have several disadvantages:
+\begin{enumerate}
+  \item	It is complicated to ensure mutual exclusion when using nested locks, possibility of deadlock
+  \item	We encounter priority inversion
+\end{enumerate}
+
+Thus, one should go for atomic isolation
+\begin{itemize}
+  \item	Atomicity ensures that each transaction is executed completely. If part of the transaction fails, the state is unchanged.
+  \item	Isolation ensures that each concurrent execution of transaction results in a system state that would be obtained if transactions were executed serially
+\end{itemize}
+
+\begin{lstlisting}[language=C]
+	T1				T2
+
+	atomic {                                                      
+	    x = x - 1
+	    y = y + 1
+	}
+					atomic {                                                      
+     					     x = x - 1
+      		 			     y = y + 1
+					}
+\end{lstlisting}
+
+To resolve conflicts in transactions, there are two approaches
+\begin{enumerate}
+  \item	Pessimistic Concurrency Control\\
+	Locks resources as they are required, for the duration of a transaction
+
+  \item	Optimistic Concurrency Control\\
+   Transactions are executed without locking any resources and resources are checked if any conflicts have occurred when attempting   to change data. If a conflict occurs, the application must read the data and attempt the change again. Two approaches are followed: Kung  rollback and replay, MVCC snapshots
+
+\end{enumerate}
+
+One of the ways in which atomicity works is to have One Big Lock.
+\begin{lstlisting}[language=C]
+T1				T2				T3
+ atomic
+ {
+     x = x - 1
+     y = y + 1
+}
+				atomic
+				{
+				    x = x - 1
+				    y = y + 1
+				}
+								atomic
+								{		 	
+								    x = x - 5
+								    z = z + 5	
+								}
+
+
+
+\end{lstlisting}
+Even if some other set of shared resources are being accessed, acquire the same lock. This results in severe performance degradation. Alternative to this approach is Hardware Transaction Memory.
+
+\section{Hardware Transactional Memory}
+This is atomic and isolated. Works as follows:
+\begin{lstlisting}[language=C]
+	T1						T2
+ATOMIC BEGIN{					ATOMIC BEGIN{
+
+     x = x + 1						y = y + 1
+
+}ATOMIC END					}ATOMIC END
+
+
+Read	Write					Read    Write  
+{ x }	{ x }					{ x }	{ y }
+
+
+\end{lstlisting}
+
+ Both the cores maintain a hardware cache and a Read and Write set.\\
+\\
+ Transactional Conflict occurs when the write set of one transaction intersects with the read set or the write set of another  transaction. In this case, T1 reads the other cache before committing the changes, finds that T2 has read x. It proceeds as follows:
+\begin{enumerate}
+  \item Rollback\\
+  Discard all the changes. These are MESI checks executed all the time.
+ 
+  \item Commit\\
+Make all the updates and make it visible to other processes, so that other processes can invalidate the data in cache and read it from memory.
+
+\end{enumerate}
+
+Two  types of Caches: 
+\begin{enumerate}
+  \item Write Back\\
+  Writes only to cache. All the changes appear only in cache
+  \item Write through\\
+Writes all the way to RAM
+\end{enumerate}
+
+\end{document}
