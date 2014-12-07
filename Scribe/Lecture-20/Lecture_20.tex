@@ -1,0 +1,257 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{listings}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Fall 2014} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{20}{November 20}{Emery Berger}{Ian Gemp, Teddy Sudol}
+
+%\begin{lstlisting}
+%\end{lstlisting}
+
+%\begin{enumerate}
+	%\item a=1
+%\end{enumerate}
+
+%\begin{lstlisting}[language=C]
+%	TEST_AND_SET(l)
+%	if (l == 0) {
+%	  l = 1;
+%	  return true;
+%	}
+%	return false;
+%\end{lstlisting}
+
+\section*{Lecture Summary}
+\begin{itemize}
+	\item Dynamic Analysis
+	\item Concurrency \& Race Detection
+\end{itemize}
+
+\section{Dynamic Analysis}
+\textbf{Dynamic analysis} tools identify bugs by catching errors during trial runs.  Some are able to generalize beyond a single execution (e.g. \textbf{DART}) although they are usually tightly focused on some domain (e.g. DART is general for C).\\
+\\
+\textbf{Valgrind} is designed for general dynamic analysis, however, it adds a large amount of overhead (time and space) since it needs to instrument every instruction (read/write) as a function call on \textbf{shadow data} (meta data Valgrind creates for the original data).  Valgrind forms these high level function calls during preprocessing, where it adds read/write \textbf{barriers} (prefixing each read/write with snippets of code) to be used during the dynamic analysis.  If Valgrind detects that an array index is greater than the array offset found in the meta data, it reports an overflow.  Using the meta data as a sanity check, Valgrind is able to detect many similar errors.  The extra meta data significantly enlarges the amount of memory in use which can cause repeated swaps to disk incurring higher order runtime costs in addition to the direct slowdown resulting from added function calls.\\
+\\
+Valgrind can be 40-100$\times$ slower than realtime application speed making it impractical for certain applications.  For instance, Valgrind is nearly unusable in SQL server applications since Valgrind's baseline slowdown can cause queries to run beyond their time limits so nearly every query times out.  Another example is browser debugging in which every mouse movement invokes an update on both the mouse location and browser interface.  Valgrind intercepts every one of these typically harmless operations with a function call incurring a huge slowdown.\\
+\\
+Other tools related to Valgrind include \textbf{Pin}, \textbf{ThreadChecker}, \textbf{MemoryChecker}, \textbf{ASan}, and \textbf{TSan}.  Pin, from Intel, is more limited than Valgrind but much faster.  Valgrind's baseline speed doing nothing is 20$\times$ slower than realtime application speed while Pin runs at 30\% application speed at baseline and $\approx$10$\times$ during program execution.  ThreadChecker and Memory Checker are both tools built on Pin for more focused tasks (threads and memory).  ASan and TSan are Google's address (memory) and thread sanitizers.  ASan runs at about 2$\times$.\\
+\\
+Although dynamic analysis generally avoids false alarms, static analysis tools are still great for reducing the search space and overhead of the dynamic analyzer.\\
+\\
+Aside: Static Analysis Miss:
+\begin{verbatim}
+int index;
+int x[10];
+x[100] = 3; *check will catch this overflow
+cin >> index; *but not this one since input is undetermined
+x[index];
+\end{verbatim}
+
+Some researchers have worked on realtime dynamic analysis tools for writing code.  \textbf{Dafny}, created by Rustan Leino at MS Research, marks code errors while you are writing and gives reasons for those errors.  It requires certain invariant signatures for each snippet of code (e.g. @invariant index $\ge$ \&\& index $<$ 10) which is great for documenting code in and of itself.  Dafny solves a \textbf{SAT} problem on the boolean of invariants to check the validity of the code on the fly.  In this way, Dafny performs ``\textbf{Unit Proofs}''.\\
+\\
+Note: \textbf{SMT} (satisfiabilty modulo theory) can be used to satisfy numeric constraints.
+
+\section{Concurrency \& Race Detection}
+
+\subsection{Review of Concurrency Patterns}
+
+\textbf{Fork-Join Parallelism:} One thread creates multiple other threads
+(\emph{fork}), and these threads later return to the parent thread
+(\emph{join}).
+
+\textbf{Pipeline Parallelism:} Work is split into stages, with a thread per
+stage. Input is then passed through each stage.
+
+\textbf{Data Flow:} A generalization of the pipeline pattern, where input data
+flows between various processing stages.
+
+\textbf{Work Queues:} Each thread has an input queue. This is typically coupled
+with load balancing to ensure efficiency.
+
+\subsection{Static Checkers and Partial Specifications}
+
+An \textbf{extended static checker} couples static analysis with additional
+program information, such as annotations and contracts, in order to make static
+analysis tractable. These annotations may not be complete, giving a
+\textbf{partial specification} of a function. For example, a sort function may
+state, ``The first element of the output list is the minimum element of the
+list.'' This contract would be satisfied by simply finding the minimum element
+and putting it at the front of the list, even though this doesn't satisfy the
+full purpose of the function.
+
+\subsection{Static and Dynamic Race Checking}
+
+\textbf{Static race checking} attempts to find shared memory accessed based on
+the fork-join parallelism pattern. A shared memory address indicates a potential
+race.
+
+\textbf{Dynamic race checking} uses vector clocks and shadow state to track
+memory reads and writes. If a partial ordering of memory events can be
+determined, then race conditions can be detected by comparing the order of
+events. Unfortunately, this has a high overhead with O(n) slowdown.
+
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+A          &            & B          & ``Bad'' & Shadow State: & VC$_m$       \\ \hline
+acquire(m) &            &            &         &               & {[}20, 10{]} \\
+x = 3      &            &            &         &               & {[}20, 30{]} \\
+release(m) &            &            &         &               &              \\
+           & $\searrow$ &            &         &               &              \\
+           &            & acquire(m) & x = 5   &               & {[}20, 30{]} \\
+           &            & x = 4      &         &               & {[}20, 30{]} \\
+           &            & release(m) &         &               & {[}20, 31{]} \\ \hline
+\end{tabular}
+\end{table}
+
+Bad's access of $x$ cannot be ordered with respect to the vector clock in the
+shadow state. Therefore, it is concurrent with the other accesses in A and B and
+is a race condition. Unfortunately, using vector clocks is an O(n) slowdown and
+cannot be used in production.
+
+A \textbf{LockSet$_x$} is the set of all locks acquired when a variable $x$ was
+last accessed. Initially, the lockset $LS_x = {\mathrm\{all locks\}}$. When $x$
+is accessed with lock $m$ acquired, a new lockset is created: $LS^\prime _x =
+LS_x \cap {m} = {m}$. Assuming the locks function correctly and the lock set
+isn't empty (a lock was acquired when the variable was accessed) then there is
+no race on variable $x$. In the example above, Bad's access of $x$ has the
+LockSet $LS^\prime _{bad} = LS_{bad} \cap \emptyset = \emptyset$, indicating a
+race on $x$.  Unfortunately, LockSet only works for lock-based parallelism, not
+fork-join or other patterns.
+
+Vector Clocks provide high precision but massive overhead. LockSets provide
+much lower overhead, but they cannot be used for all parallelism patterns.
+Something in between these two would be ideal.
+
+The core idea of \textbf{FastTrack} is if there are no races for a variable so
+far, then all accesses of that variable are totally ordered. Therefore, only the
+last access needs to be tracked. Consider the A/B/Bad program above:
+
+\begin{itemize}
+  \item A accesses $x = 3$ at [20]. Set Epoc$_x = A@20$
+  \item B accesses $x = 4$ at [30]. Set Epoc$_x = B@30$
+  \item Bad accesses $x = 5$ at [0]. Since [0] $<$ [30], there is a race.
+\end{itemize}
+
+This idea can be expanded to included two variables that are accessed within the
+same epoc:
+
+\begin{verbatim}
+acquire(m)
+x = 1
+y = 2
+release(m)
+\end{verbatim}
+
+The variables $x$ and $y$ can be handled as one variable, such as by only story
+and checking the epoc for $x$.
+
+\end{document}
