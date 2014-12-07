@@ -1,0 +1,191 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{listings}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Fall 2014} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{21}{November 25}{Emery Berger}{Ian Gemp, Nicholas Braga}
+
+%\begin{lstlisting}
+%\end{lstlisting}
+
+%\begin{enumerate}
+	%\item a=1
+%\end{enumerate}
+
+%\begin{lstlisting}[language=C]
+%	TEST_AND_SET(l)
+%	if (l == 0) {
+%	  l = 1;
+%	  return true;
+%	}
+%	return false;
+%\end{lstlisting}
+
+\section*{Lecture Summary}
+\begin{itemize}
+	\item Web Security
+	\item Functional Programming
+\end{itemize}
+
+\section{Web Security}
+Browsers used to automatically download and run any file when visiting a webpage.  Initially, no one thought this created a real security issue.  Eventually, security was pushed to the forefront (see Thompson 1984).  A list of the various languages typically encountered while surfing the web is below.
+%
+\begin{itemize}
+	\item (.doc,.xls) macros are written in visual basic which contains arbitrary code so these are potentially unsafe
+	\item (.exe) x86 binaries are obviously unsafe
+	\item (ps) post script is turing complete - based on reverse polish notation (RPN) which is postfix; FORTH is a language that came out of this
+	\item (.pdf) basically compressed post script so this is also unsafe plus adobe interpreters have vulnerabilities as well
+	\item (.swf) flash is written in action script (a type of javascript) which is also unsafe
+	\item (.js) unsafe
+\end{itemize}
+%
+All of these file types constitute a very broad \textbf{attack surface} for hackers to use to infiltrate a user's computer.  The primary attack vectors are ranked below.
+%
+\begin{enumerate}
+\item (Flash JIT) luckily flash is slowly fading away
+\item (PDF Reader)
+\item (JS JIT)
+\item (Java VM) suggested to turn this off (macs ship with Java VM turned off)
+\end{enumerate}
+Aside: For the most part, Chrome uses a \textbf{same origin policy} to run processes.  For instance three tabs opened with \verb;google.com; will all run in the same process, so it's one process per origin.  There are exceptions to the rule - Flash always runs in its own process.\\
+\\
+All of the above languages are considered \textbf{"safe"}, but there are compiler / interpreter vulnerabilities that can cause buffer overflows which allow C code, for example, to be run and these compilers / interpreters ware usually grounded in C so the code actually gets run.\\
+\\
+\textbf{Stack smashing} is an attack in which a stack buffer overflow allows the attacker to overwrite the original return address in the stack with a return address to a location elsewhere that may run anything.  For instance, return address could point to \verb;system("rm -rf /"); or a shell code that starts up a command prompt.\\
+\\
+\textbf{Heap spraying} is an attack in which a huge buffer array is allocated and filled with shell code.  NOP sleds (stretches of \verb;no operation; codes) are used to slide from one shell instruction to the next and obfuscate the attacker's code.\\
+\\
+One form of protection against executing unknown code is to keep a WnX (write-no-execute) etc. bit in a every page of memory that says whether something is readable/writeable/executable.\\
+\\
+A way around this defense is \textbf{return oriented programming (ROP)}.  Since the attacker cannot execute newly written code (WnX), they take advantage of preexisting system opcodes.  In this attack, a bug in the user's program allows a buffer overflow that the attackers use to overwrite return addresses which point to certain executable system opcodes.  The attackers use these specific opcodes or \textbf{gadgets} to chain together arbitrary sequences of instructions which allows them to execute just about any code.\\
+The defense strategy is to track anomalous patterns / origins of hooks to the system library since the attacker will most likely be randomly hopping around the library to find the right gadgets to construct their arbitrary program.\\
+\\
+Until sufficiently safe runtimes are developed, attacks described above will exist and evolve.
+\\
+Aside: Moral hazard (e.g. give people airbags and they'll drive their cars like bumper cars) was an argument against increasing security since people might be more tempted to visit webpages willy nilly.
+%
+%
+\section{Functional Programming}
+APL (A Programming Language) was one of the first functional programming languages.  Certain methods allowed writing overlapping characters.\\
+\\
+Currying easily allows the construction of partial functions whereby an argument in the original function is replaced with an assignment to produce a new, more constrained function.  For example, \verb; f(x,y) = x+y, f(3,y) = 3+y; so \verb;map(f 3) [1...100]; returns \verb;[4...103];
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
