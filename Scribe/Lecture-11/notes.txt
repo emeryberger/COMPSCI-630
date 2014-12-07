@@ -1,0 +1,97 @@
+
+Security
+
+- Lampson: 'The Confinement Problem'
+- Thompson: Turing award speech
+	~ Context: Security was a 'hypothetical' concern
+	~ By the time Thompson gave speech, it's possible the backdoor
+		he described no longer was vulnerable
+
+- Confinement:
+	- Data may leak through two types of channels:
+	(1) Overt: Explicit flow of information
+	(2) Covert: implicit flow of information
+		Ex: Packet traffic analysis, timing attacks (using the time to execute of a program with logical flow to predict its conditions, etc.)
+		- even power consumption (Levine, Fu) related to web traffic
+		- Many were skeptical of covert traffic at this time
+
+- Paper: 'Timing Attacks are Real'
+	- Revealed that passwords could be intercepted over a network
+		- Key distance could be modeled w/ only a few observations (of packets)
+	- Network traffic patters can be used to infer a user's browsing activity
+		- using promiscuous mode (all network traffic - not just that which is addressed to the MAC of machine in use - is visible). (Technically, all wireless traffic is interceptable due to being radio waves, and even using unencrypted headers, and timing attacks.
+		- These types of attacks could be battled with nonce characters, pseudorandom interpacket arrival times
+		- Latency vs. privacy (timing) binary : Latency leaks timing
+		- Many attacks are due to poor system design
+			- (Other poor designs exploited include smartphones over-the-shoulder and fingerprints, and ATM infrared [materials adjusted since])
+			- Additionally, rubber-hose cryptography: forced handover of credentials
+
+Confinement Problem: Formal Framework -
+
+	Information flow:
+		- Integrity: No dangerous information goes (leaks) to a sensitive place
+			ex: z = input from Internet	//arbitrary command
+				...
+			    System(z)			//infiltration
+
+			- in other words: nothing "tainted" goes to untrusted places
+		- Confidentiality: no sensitive information flows out to a public place
+			ex: z = readMail()
+				...
+			    Output(z)		//exfiltration
+
+[Aside: Perl: taint mode; all variables from untrusted sources set a taint bit; also applies to all variables which propogate from a tained variable]
+
+	Issues with tainting:
+	(1) Taint Explosion: taint is monotonically nondecreasing
+		- One way to taint is sanitizing
+			ex: y = count(z) //Assert 'count' is a sanitizer, or sanitize method removes sanitize bit
+				...
+			    Write(y)
+
+		Ex: query = readInternet()
+			...
+		    q = sanitize(q) //Could be SQL injection; must ensure valid input
+		    executeQuery(q)
+
+		- Dual: Declassification -- must rely on people to do it correctly
+
+	(2) Implicit flow (control flow dependence)
+		- Ex: z = InputFromInternet()
+				..
+		      if z: x = 0; else: x = 1
+		
+			- x, which is technically safe, has been tainted
+
+		- To properly track tainintg, must track data flow (copying assignment usage) and control flow (depends on conditionals) -- this is expensive and complex
+
+	- These issues are formally described in terms of lattices:
+
+ 	[lattice figure?] {a,b,c} example
+
+
+	- Ex: untainted (meet) tainted = tainted
+
+Dynamic Information Flow Tracking (DIFT):
+
+	- Every flow followed, allow information must be propogated
+	- Too slow to be used in high-performance languages
+	- [JIF: Java w/ Information Flow (Andrew Myers); static]
+
+Noninterference: Low-value data and high-value data don't interfere
+	- Desirable property to preserve; only susceptible in covert channels
+
+	- Ex: Web browser: exfiltration : tracking
+		- or, JavaScript could maliciously download at will
+
+- (OS/VM level confinement) 	Sandboxing: Browser technique of seperating 'tabs', etc.				    into processes
+- (Filesystem level confinement) chroot jail; tell OS for this process, root is this (higher-than-root) directory
+- (PL/Binary level)		 SFI: instrument read/write calls with reference monitor; enables software fault isolation
+
+
+		    
+
+
+
+
+

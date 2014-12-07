@@ -1,0 +1,84 @@
+October 9th, 2014
+
+Security
+
+- It was not seen as problem but just a theoretical concern
+
+- Confinement
+
+*Covert channels -> implicit flow
+	-Packets: can't see the data but can see that communication is happening
+	
+	- Timing attack channel: depending on how long certain computations take, one can extract some information out of the system. Imagine that the time to test a certain condition is different if the condition is true or false. Just by tracking the time one can figure out what it is the value of the condition. (include pseudo code example)
+	Timing attacks are a real threat. Can get passwords (pwd attacks), public key encryption, and can even help to guess network topology.
+	
+	Nonce characters: include some randomness
+		
+	Latency vs. privacy: high latency results in more privacy, 
+
+	-Power channel: observe how much power is being consumed. Ex: can guess visited websites given the energy consumption
+
+	-Promiscuous mode: can get packets that are not destined to you
+	
+	*smartphones: fingerprints
+	*ATM: infrared on the key board
+	*Over the shoulder surfing
+	*Brute force
+	*Rubber hose crypto
+
+*Overt channels -> explicit flow
+	
+	The information flow is explicit. Need to guarantee two things:
+		1) Integrity: no dangerous information goes to a sensitive place
+		2) Confidentiality: no sensitive information goes to a dangerous place
+		
+	For example:  
+	
+		code 1:	Z= inputFromInternet();
+			        		-
+			        		-
+				system(Z); 
+	
+		code 2:	Z= readFromMailbox();
+			      		-
+			       		-
+				output(Z);
+	
+	To get integrity the system may implement what it is called tainting. Any potentially evil information will be tainted, i.e. data from an untrusted source or data obtained by using some tainted data. Some problems with the tainting can be:
+		a) Taint explosion: might taint information that was not harmful. Instead of tainting, can sanitize. Analyze the data and 
+			ex: 	q = readString(q)
+				q = sanitize(q)  --> try to prevent SQL injection attack
+ 				executeQuery(q)
+					
+		b) Implicit flow implies control flow dependency.
+			In the following example: 	Z = inputFromInternet()
+								if (Z) { x = 0 ;}	
+								else {x =1; }
+			Even though x is not coming directly from the internet, its value is dependent on that. Therefore x could be a candidate for tainting but that kind of prevention (non-interference?) is too expensive. 
+
+-Lattice:
+
+TAINTED               HIGH SECURITY                  PUBLIC
+       |					|					|
+       |	sanitizing			|					| declassification
+       |					|					|
+UNTAINTED	     LOW SECURITY	 		SECRET
+
+-Show the example with {a,b,c} to explain lattices
+
+-Data flow: copying, assignment, use			
+-Control flow: depends on condition
+
+Perl uses DIFT: dynamic information flow track -> it is very slow
+
+SIFT: static information flow track. 
+	  In C we can cast anything. Ex: int f = (int) systems -> can uncast f later and use it on tainted information.
+		
+Sandboxing: establish boundaries for execution OS/VM
+	On Chrome each tab has its own processor. It relies on OS for confinement.
+	
+Chroot jail: establish a root for the process filesystem. The process can not access anything above.
+SFI: software fault isolation
+NaCl: x86
+PNaCl: chromebooks 
+ 
