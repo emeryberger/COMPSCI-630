@@ -1,0 +1,212 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~377~~~Operating Systems
+                       \hfill Fall 2009} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{15}{November 4}{Emery Berger}{Theodore Sudol, ???}
+
+\section{Performance Analysis}
+
+From the beginning of a project, decisions like language choice affect
+performance. For example, Ruby is an order of magnitude slower than C, C++ or
+Java. There is only so much performance you can squeeze out of it simply due to
+the language design.
+
+\subsection{Programming Language Concurrency}
+
+\textbf{C:} pthread\_create(\ldots) uses real OS threads.
+
+\textbf{Java:} Originally used ``GreenThreads'', where multiple JVM threads were
+mapped to one shared OS thread; this has concurrency (overlapping communication
+and computation) but is not parallel. Normal Java threads are $1 : 1$, or $m :
+m$, where each Java thread is mapped to a corresponding OS thread. Greenthreads
+were $m : 1$.
+
+\textbf{Fibers} are lightweight threads that can be described as $m : n, m < n$,
+i.e. multiple fibers per OS thread.
+
+The $m : 1$ scheme has some advantages. It offers simpler and cheaper
+synchronization, fine-grained control of the scheduler, and no context switches,
+which improves performance. Typically, each thread has its own large stack that
+is bounded by memory-protected pages. Thanks to the finer control over threads,
+the programming language can use smaller stacks and save memory with the $m : 1$
+model. The $m : n$ model conveys the same advantage.
+
+\textbf{Work Queues} are used to implement the $m : n$ threading model. Each OS
+thread has a queue of thread states defined by the programming language. Each PL
+thread is processed as the OS threads work through their queues. To ensure
+performance, the work queues are load balanced (work is spread evenly if
+possible) and implement randomized load stealing: if an OS thread's work queue
+empties, it takes a thread from the back of another OS thread's queue.
+
+\subsection{Benchmarking}
+
+A program's performance is very complex: One must know the runtime environment,
+along with the thread model and the performance model of the language. Most
+languages do not have these models.
+
+\textbf{Cilk} is a programming language with the first formalized conception of
+randomized work stealing and a formal performance model: $T_p = O(\frac{T_1}{p})
++ T_\infty$. $T_p$ is the execution time with $p$ threads, $T_1$ is the
+execution time with a single thread, and $T_\infty$ is the execution time of the
+serial portion of the program. $T_1$ is determined by simply running the
+program, and $T_\infty$ can be determined by the program itself. This
+performance model bears a strong resemblance to Amdahl's law.
+
+\textbf{gprof} is a benchmarking tool that profiles each function in the
+program.
+
+\subsection{Handling Bias}
+
+\textbf{Measurement bias} occurs when a system used to measure two or more items
+favors one over the others. This skews measurements and can lead to incorrect
+results.
+
+\textbf{Regression analysis} measures the correlation between two variables.
+However, one must be aware of \emph{latent confounding variables} that can
+affect the variables under analysis. Measurement bias manifests as a latent
+confounding variable, for example.
+
+\textbf{Hypothesis Testing:} Start with the \emph{Null Hypothesis:} Nothing
+happened. For example, given two programs $A$ and $A^\prime$, where the latter
+is optimized. The null hypothesis is that the programs have the same
+performance.
+
+\begin{enumerate}
+  \item Assume the null hypothesis: $T_A = T_{A^\prime}$
+  \item Run the experiment to \emph{reject} the null hypothesis
+  \item Define a significance level or confidence interval: $p \le 0.05$
+  \item If the experiment shows that $T_A$ and $T_{A^\prime}$ differ
+    significantly to confidence $\le 0.05$, then reject the null hypothesis.
+\end{enumerate}
+
+For example, say we are testing a new drug called ``Snkoil''. The null
+hypothesis is that Snkoil performs no better than the placebo. This is tested in
+a double blind, randomized trial: Subjects in each group (experimental and
+control) are randomized, and the people running the experiment should not know
+which group each subject is in.
+
+But what happens if Snkoil tastes bad? Because we associate bad tasting things
+with medicine, the subjects may realize they're being treated and the placebo
+effect kicks in. This pierces the double blind and invalidates the experiment.
+
+In computer science, confounding variables are very well hidden: environment
+variables, user names, the current directory, etc. can all change the alignment
+of code in memory. This affects performance by causing misses with the various
+hash tables in the computer, namely the caches, TLB and branch predictor.
+
+Running an experiment with every possible configuration of known confounding
+variables would eliminate the measurement bias they cause, but this would
+require several hundred factorial runs.
+
+\textbf{Stabilizer} gives a practical way to remove the influence of confounding
+variables. It essentially turns the experiment into a single blind randomized
+study. (Not double blind, because the computer doesn't care what you think.)
+
+\end{document}
