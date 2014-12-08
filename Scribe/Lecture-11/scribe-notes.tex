@@ -113,7 +113,9 @@
 
 \section{Introduction}
 
-TODO
+The topic of this lecture was security and we discussed the papers: \emph{Reflections on Trusting Trust}, and \emph{A note on the confinement problem}. 
+Security was not always considered a problem. Moreover people would discuss it as an interesting problem from a theoretical point of view, and not as a real threat. 
+This is no longer the case, and we discussed some security problems and how to possibly handle them.
 
 \section{Confinement}
 
@@ -135,12 +137,28 @@ At the time Thompson gave his speech, many in the audience were likely still ske
 
 This paper revealed that passwords could be intercepted over a network. This was done by building a model of key travel distance; only a few observations (from packets) were enough to make a prediction. In general, network traffic patterns can be used to infer a user's browsing activity. Using \texttt{promiscuous mode} (where all network traffic - not just that which is addressed to your MAC address - is process by your network interface). \textit{[Aside: Technically, all wireless traffic is interceptable due to being radio waves, and even using unencrypted headers]} These types of attacks can be battled with nonce characters and/or pseudorandom packet interarrival times.
 
-This however leads to an important trade-off: \textbf{Latency vs. prviacy}. \textit{Low} latency applications leak timing information, since their activity streams can be reconstructed by an observer with high certainity. \textit{High} latency applications have the advantage of being able to shuffle and delay activity (an example being mixes as used by \textit{Tor}.
+This however leads to an important trade-off: \textbf{Latency vs. privacy}. \textit{Low} latency applications leak timing information, since their activity streams can be reconstructed by an observer with high certainty. \textit{High} latency applications have the advantage of being able to shuffle and delay activity (an example being mixes as used by \textit{Tor}.
 Many attacks against systems are simply due to poor system design (Examples of poor/hard-to-prevent exploits include over-the-shoulder and fingerprint reading for smartphone users, and the use of infrared of ATM keypads). Above even these exploits, which are mostly not the fault of developers, is rubber-hose cryptography: the forced handover of credentials (or assault with a rubber hose...).
 
 \subsection{Formal Framework}
 
-TODO
+When the information flow is explicit we need to guarantee two properties: 
+\begin{itemize}
+	\item \textbf{Integrity:} no dangerous data can go to a sensitive place. When the information comes from an untrusted source, i.e. it is potentially harmful, a bit is set
+	to indicate that is tainted. This also applies if data is generated using tainted data, therefore the tainting propagates throughout the system. For example:
+		\begin{verbatim}
+			Z = inputfromInternet();
+				.
+			system(Z); // Z contains potentially harmful, should be tainted
+		\end{verbatim}
+	\item \textbf{Confidentiality:} so no sensitive data can go to a dangerous place. For example:
+		\begin{verbatim}
+			Z = readfromMailbox();
+			.
+			output(Z); // Z should not be exposed like this; exfiltration 
+		\end{verbatim}
+\end{itemize} 
+
 
 \subsection{Levels of Confinement}
 
@@ -152,7 +170,46 @@ TODO
 
 \section{Tainting}
 
-TODO Issues with tainting...
+Tainting is implemented to get integrity but there are some issued with this method.
+
+\begin{itemize}
+	\item Some data that is not harmful gets tainted (taint explosion). We can sanitize the data, removing the tainted bit. For example,
+		\begin{verbatim}
+			q = readString();
+			q = sanitize(q); // sanitize the query to prevent SQL injection
+			executeQuery(q);
+		\end{verbatim}
+	The data should be tainted but by sanitizing we can ``clean'' the harm it could cause.
+	
+	\item Implicit flow implies control flow dependency. In the following example: 	
+		\begin{verbatim}
+			Z = inputFromInternet();
+			if (Z) { x=0; }
+			else { x=1; }
+		\end{verbatim}
+	The value of x is not coming from un untrusted source but it is dependent on Z. In this case, x should be a candidate 
+	for tainting but that kind of prevention involves tracking data flow (copying assignment usage) and control flow (depends on conditionals), what is expensive
+	and complex. 
+\end{itemize}
+
+A way to formally describes those issues is using lattice.
+
+Example of lattice:
+
+\begin{verbatim}
+       {a,b,c}
+    /    |    \
+{a,b}   {b,c}  {a,c}
+  |   X       X   |
+ {b}      {a}    {c}
+   \       |      /
+      \emptyset
+ 
+\end{verbatim}
+
+\{a,b,c\} is the top, $\emptyset$ is the bottom, meet is intersection (go down), join is union (go up).
+
+In the tainting case, we would have: taint (meet) untainted = tainted
 
 \section{Dynamic Information Flow Tracking (DIFT)}
 
