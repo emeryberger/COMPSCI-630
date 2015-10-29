@@ -38,7 +38,7 @@
   \framebox{
      \vbox{\vspace{2mm}
    \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
-                       \hfill Fall 2014} }
+                       \hfill Fall 2015} }
       \vspace{4mm}
       \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
 %       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
@@ -109,137 +109,226 @@
 
 %FILL IN THE RIGHT INFO.
 %\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
-\lecture{2}{September 4}{Emery Berger}{Theodore Sudol, Amee Trivedi}
+\lecture{2}{September 16}{Emery Berger}{Bobby Powers}
 
-\section{Advice on Reviews}
+\section{Lisp}
 
-Reviews from other semesters are available on HotCRP. This can help guide in
-writing your own reviews, along with pointing out facets of the paper that you
-may have missed. The summaries should be high-level syntheses, not simple
-summations. An understanding of the contributions of and concepts within the
-paper should be shown.
+Lisp (sometimes all caps for LISt Processing) was developed almost
+immediately after Fortran, and is an implementation of Church's lambda
+calculus.  This is in stark contrast to Fortran, whose syntax is
+loosely based on math but contains little formalism.  With Lisp,
+syntax and parsing go away due to its prefix notation and parentheses
+(which is good or bad depending on your perspective).  Programming
+Language people love the syntax, as there is no syntax.  It was very
+ahead of its time with respect to code modifying code.
 
-Keep in mind that, for many CS papers, a problem is solved with a novel
-solution, but the former is forgotten while the latter lives on.
+Lisp has several primitives, like lists:
+\begin{verbatim}
+(1 2 3 x)
+\end{verbatim}
 
-A useful guideline is George Heilmeier's ``catechism'' or criteria for research
-projects. The relevant questions for our reviews include:
-\begin{itemize}
-  \item What are you trying to do? Use no jargon.
-  \item How is it done today? What are the limitations of current practice?
-  \item What's new in your approach? Why do you think it will be successful?
-  \item Who cares?
-  \item What are the risks and payoffs?
-  \item How long will it take? What are the milestones?
-\end{itemize}
+Lists can contain items of any type, including other lists.  There is
+no need for all the items in a particular list to be of the same type.
 
-\section{Compilation and Optimization}
+And atoms:
+\begin{verbatim}
+1 x foo-bar
+\end{verbatim}
 
-Remember that optimization should not change the semantics of a program. If you
-have some program \emph{P} that can be optimized into program $P'$, then
-$\forall x : P(x) = P'(x)$.
-
-However, this is not always straightforward. Many programming languages exhibit
-undefined behavior, in which a particular syntactic construct has an unknown
-effect. For example, dereferencing an uninitiated pointer is undefined, and the
-compiler may take advantage of this and do whatever it wants. Typically
-``whatever it wants'' is something reasonable, but it is not guaranteed to be
-useful or consistent.
-
-The following statements in C may print anything, as it is undefined behavior:\\
-\texttt{int *p;\\ printf("\%d\char`\\ n", *p);}
-
-There are several classic optimizations:
-
-\begin{itemize}
-  \item Strength Reduction: replace an expensive operation with a cheaper one that is semantically identical.\\
-    Example: Division may be replaced by bit shifts. $8/2 \equiv 8 >> 1$
-   \item Dead Value Elimination: a dead value is a value that does not affect the
-    result of a function; these can be eliminated without changing the
-    function. Dead values are discovered using dependency analysis, which
-    creates an acyclic directed graph of all the statements in the program; any
-    statements outside of the graph can be eliminated. For example:
-    \begin{verbatim}
-    inf fun(int v)            Graph: Return
-        int x = 2;                     |
-        int y = v + 1                  y
-        return y                      / \
-                                     v   1 
-    \end{verbatim}
-    The variable $x$ may be safely eliminated because it is not in the graph.
-  \item Constant Propagation: the values of known constants are substituted into
-    expressions at compile time. These substitutions can enable further
-    optimizations. For example, a function f(x) that returns $x+1$ can be
-    replaced with $x+1$ if the value of $x$ is known.
-  \item Function Inlining: small function calls are replaced with their body,
-    which eliminates the overhead (stack allocation, jumps, post-function
-    cleanup, etc.) of the function call.
-  \item Register Allocation: controlling which values are assigned to registers
-    can reduce load and store calls. This optimization can be reduced to a graph
-    coloring problem; the variables in the program are the vertexes, which are
-    connected by which variables need to be used at what times.
-  \item Instruction Selection: different instructions may have the same result,
-    but they may not take the same amount of time. For example, zeroing
-    register \texttt{AX} may be accomplished with \texttt{MOVE 0,AX}, but
-    \texttt{XOR~AX,AX} does the same thing more efficiently.
-  \item Tail Call Optimization: if the last statement of a function is a call to
-    itself, the call can essentially be replaced with a GOTO to the beginning of
-    the function. A new stack frame does not need to be allocated, so memory is
-    preserved.
-\end{itemize}
-
-\section{LISP}
-
-Lisp (LISt Processing) has many descendents, such as Scheme, Clojure and Racket.
-It was originally intended for ``Classic'' AI, which had the goal of creating
-intelligence by programming a logical system and describing states and the
-transformations upon them. (This does not affect their expressive or
-computational power, as they are Turing complete, as most programming languages
-are.)
-
-Fortran used simple types, like ints and floats, with no way to express
-structures. Lisp, on the other hand, focuses on expressiveness and structure
-with few types. The language is based around mathematics. Managing memory
-(allocation, deallocation, etc.) is not particularly mathematical, so Lisp
-doesn't do it either. Instead, automatic memory management handles memory
-transactions. (This is in contrast to languages with explicit or manual memory
-management.)
 
 Example Lisp function:
 \begin{verbatim}
-(defun time ()
-    (prog (output(timeval))
-          (time)))
+(defun foo (a)
+    (let ((bar 0))
+        (+ bar a)))
 \end{verbatim}
-This function outputs the current time (\texttt{timeval}) and then recurses.
-Because Lisp does not have tail call optimization, this program will eventually
-run out of stack space. Each call to \texttt{time} (and \texttt{timeval}) will
-create another stack frame, which will never be cleaned up because the function
-does not return.
+This function takes a single parameter (\texttt{a}) creates a local
+variable (\texttt{bar}) bound to the value 0, and returns the result
+of adding \texttt{a} and \texttt{bar}.  Lisp doesn't have explicit
+return statements, the value of the last statement executed in a
+function is used as the result.
 
-\section{Tangents}
 
-\subsection{History of the Term `Computer'}
-``Computer'' originally referred to a person who performed calculations. For
-example, computers were used to decrypt transmissions during World War II. Many
-early developments in computer science were for ``automatic computing'' --
-calculations performed mechanically or electronically.
+\section{Compilation}
 
-\subsection{Brief Overview of Typing}
-There are three kinds of typing: untyped, static and dynamic.
-A type describes and confines the values assignable to a variable of that type.
-Untyped variables are essentially containers that can hold anything. With static
-typing, you assign types to boxes, and those boxes can only values of that type.
-With dynamic typing, values have types but boxes do not.
+Compilers take source-code as input, lex and parse it to produce an
+internal representation of structure, performs optimizations, and then
+emits assembly or machine code.
 
-\subsection{JavaScript and R}
-JavaScript is essentially the untyped lambda calculus. Which is impressive for a
-language designed in only 10 days.
+The compiler's internal representation of structure can take several
+forms, including control flow graphs (CFGs), dependency graphs, and
+abstract syntax trees.
 
-R is a dynamically-typed language designed for statistical computing. It has
-many type coercions that can be confusing. For example:
-\texttt{[3,4,7]~+~1 $\equiv$ [3,5,7]~+~1 $\equiv$ [3,5,7]~+~[1,1,1] = [4,6.8]}
-However, \texttt{[3,5,7,9,11]~+~[2,4] $\equiv$ [3,5,7,9,11]~+~[2,4,2,4,2]}. This
-is allegedly useful for statistical computations.
+Control flow graphs track the paths that execution can proceed in a
+given function, file, library or program.  Sequences of instructions
+that execute serially are called a basic block.  Every time an
+\texttt{if} statement is encountered (or other branching construct,
+like \texttt{switch} in C and \texttt{cond} in Lisp), the current
+basic block ends, as control could transfer in one of several
+directions, depending on the runtime value of a variable.
+
+Dependency graphs track the relationships between variables:
+\begin{verbatim}
+a = 1
+b = 2                a      b
+c = a + b            | \  /  \
+d = a + c            |  c     e
+e = b + 2             \ |
+f = 2                   d
+return e
+\end{verbatim}
+In this example, dependency flow in the graph on the right flows down
+(\texttt{e} depends on \texttt{b}, not the other way around).  Once
+you have a dependency graph, you can do analyses such as dead code
+elimination.  The function in the example above returns the value
+\texttt{e}.  Because \texttt{e} depends only on \texttt{b}, all of the
+lines calculating \texttt{a}, \texttt{c}, \texttt{d} and \texttt{f}
+can be removed without changing the behavior of the function.
+
+\subsection{Intermediate Representation}
+
+The intermediate representation is the compiler's internal
+representation of program structure.  In Lisp, this has a 1:1
+correspondence with the text of the source-code.  In most other
+languages, the internal representation is often known as an Abstract
+Syntax Tree (AST).  An AST is created by parsing the program source:
+\begin{verbatim}
+int foo(int a) {
+    int bar;
+    int baz = 2;
+    for (bar = 0; bar < a; bar++) {
+        baz = baz * a;
+    }
+    return baz;
+}
+\end{verbatim}
+
+The AST for the above function would, at its root, have a single
+\texttt{FUNCTION} node.  This node has several attributes, like name
+(\texttt{``foo''}), return-type (\texttt{int}), args (\texttt{int a}),
+and a block.  The block is a list of statements that make up the body
+of the function, and each statement might be a node that has children
+(like the \texttt{for} loop above).
+
+
+\section{Recursion}
+
+Recursion was considered controversial, and was snuck into Algol 60 by
+Dijkstra.  It was a very natural concept for math oriented people, but
+less so for others.
+
+\subsection{Peano arithmetic}
+
+Peano arithmetic is a recursive definition of all math.  With two
+primitives, \texttt{0} and \texttt{plusone}, you can define all the positive
+integers, addition, subtraction, multiplication and division.  The
+example for the first few integers is:
+\begin{verbatim}
+0 - 0
+1 - (plusone 0)
+2 - (plusone (plusone 0))
+\end{verbatim}
+
+\section{Scope}
+
+Scoping refers to how variable references are resolved.  There are 2
+types of scoping - dynamic and lexical.  Lexical scoping is what we
+are used to today, and what was included in Algol 60 (along with
+Fortran).  Lisp screwed up and created dynamic scope.  In dynamic
+scoping, the existence or non-existence of a variable in a function
+depends on where it was called from:
+
+\begin{verbatim}
+void f(...) {
+    ...
+    a;
+    ...
+}
+\end{verbatim}
+
+In the example above, in lexical scoping (like used in Java),
+\texttt{a} must be declared either in the function body, as a function
+parameter, or in the containing scope (class or file).  With dynamic
+scope, \texttt{a} would be looked up at runtime, and may or may not
+exist depending on where the function was called from.
+
+\section{Typing}
+
+Lisp is a language that doesn't feature static types, similar to
+Python and JavaScript.  This is known as dynamic typing.  Static types
+associate types with variables, and allow compile-time type checking.
+In contrast - dynamic typing associates types with \emph{values}, not
+variables.  One way to implement this is known as boxing - it
+associates a type tag with each value.  If you have dynamic typing,
+type checking is undecidable (essentially the halting problem).
+
+\section{Garbage Collection}
+
+Lisp invented Garbage Collection.  Reclaiming memory is not part of
+the $\lambda$ calculus, and would have added significant clutter to lisp
+programs.  The goal of garbage collection is to reclaim memory that
+was allocated but is (provably) no longer in use.  If nobody has a
+pointer to a variable, than the space for that variable can be
+reclaimed.  The roots of a program consist of the global variables,
+and any variables referenced from the stack or registers of all
+threads of execution.
+
+\subsection{Mark/Sweep}
+
+The mark/sweep algorithm is a basic method of garbage collection, and
+still widely implemented today.  It relies on the idea of being able
+to associate a shade (white or black) with each variable - this
+typically requires a bit per word.  The algorithm for Lisp is as follows:
+
+\begin{itemize}
+  \item Set everything to 0/white.
+  \item Start from the roots
+    \begin{itemize}
+      \item Set each variable to 1/black
+      \item Recurse, following each var's \texttt{car} and \texttt{cdr}
+    \end{itemize}
+   \item At this point, everything still marked 0/white is safe to reclaim
+\end{itemize}
+
+This is a sequential, whole heap algorithm, and has the property that
+it ``stops the world''.  This means that while it is running,
+application code (also known as ``the mutator'') is not running.
+There are other classes of GC algorithms, such as parallel GC,
+concurrent GC, and incremental GC, but these are almost impossible to
+implement correctly.  Eliot Moss invented a parallel, concurrent GC
+for Java, the MOS collector, but Sun couldn't get the implementation
+right and switched away from it.
+
+\subsection{Reference Counting}
+
+Reference counting (refcounting) is an alternative to garbage
+collection that amortizes the cost of reclamation, with some
+significant drawbacks.  The CPython implementation is a major system
+that uses refcounting, as does Ruby and Objective-C.  By keeping track
+of the number of references to an object as a counter on that object
+itself, the object can be freed immediately when the last reference is
+removed.  This requires modifying this reference count each time the
+variable is stored or goes out of scope.
+
+A major problem with refcounting is cycles.  If we have 2 variables, A
+and B:
+\begin{verbatim}
+A <---> B
+\end{verbatim}
+their reference counts will be non-zero even if they are unreachable
+from the rest of the program, which constitutes a memory leak.
+
+\section{The Stack and the Heap}
+
+Language implementations, like C, make a distinction between 2 classes
+of dynamically allocated memory.  The heap is a large region where
+objects whose lifetimes are unknown are allocated from.  This is
+conceptually simple, but there is significant overhead in this
+management.
+
+The stack, on the other hand, is very fast.  Objects are allocated on
+the stack by simply manipulating a pointer (the frame pointer), and
+this pointer is often restored automatically by the processor when
+leaving a function.
 
 \end{document}
