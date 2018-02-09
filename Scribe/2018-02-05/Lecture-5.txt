@@ -1,0 +1,264 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf COMPSCI~590S~~~Systems for Data Science
+                       \hfill Fall 2016} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe(s): #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture {#1}: #2}{Lecture {#1}: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+\usepackage[nolist]{acronym}
+\begin{acronym}
+\acro{ARC}{Automatic Reference Counting}
+\acro{BiBOP}{Big Bag Of Pages}
+\acro{CISC}{Conventional Instruction Set Computing}
+\acro{DRAM}{Dynamic Random Access Memory}
+\acro{GC}{Garbage Collection}
+\acro{GUI}{Graphical User Interface}
+\acro{RC}{Reference Counting}
+\acro{SRAM}{Static Random Access Memory}
+\acro{VM}{Virtual Machine}
+\end{acronym}
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{5}{February 5, 2018}{Emery Berger}{Walter Brown}
+
+\section{\ac{GC}}
+\subsection{\ac{RC}}
+\ac{RC} is often used, despite its issues with cycles.  Recall that there can be a cycle of pointers in memory that cannot be reached but all have a count of 1.
+\acp{GUI} are commonly used to to demonstrate \ac{RC} because of this.  \acp{GUI} generally have a tree structure, which is ideal for \ac{RC}.
+
+In computer science, there are many other instances of special graphs that break things.  For example, C++'s multiple inheritance.  If some class inherits from two other classes and both parent classes have a method of the same name, which version of the method should the child class inherit?
+
+\ac{RC} can be implicit or explicit.
+
+\subsubsection{Explicit}
+Swift uses explicit \ac{RC}.
+\subsubsection{Implicit}
+Objective C uses \ac{ARC}.  Calls to increment and decrement the reference counters are done for you automatically.
+
+\subsection{Marking in Mark-Sweep}
+Recall Mark-Sweep, the process of doing a graph exploration to mark all values that are reachable and then sweeping away items that are not.  During marking, you must decide if you want your graph exploration to interpret a given variable as a pointer to another object.  There are different schemes on how to do this.
+
+\subsubsection{Precise \ac{GC}}
+The program cooperates with \ac{GC} and tells it which variables are pointers.  On the programmer's side, they indicate that a variable is a pointer through variable typing.
+
+To do Precise \ac{GC}, you must remember a ``map'' of each class that indicates where the pointers will be.
+Every object needs an object header, which indicates what class it is so you know which map to use.
+
+Can you steak out areas and dedicate ranges to different types during compilation to get around using object headers?  Maybe now, but not back in the day.  Too memory intensive!
+
+However, you can have a large chunk of memory with many instances of one class inside that share an object header!    When you want to make a new instance of object X, you check if any chunks are devoted to object X and have space to spare.  If not, make a new chunk.
+Rounding can be used to find the object header of a given address.  Furthermore, you can store this object header metadata far away if you are worried that it will be overwritten.  This is called \ac{BiBOP}.
+
+Note that it is possible for a buffer overflow to stomp out an object's header!
+
+
+Managed languages are a special class of languages where this works well.  They tend to have \ac{GC}, make sure that objects don't change their type, and do not let you access arrays outside their bounds.
+
+What if you have an unmanaged language like C?
+
+\subsubsection{Conservative \ac{GC}}
+The Hans Boehm Collector was created so you could use \ac{GC} without cooperation from the programmer.  Rather than using a label to indicate that something is a pointer, it runs a ``Duck Test'' on variables.  If the variable contains a value that would point to an address within a valid range if interpreted as an address, the collector treats it as a pointer.  
+
+Boehm was actually working on Russell (never heard of it?  You're not alone!).  However, he planned to have Russell programs get converted to C so he could leverage C's awesome compiler with all of its optimizations.
+
+The Hans Boehm Collector still has the potential to break things in general C programs because you can do whatever you want with pointers.
+\begin{enumerate}
+\item XOR encoding: Say you have a doubly-linked list.  Rather than storing two pointers in it, you can store the next pointers and have the previous pointer be the XOR of the node's address and the next pointer.  If this is the case, you can calculate it rather than storing it!  This would not be detected by the conservative collector.
+
+\item Object Alignment: If you know your addresses will only use 6 out of 8 bits, you can jam 2 more arbitrary bits of data in there!  This defeats the conservative collector.
+
+\item You can write stuff to disk and temporarily remove it from memory.  Conservative collection might then remove objects that only the stuff on the disk was pointing to.  If you move the disk objects back to memory, they'll have pointers to collected objects.
+\end{enumerate}
+
+\subsection{Paging and \ac{GC}}
+When a program needs too much memory, the machine will kick a ``page'' of memory to a region of disk called the swap partition.  This runs on a Least Recently Used policy.
+
+\ac{GC} should be oblivious to paging.  However, if too many pointers are followed during marking, you'll be moving a lot of pages in and out of memory, which is slow.  In addition to this, the pages left in memory by \ac{GC} won't be the ones the program previously wanted.
+
+Try not to have programs with heaps larger than physical memory. :)
+
+
+\section{Security}
+People used to not be worried about security.
+
+Consider the concept of a threaded free list.  All of your freed unreclaimed objects can be connected by pointers, forming a list.  However, this is dangerous if someone overwrites these pointers.
+
+\subsection{The Morris Worm}
+As an experiment, Robert Morris created the Morris Worm in 1988.
+
+The Morris Worm took advantage of Unix vulnerabilities to spread itself to other machines on the network.  Like Mark in Mark-Sweep, it wasn't interested in infecting computers that were already infected.  However, it had a 1/7 chance of spreading to infected machines, as to prevent machines from inoculating themselves by pretending to be infected.  The Morris Worm did not moderate its propagation rate, so it would consume all of the computing resources of infected machines.
+
+People were popping out of their cubicals like mercats, asking if their coworkers' machines were down too.
+
+Although nothing was written to disk, restarting the machine would just result in other machines on the network infecting it again.  The Morris Worm was similar to a DDOS.
+
+Computer felonies weren't a thing yet, so Robert was convicted of computer fraud and abuse.  He paid damages, but did not serve jail time.  Now he works at MIT.
+
+Clifford Stoll wrote a book about this.
+
+\subsection{Internet Explorer}
+Microsoft's Internet Explorer still lets you launch any program on your computer.  This has not been fixed yet.
+
+\section{IBM System / 360}
+The 360 featured many innovations:
+\begin{enumerate}
+\item Separation between Instruction Set Architecture and Microarchitecture
+\item Hardware-based \ac{VM}
+\item Caches
+\end{enumerate}
+
+Note that IBM was responsible for FORTRAN too.  They ruled the computer space!
+
+\subsection{\ac{VM}}
+Every \ac{VM} thinks it owns the entire machine.
+
+Mendel Rosenblum and Carl Eschenbach made this feasible by doing privileged code in software.  This would be really slow, but they would identify large regions of unpreveleged instructions that could all be executed at full speed.  They made VMware.
+
+``All problems in computer science can be solved by another level of indirection.''
+-David Wheeler
+
+\subsection{Caches}
+Early in computing, memory was not a bottleneck because everything was comically slow.
+However, as instructions come from memory, slow memory accesses will slow down the entire machine.  \ac{DRAM} is still slow.  The fact that CPUs have become so fast and memory hasn't is called the Memory Wall.
+
+\ac{CISC} is a workaround for this.  \ac{CISC} has ridiculously powerful instructions that can do things like solving systems of equations.  This way, you can do more with less instructions getting fetched.
+
+Another solution is caching.  Modern machines will generally have around 5 caches, labeled from L0-L4.  L0 is close to the CPU, small, and fast.  L0 is generally made of fast \ac{SRAM}.  L4 would be farther away, large, and slow.  L4 is generally made of slow \ac{DRAM}.  Before requesting a variable on the bus, you can check if it's in a cache.  This is a big time saver.
+
+When multiple CPUs are using the same memory, you must be careful about cache coherency.  This takes some extra bits on the cache line, but helps to invalidate out-of-date values.
+
+MESI is a basic cache coherency system.  Cache lines have a state machine with four states:
+\begin{itemize}
+\item Modified : You have modified this line.  All other users must invalidate their copies.
+\item Exclusive : You're the only one with the cache line.
+\item Shared : Everyone might write and read this line.
+\item Invalidated : The copy of the cache line you have is out of date.
+\end{itemize}
+
+Eviction is the act of removing an item from a cache.
+
+Caching schemes can be inclusive or exclusive.
+
+\subsubsection{Inclusive}
+Data in a cache will be stored in all caches below it.
+
+Inclusive eviction is easy.  There's a copy of the evicted data in the lower caches, so the data doesn't need to be copied during eviction.
+
+This is the approach of Intel.
+
+Inclusive cache policies were susceptible to the recent Spectre exploit.
+
+\subsubsection{Exclusive}
+Data might appear in only a single cache.
+
+When data is evicted, you must find a new home for it.
+
+This is the approach of AMD.  They've gotten really good at eviction in exclusive caches.
+
+\subsubsection{NEXT TIME IN SYSTEMS 630}
+Cache misses...
+
+
+
+\end{document}
