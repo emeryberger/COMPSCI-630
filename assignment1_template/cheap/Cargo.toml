@@ -1,0 +1,9 @@
+[package]
+name = "cheap"
+version = "0.1.0"
+authors = [""]
+
+[dependencies]
+libc = { version = "0.2.36", default-features = false }
+nix = "0.10.0"
+core_printer = { path = "../core_printer" }
