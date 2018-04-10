@@ -48,6 +48,7 @@ var EmpiricalEval = /** @class */ (function () {
                 }
                 s += "<tr><td>&nbsp;</td></tr>";
             }
+            s += "<tr><td><button onClick='alert(\"STRONG REJECT\");' type='button'>Submit</button></td></tr>";
             s += "</table>";
             jQuery("#checklist").html(s);
         });
