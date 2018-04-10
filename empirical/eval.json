@@ -118,7 +118,7 @@
         [ { "name": "Comprehensive Summary Results",
             "include": "yes",
             "figure": "figs/comprehensive_summary_results.jpg",
-            "desc": "Appropriate statistics should be used to characterize the full range of results, not just the most favorable values, which may be outliers.  For example, it is not appropriate to summarize speedups of 4\\%, 6\\%, 7\\%, and 49\\% as \"up to 49\\%\"." },
+            "desc": "Appropriate statistics should be used to characterize the full range of results, not just the most favorable values, which may be outliers.  For example, it is not appropriate to summarize speedups of 4%, 6%, 7%, and 49% as \"up to 49%\"." },
           { "name": "Axes Include Zero",
             "include": "yes",
             "figure": "figs/axes_include_zero.jpg",
@@ -131,4 +131,4 @@
           { "name": "Appropriate Level of Precision",
             "include": "yes",
             "figure": "figs/appropriate_level_of_precision.jpg",
-            "desc": "The number of significant digits should reflect the precision of the experiment.   Reporting improvements of \"49.9\\%\" when the experimental error is +/- 1\\% is an example of mis-stated precision, misleading the reviewer\"s understanding of the significance of the rest." } ] } ] }
+            "desc": "The number of significant digits should reflect the precision of the experiment.   Reporting improvements of \"49.9%\" when the experimental error is +/- 1% is an example of mis-stated precision, misleading the reviewer\"s understanding of the significance of the rest." } ] } ] }
