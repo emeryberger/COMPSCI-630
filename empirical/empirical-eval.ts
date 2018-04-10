@@ -42,24 +42,36 @@ class EmpiricalEval {
 	jQuery.getJSON("eval.json", function(json) {
 	    let s : string = "";
 	    s += "<h1>" + json.title + "</h1>";
+	    s += "<h3>" + json.credits + "</h3>";
 	    s += "<h4>" + json.date + "</h4>";
 	    const g = json.groups as Array<ChecklistGroup>;
 	    s += "<table width='500'>";
 	    for (let i of g) {
-		s += "<tr><td style='color:white;' bgcolor='" + i.color + "' colspan='2'><font size='+1'><input type='checkbox'>" + i.name + "</font></td></tr>";
+		s += "<tr>";
+		s += "<td style='color:";
+		// Ad hoc: black text for light background colors.
+		if (i.color === "PaleGreen") {
+		    s += "black";
+		} else {
+		    s += "white";
+		}
+		s += ";' bgcolor='"
+		    + i.color
+		    + "' colspan='2'><font size='+1'><input type='checkbox'>&nbsp;"
+		    + i.name + "<br />&nbsp;<br /></font></td></tr>";
 		const items = i.items as Array<ChecklistItem>;
 		for (let item of items) {
 		    if (item.include === "yes") {
-			s += "<tr>";
+			s += "<tr style='background-color:" + i.color + ";'>";
 			s += "<td>";
 			s += "<img align='middle' height='100' width='100' src='" + item.figure + "'>";
 			s += "</td><td>";
 			s += "<b>" + item.name + "</b><br />";
-			s += item.desc + "<br />";
+			s += item.desc + "<br /><br />";
 			s += "</td></tr>";
-			s += "<tr><td>&nbsp;</td></tr>";
 		    }
 		}
+		s += "<tr><td>&nbsp;</td></tr>";
 	    }
  	    s += "</table>";
 	    jQuery("#checklist").html(s);

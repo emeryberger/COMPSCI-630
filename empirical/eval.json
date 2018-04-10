@@ -7,7 +7,7 @@
   "groups": 
    [ { "name": "Clearly Stated Claims",
        "keyword": "Claims",
-       "color": "PaleGreen!50",
+       "color": "Green",
        "items": 
         [ { "name": "Explicit Claims",
             "include": "yes",
@@ -24,7 +24,7 @@
             "desc": "A paper should state the most important threats to the validity of its claims, to place the scope of results in context. Stating no threats at all, or only tangential ones while omitting the more relevant ones, may mislead the reader to drawing too-strong conclusions." } ] },
      { "name": "Suitable Comparison",
        "keyword": "Comparison",
-       "color": "CornflowerBlue!30",
+       "color": "CornflowerBlue",
        "items": 
         [ { "name": "Appropriate Baseline for Comparison",
             "include": "yes",
@@ -38,7 +38,7 @@
             "notes": "For example, the authors were unable to build the state-of-the-art baseline at the -O3 optimization level and used -O0 instead, while using -O3 for their system." } ] },
      { "name": "Principled Benchmark Choice",
        "keyword": "Benchmark",
-       "color": "LightPink!40",
+       "color": "LightPink",
        "items": 
         [ { "name": "Appropriate Suite",
             "include": "yes",
@@ -57,7 +57,7 @@
             "notes": "(and usually the claim does imply this)." } ] },
      { "name": "Adequate Data Analysis",
        "keyword": "Data Analysis",
-       "color": "Gold!20",
+       "color": "Gold",
        "items": 
         [ { "name": "Sufficient Number of Trials",
             "include": "yes",
@@ -75,7 +75,7 @@
             "desc": "Reporting just a measure of central tendency (e.g., a mean or median) fails to capture the extent of any non-determinism. A measure of variability (e.g., variance, std deviation, quantiles) and/or confidence intervals help to understand the distribution of the data." } ] },
      { "name": "Relevant Metrics",
        "keyword": "Metrics",
-       "color": "MediumPurple!30",
+       "color": "MediumPurple",
        "items": 
         [ { "name": "Direct or Appropriate Proxy Metric",
             "include": "yes",
@@ -87,7 +87,7 @@
             "desc": "The costs and benefits of a technique may be multi-faceted. All facets should be considered, both costs and benefits, and ideally evaluated. For example, compiler optimizations may speed up programs at the cost of drastically increasing compile times." } ] },
      { "name": "Appropriate and Clear Experimental Design",
        "keyword": "Experimental Design",
-       "color": "SandyBrown!20",
+       "color": "SandyBrown",
        "items": 
         [ { "name": "Sufficient Information to Repeat",
             "include": "yes",
@@ -113,7 +113,7 @@
             "notes": "https://en.wikipedia.org/wiki/Cross-validation_(statistics)" } ] },
      { "name": "Appropriate Presentation of Results",
        "keyword": "Presentation",
-       "color": "Orchid!20",
+       "color": "Orchid",
        "items": 
         [ { "name": "Comprehensive Summary Results",
             "include": "yes",
