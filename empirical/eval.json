@@ -122,7 +122,7 @@
           { "name": "Axes Include Zero",
             "include": "yes",
             "figure": "figs/axes_include_zero.jpg",
-            "desc": "A truncated graph (with an axis not including zero) can exaggerate the importance of a difference. While `zooming' in to the interesting range of an axis can sometimes aid exposition, there is a significant risk that this is misleading (especially if it is not immediately clear that the axis is truncated)." },
+            "desc": "A truncated graph (with an axis not including zero) can exaggerate the importance of a difference. While `zooming\" in to the interesting range of an axis can sometimes aid exposition, there is a significant risk that this is misleading (especially if it is not immediately clear that the axis is truncated)." },
           { "name": "Ratios Plotted Correctly",
             "include": "yes",
             "figure": "figs/ratios_plotted_correctly.jpg",
@@ -131,4 +131,4 @@
           { "name": "Appropriate Level of Precision",
             "include": "yes",
             "figure": "figs/appropriate_level_of_precision.jpg",
-            "desc": "The number of significant digits should reflect the precision of the experiment.   Reporting improvements of \"49.9%\" when the experimental error is +/- 1% is an example of mis-stated precision, misleading the reviewer\'s understanding of the significance of the rest." } ] } ] }
+            "desc": "The number of significant digits should reflect the precision of the experiment.   Reporting improvements of \"49.9%\" when the experimental error is +/- 1% is an example of mis-stated precision, misleading the reviewer\"s understanding of the significance of the rest." } ] } ] }
