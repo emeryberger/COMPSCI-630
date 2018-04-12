@@ -10,8 +10,10 @@
 ;
 var EmpiricalEval = /** @class */ (function () {
     function EmpiricalEval() {
+        console.log("WOOT");
         EmpiricalEval.theInstance = this;
         jQuery.getJSON("eval.json", function (json) {
+            console.log("BART");
             var s = "";
             s += "<h1>" + json.title + "</h1>";
             s += "<h3>" + json.credits + "</h3>";
@@ -51,6 +53,7 @@ var EmpiricalEval = /** @class */ (function () {
             s += "<tr><td><button onClick='alert(\"STRONG REJECT\");' type='button'>Submit</button></td></tr>";
             s += "</table>";
             jQuery("#checklist").html(s);
+            console.log("BART");
         });
     }
     return EmpiricalEval;
