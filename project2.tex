@@ -1,0 +1,68 @@
+\title{Project 2: WeChat}
+\author{Emery Berger, COMPSCI 630}
+\date{Due May 2, 2018}
+
+\documentclass[12pt]{article}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\begin{document}
+
+\maketitle
+
+
+\section{Overview}
+For this project, you will be implementing \emph{WeChat}, a totally distributed group chat application written in \href{https://golang.org/}{\underline{Golang} (a.k.a., Go)}. This assignment will give you insight into the nature of distributed systems and the problems that arise when you have multiple distributed actors involved. 
+
+
+\section{Implementation}
+Your WeChat implementation will allow users with an invite code (provided in advance) to communicate over the network without the need for a central chat server. Just as in ordinary chat, each participant should be able to send and receive small text messages. Unlike ordinary chat, your application should be able to handle a large number of simultaneous chat participants (i.e., it must be multithreaded). 
+
+While WeChat should be totally distributed for handling chat functionality, you will still need to provide a central discovery server at a known IP address. Each client should register their location with the service at start up thus allowing other nodes to easily find them. 
+
+In addition to supporting multiple clients, your app should have the following properties: 
+
+\paragraph{Consistency} 
+Each WeChat user should see the exact same chain of messages, independent of issues like network delay. In particular, you should implement causal consistency: a user should see messages in strict causal order (implemented via vector (Lamport) clocks).
+
+\paragraph{Fault-tolerance} 
+WeChat users may periodically get disconnected from the system. Any messages sent to them should eventually appear after they reconnect (i.e. no messages should be lost). 
+
+\paragraph{Encryption}
+All data messages should be encrypted so that no one who does not know the conference code will be able to read chat messages for the appropriate conference. 
+
+
+
+
+
+
+
+\section{Evaluation}
+You will be evaluated on the following basis:
+\begin{enumerate}
+\item Correctness of Implementation
+\item Directory Service
+\item Consistency
+\item Fault-Tolerance
+\item Encryption
+\item Coding Style
+\end{enumerate}
+
+\section{Resources}
+
+We have provided a centralized solution in the following repo: \href{https://github.com/jvilk/WeChat}{\underline{Centralized WeChat}}. 
+
+Inside this repo is the following:
+\begin{enumerate}
+\item A description of the API that you need to provide.
+\item A python reference client that you can use to test your system.
+\item A python reference server that provides basic functionality.
+\end{enumerate}
+
+You need to implement a decentralized version of this client/server architecture, following the guidelines of the API description \href{https://github.com/jvilk/WeChat/blob/master/reference_client/api.txt}{\underline{here}}. 
+
+\paragraph{Note:} Since your solution is fully distributed, each node needs to handle things that would be managed by this central server (i.e., chat history, channel management, etc...) 
+
+\bf{Remember you MUST implement your code in golang!}
+
+\end{document}
