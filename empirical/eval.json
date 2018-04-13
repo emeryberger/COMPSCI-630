@@ -7,7 +7,7 @@
   "groups": 
    [ { "name": "Clearly Stated Claims",
        "keyword": "Claims",
-       "color": "Green",
+       "color": "Gold",
        "items": 
         [ { "name": "Explicit Claims",
             "include": "yes",
