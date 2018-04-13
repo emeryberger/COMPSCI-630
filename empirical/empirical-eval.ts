@@ -38,10 +38,8 @@ interface ChecklistGroup {
 class EmpiricalEval {
 
     constructor() {
-	console.log("WOOT");
 	EmpiricalEval.theInstance = this;
 	jQuery.getJSON("eval.json", function(json) {
-	    console.log("BART");
 	    let s : string = "";
 	    s += "<h1>" + json.title + "</h1>";
 	    s += "<h3>" + json.credits + "</h3>";
@@ -75,10 +73,9 @@ class EmpiricalEval {
 		}
 		s += "<tr><td>&nbsp;</td></tr>";
 	    }
-	    s += "<tr><td><button onClick='alert(\"STRONG REJECT\");' type='button'>Submit</button></td></tr>";
+	    // s += "<tr><td><button onClick='alert(\"STRONG REJECT\");' type='button'>Submit</button></td></tr>";
  	    s += "</table>";
 	    jQuery("#checklist").html(s);
-	    console.log("BART");
 	});
     }
 
