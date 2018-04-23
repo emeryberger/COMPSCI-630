@@ -1,0 +1,185 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{amsmath}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf COMPSCI~630~~~Systems
+                       \hfill Spring 2018} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{17}{April 16}{Emery Berger}{Qi Pan}
+
+\section{Summary of talks and logistics}
+
+We quickly talked about the three presentations we saw as a class. They were:
+
+\begin{itemize}
+    \item Karthik Pattabiraman , UBC - Why do Modern Web Applications Fail and What Can We Do About it? (mostly on why JS fails)
+    \item Adam O'Neill, Georgetown University - Secure Outsourced Databases: Past, Present, and Future (a crypto talk about partially revealed encryption)
+    \item Heather Miller, Northeastern - Bringing Distributed Data Systems to End Users (about spark and practical issues which she addressed such as slow serialization)
+\end{itemize}
+
+Then the next assignment was mentioned to be in Go and related to distributed systems. Also it was noted that the details from the crypto talk (at most stuff from RSA paper) would not be in the final exam as it was beyond the scope of the course but the materials from the others presentations could be.
+
+\section{Single node fault tolerance}
+
+We started talking about fault tolerance in the traditional sense (as opposed to Karthik's presentation which is applied to JS). The traditional sense of fault tolerance refers to the a systems ability to still run when one or more of it's components fails. We listed and discussed many physical examples such as:
+
+\begin{itemize}
+    \item power outage
+    \item physical hardware failure
+    \item acts of god (lightning strikes e.g. Emery's computer getting fried in Florida)
+    \item hardware defects
+\end{itemize}
+
+Besides physical failure, there can also be software errors such as kernel panics, BSOD, and server segmentation faults. The handeling of these failures is called a fail-stop $\rightarrow$ ``when something bad happens, STOP!''.
+
+\section{Checkpointing}
+
+Next we discussed some ways practical applications do fault tolerance. A classic/standard technique is to \textbf{checkpoint periodically}, meaning to save a copy of whatever work the user is doing every once in a while to serve as backup (roll back to in case of crash). Prominent examples of this were Microsoft Word, Chrome tabs, and the EMAC.
+
+We then focused on the specific fault of \textbf{kernel panics}, which is when the system basically shuts down because a fatal error has caused there to be a high risk of data loss if the system keeps running. We talked about writing a "snapshot" of a virtual machines memory out to disc and how this could be a problem if the snapshot is large (e.g. 64GB in our class example). In our class example, lets say it takes 5 minutes to write out the 64GB into disc, if concurrent things are running during this time, the snapshot could turn out to be inconsistent as things are editing the memory as it is being written out to disc.
+
+A solution to this would be to only grant read access while the memory is being written out, but this can obviously be inconvenient to the user if checkpointing is frequent. Another solution to increase the speed of the checkpointing is to only write the differences in memory between checkpoints and to keep track of the memory pages (fixed block of virtual memory) being used. If they are time stamped, we can follow the diffs to get to where the memory was, and this procedure \textbf{can even be paralleled for different sections of memory pages.}
+
+\section{Availability}
+
+The availability of a system is simply the $\%$ of time the system is available. Often in computer science the availability of a system is described in terms of ``9's'', e.g. five 9's $=99.999\%$ availability. We briefly touched on avoiding a single point of failure (making sure the system does not get taken down by one part failing). We then discussed availability in the context of services with multiple nodes and how hard it is to make sure no machine is failing at all. For example if $p$ is the probability any of the machines will fail, and there are $n$ machines, then:
+
+\begin{equation}
+    P(\textit{no machine is failing}) = (1-p)^n
+\end{equation}
+
+Meaning that for a fixed $p$, as the number of machines increases $P(\textit{no machine is failing})$ decreases exponentially making it very hard to keep availability up when scaling by the number of machines. The only way to cope with this is through \textbf{replication of machines} which increases the cost by the number of additional replicas you want per machine.
+
+\section{CAP theorem}
+
+Regarding the tradeoff between fault tolerance and cost as in the multiple node replica case, the class talked about the CAP theorem. CAP stands for Consistency (are the multiple nodes in sync?), Availability (time service is available), and Partition tolerance (tolerate disconnects in the network). In summary the theorem basically proves that it's possible to have \textbf{two of these three} in a system. We also talked about the fact that even though the theorem was formally proven, it is fairly obvious logically and pragmatically. We talked about how most large modern systems like Facebook have \tectbf{eventual consistency} which means syncing is not necessarily done in real time but eventually.
+
+Another thing that can help consistency is the presence of \textbf{immutables}, which simply means what variables/things are declared cannot be changed. This obviously enforces consistency if you copy them to other machines as they cannot be changed by design.
+
+\section{RAID}
+
+Next we talked about RAID (Redundant Array of Inexpensive Discs) which is essentially a physical stack of multiple drives into one unit. This allows for data redundancy (fault tolerance) but also different configurations can balance this fault tolerance with speedup (parallelism). Some techniques applied to the array of discs include:
+
+\begin{itemize}
+    \item data striping - storing consecutive memory on different discs of the array, this allows for speedup since reading and writing is parallel
+    \item mirroring - replicating memory on separate drives, redundancy makes memory more fault tolerant
+    \item error-correcting code (ECC) - can detect single bit errors and correct them (I think it was mentioned this can use checksums which detect small changes to code)
+\end{itemize}
+
+Also mentioned was that in practice there can be many errors with the manufacturing of these discs. Also, even thought the discs are "independent" (later the I in RAID was renamed to independent) because they are physically connected, there is still some hardware fault dependency among them. A common modern thing to do is to have a stack of SSD's which are less sensitive to physical failure since there are no moving parts.
+
+\textbf{Sidenote:} while we were on the topic of RAID, some of Patterson's other papers were mentioned such as RISC, NOW, and ROC.
+
+\section{Syncrony}
+Lastly we touched on how distributed systems can stay in sync with each other and issues with timestamps. It is simply difficult to ensure all machines in the distributed system will have the exact same clock. However, this can be mitigated with Lamport clocks or Vector Clocks. Details were not tailed about other than the fact that Lamport clocks maintain the property:
+
+\begin{gather}
+    \text{if }A \text{ before } B \rightarrow Lamp(A) \leq Lamp(B)
+\end{gather}
+
+\end{document}
