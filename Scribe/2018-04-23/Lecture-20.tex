@@ -1,0 +1,239 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage{float}
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf COMPSCI~630~~~Systems
+                       \hfill Spring 2018} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe(s): #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture {#1}: #2}{Lecture {#1}: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+\lecture{20}{April 23}{Emery Berger}{Abhinav Jangda}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\section{Clock Synchronization}
+CPU contains an internal clock, which is powered by a quartz crystal. 
+These clocks have a clock drift of half a second per day. Hence, within
+30 days a quartz clock will be 15 seconds ahead or behind the actual clock.
+These clocks have to be synchronized after some time with a time server.
+Time servers contains atomic clocks which are several magnitudes accurate
+than quartz clock. To do synchronization protocols like Network Time Protocol (NTP)
+is used. However, synchronization by NTP suffers due to problems like
+network delays. Hence, using absolute time is not meaningful in distributed
+systems.
+
+\section{Happens before relation}
+Happens before relation defines the notion of causality between events.
+For example, if process P$_1$ sends $a$ to process P$_2$ and due to
+$a$, P$_2$ sends $b$ to P$_3$, then we say that $a$ has happened before
+$b$. In other words, $a$ is the cause of $b$. 
+\begin{figure}[H]
+\begin{tikzpicture}
+\node (A) {A};
+\node [above right=of A] (B) {B};
+\node [right=of B] (C) {C};
+\node [below right=of A] (X) {X};
+\node [right=of X] (Y) {Y};
+\node [below right=of C] (Z) {Z};
+\draw [->] (A) -- (B);
+\draw [->] (B) -- (C);
+\draw[->] (C) edge (Z);
+\draw [->] (A) -- (X);
+\draw [->] (X) -- (Y);
+\draw [->] (Y) -- (Z);
+\end{tikzpicture}
+\caption{Example of Happens before relation\label{fig:happens-before-ex}}
+\end{figure}
+
+Figure~\ref{fig:happens-before-ex} shows an example of causality between 
+events \texttt{A}, \texttt{B}, \texttt{C}, \texttt{X}, \texttt{Y}, \texttt{Z}. 
+\texttt{A} happens before every other event. \texttt{B} happens before \texttt{C}
+and \texttt{Z}. However, we cannot say if \texttt{X} happens before \texttt{B}
+or not. Hence, happens before relation (also called causal relationship)
+provides us with partial order but not total order.
+
+\section{Lamport Clock}
+Lamport Clock is an implementation of causality. Every machine will have
+one global integer which is incremented whenever an event has happened on that 
+machine, which is Lamport Clock (\texttt{LC}) value for that particular machine.
+Whenever, machine $A$ sends a message $m$ to machine $B$, then machine
+$A$ will also add its \texttt{LC} value to the message. Machine $B$ will then
+update its \texttt{LC} value as the $B.LC \gets max (m.LC, B.LC) + 1$. 
+The Lamport Clock value for a machine defines the number of messages it has
+received. Now, we can see that for any two messages $m$ and $n$, if 
+$m$ has happened before $n$, then $m.LC < n.LC$. However, we cannot say
+that if $m.LC < n.LC$ then $m$ has happened before $n$. Hence, we can only
+achieve partial ordering but not total ordering with Lamport Clock.
+To achieve Total Ordering we can use Vector Clocks or Totally ordered multicast
+using Lamport Clock.
+
+\section{Race Detection}
+A race condition happens when an application depends on the sequence or timing
+of processes or threads for it to operate properly. In terms of causality,
+race condition is an absence of a happen before relation. A benign data-race
+is an intentional data-race whose existence does not affect the correctness 
+of the program. These data-races may help in getting better performance. 
+
+Race detection can be performed statically and dynamically. In order to
+do static race
+detection, the tool has to identify reads and writes and establish 
+happens before relationship between them. Static race
+detection is difficult for compiler to do. In general static analysis is
+limited by halting problem. In languages using pointers and references,
+alias analysis of all heap variables (including locks) increases the 
+difficulty of doing static analysis.
+
+Race detection is termed sound, if it says that if there is no race
+then there is definitely no race in the program. In this case, however, 
+it may be possible that the program analysis gives false positives, i.e.,
+reporting a race condition even if it isn't. A program analysis is complete
+if it has no false positives, i.e., if it reports a race then the race is real.
+
+\begin{figure}[ht]
+\begin{minipage}[b]{0.45\linewidth}
+\centering
+\textbf{Dynamic Race Detection}\\
+\begin{itemize}
+\item Sees the execution trace and code of the program
+\item Input dependent
+\item No false positives
+\end{itemize}
+%\caption{default}
+%\label{fig:figure1}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\linewidth}
+\centering
+\textbf{Static Race Detection}\\
+\begin{itemize}
+\item Can only see the code of the program
+\item Input independent
+\item Can have false positives
+\item Returns facts regarding program
+\end{itemize}
+%\includegraphics[width=\textwidth]{filename2}
+%\caption{default}
+%\label{fig:figure2}
+\end{minipage}
+\end{figure}
+
+There are two types of dynamic race detection techniques: (i) lockset
+analysis, and (ii) happen before analysis. In Lockset Analysis, there is
+a set of locks for every variable. During the beginning of a program,
+all the sets are universal set, i.e., lock sets of all variables contains
+all locks. A set of current locks is maintained 
+for each thread. Whenever lock is obtained, this lock is added to the
+set of current locks and whenever lock is released, this lock is removed
+from the set of current locks. Whenever a variable is accessed, it's
+lockset is updated as the intersection of current lockset and variable's
+lockset. If the intersection is empty, then this is a potential race condition.
+Unfortunately, Lockset analysis is expensive and can give false positives.
+
+Happen-Before analysis uses vector clocks. It is based on the idea that
+certian operations define an ordering between operations of threads and if
+a variable access can't establish itself as being after the previous one,
+then we have detected an actual race. Each variable stores the thread
+clock value for its recent access of each thread. When an access occur,
+then this access must have a Lamport clock value more than the Lamport clock value
+of previous thread.
+
+\end{document}
