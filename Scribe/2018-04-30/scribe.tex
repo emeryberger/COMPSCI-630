@@ -1,0 +1,178 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf COMPSCI~630~~~Systems
+                       \hfill Spring 2018} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Last Lecture: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe(s): #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture {#1}: #2}{Lecture {#1}: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{1}{Testing and Program Verification}{Emery Berger}{Amit Rawat}
+
+\section*{Program Verification}
+
+``Proves'' the absence of bugs.
+Testing on the other hand is best described by Dijkstra's quote:
+``proves the presence of bugs but not their absence''.
+
+THe idea is to prove that the specification for a program and its implementation
+produce the same output for all possible inputs.
+This is called complete program verification.
+
+For example, the specification of sorted is $$sorted(l) = \forall i \in {0, len(l)-1} : l[i] \le l[i+1]$$.
+A sort routine then has an empty precondition and maintains the postcondition that the output list conforms to sorted.
+Such a triple is also called a Hoare triple.
+
+Partial program verification on the other hand only proves the absence of some of the bugs, for e.g. buffer overflow.
+Type systems usually prove some properties about a program, and can be viewed as a partial program verification.
+
+Constraints can be generated from a program which are then fed to a SAT solver to prove that some property holds true.
+In case the SAT solver cannot prove that the property is true, it could be either that the program is incorrect,
+the specification is incorrect, or even worse both are incorrect.
+SAT solvers try to solve a NP-complete problem namely SAT, so a polynomial execution time is not guaranteed.
+However, they do perform very well on most practical inputs.
+
+{\em Eiffel} language has precond and postcond that can be added to a function, which are basically assertions
+that are made at runtime.
+The problem with runtime verification is that it increases the execution time and is input dependant, and
+thus only tells us about the current/past execution and not the future.
+
+Our goal is to write correct working software. Specification for a program can be written not only for
+correctness, but also for bounded execution time, security etc.
+
+\section*{Specification problem}
+The problem with writing a specification for a program is that writing a specification is hard and could be
+3-5x the length of the program itself! This then leads to the questions of whether the specification in itself
+correct or not.
+
+Rather than writing the whole specification for the program, generally a subset for critical components is written
+and verified against the implementation.
+
+
+\section*{Testing}
+``I have only proved it correct, I have not tried it.'' - Knuth
+
+Many forms of testing like systems and end-to-end testing.
+The general idea is to test the output of the program for inputs for which correct output is known.
+Once an input is known for which the program provides incorrect output, the goal is to ``fix'' the program to
+correct it. In case the input is very large, it can be trimmed by doing a binary search over it to find a
+very small input for which the program fails to run correctly.
+
+Tests are usually written by humans, and usually have the following characteristics:
+\begin{itemize}
+\item - correlated with the code,
+\item - have low coverge usually,
+\item + test created post hoc can be good insurance for future,
+\item + help in documenting how the code should run,
+\end{itemize}
+
+\subsection*{Fuzz testing}
+Provide random inputs to a program to make it crash.
+The issue with this approach is that it has almost negligible property that the fuzzer can create
+a useful test case which can actually find bugs in a program.
+Better techniques like ``concolic testing'' which is a combination of concrete and symbolic execution
+are known to make fuzzing better.
+AFL (American Fuzzy Lop) is one of the framework which does intelligent fuzz testing.
+
+\end{document}
