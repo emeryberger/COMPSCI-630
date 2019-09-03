@@ -1,0 +1,486 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon"
+    href="wp-content/uploads/2013/10/favicon-2.ico"
+    type="image/x-icon" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+    <title>Systems (COMPSCI 630)</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,500,600,700,700italic&amp;subset=latin,greek-ext,cyrillic,latin-ext,greek,cyrillic-ext,vietnamese'
+    rel='stylesheet' type='text/css' />
+    
+    <link href='http://fonts.googleapis.com/css?family=Oswald:300,400,400italic,500,600,700,700italic&amp;subset=latin,greek-ext,cyrillic,latin-ext,greek,cyrillic-ext,vietnamese'
+    rel='stylesheet' type='text/css' />
+    <style>
+      body { font: Helvetica,Arial; padding-top: 3.5rem; }
+
+
+      .blackened { background-color: black; }
+    </style>
+  </head>
+  <body>
+    
+    <div>
+
+      
+      <div class="jumbotron blackened">
+	<div class="container">
+	  <h1>
+	    <font color="white">
+	      Grad Systems (COMPSCI 630)
+	    </font>
+	  </h1>
+	</div>
+      </div>
+
+      <div class="container" width="100%">
+
+	
+	<div class="w-100 p-3 row">
+
+	  <table width="100%">
+	    <tr>
+	      <td>
+
+		<div class="card mb-12">
+		  <div class="card-header">
+		    <h4 class="my-0 font-weight-normal">Course
+		    Description</h4>
+		  </div>
+		  <div class="card-body">
+		    <p>In this course, we will discuss classic papers across the broad area of Systems, in roughly chronological order by area: programming languages, architecture, runtime systems, operating systems, and system design in general. This is a lecture-driven class (<em>not a seminar</em>); you will not be expected to present papers, but you are expected to have read every paper before class and participate in in-class discussions.</p>
+		    
+		    <p>This course can be used to satisfy core requirements for Systems for the M.S. and PhD degrees.</p>
+		    <p>Grades will be based on in-class participation, projects, and exams.<br />
+		      You must submit your reviews <b><a href="http://grad-systems.cs.umass.edu/">via the review submission site</a></b> <em>before each class</em>. <strong>Do not modify and re-submit your reviews: just submit once.</strong></p>
+		    <p>See <a href="http://www.cs.berkeley.edu/~fox/paper_writing.html#rev">these notes by John Ousterhout</a> on writing reviews. Focus on the positive: these are classics for a reason!</p>
+		    <p>Your reviews must address the following points:</p>
+		    <ul>
+		      <li><b>Summary:</b> (at least two paragraphs) What is the problem that this work addressed? What are the big ideas / key insights / technical contributions?</li>
+		      <li><b>Significance / Contributions:</b> How have the assumptions / context this work was based on changed? What is the practical significance of these results today?</li>
+		      <li><b>Discussion Points:</b> Include at least two discussion points to bring up in class.</li>
+		    </ul>
+		    <p>You will be expected to scribe at least one lecture&#8217;s notes. <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/example-scribe-notes.tex">Here is an example</a> to use as a template (in LaTeX).</p>
+		  </div>
+		</div>
+
+	      </td>
+	    </tr>
+	    <tr>
+	      <td>
+
+
+		<div class="card mb-12">
+		  <div class="card-header">
+		    <h4 class="my-0 font-weight-normal">Course
+		    Schedule</h4>
+		  </div>
+		  <div class="card-body">
+		    All paper reviews should be submitted
+		    using <a href="http://grad-systems.cs.umass.edu/">the
+		      class HotCRP site</a>.
+		    <p />
+		    <table width="100%">
+		      <tr>
+			<td>
+			  
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				January 24
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Compilers</em></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/p243-hopper.pdf">The Education of a Computer</a>, Hopper 1952 <em>(read)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/FORTRAN-102663113.05.01.acc.pdf">The FORTRAN Automatic Coding System</a>, Backus et al. 1957 <em>(review)</em>
+			    </div>
+			  </div>
+
+			</td>
+		      </tr>
+		      <tr>
+			<td>
+
+			  
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				January 29
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Programming Languages</em><br /></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/LISP.pdf">Recursive Functions of Symbolic Expressions and Their Computation by Machine</a>, McCarthy 1960 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/Algol60-Dijkstra-MR35.PDF">Algol-60 Translation</a>, Dijsktra 1961 <em>(skim)</em><br />
+			    </div>
+			  </div>
+			  
+
+			</td>
+		      </tr>
+
+
+		      <tr>
+			<td>
+			  
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				January 31
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Runtime Systems</em></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/GC-Uncooperative.pdf">Garbage Collection in an Uncooperative Environment</a>, Boehm &amp; Weiser 1991 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/memory/papers/wils92c/paper.pdf">Uniprocessor Garbage Collection Techniques</a>, Wilson et al. 1991 <em>(background)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/p50-bacon.pdf">A Unified Theory of Garbage Collection</a>, Bacon et al. 2004 <em>(background)</em><br />
+			    </div>
+			  </div>
+
+			</td>
+		      </tr>
+			  
+		      
+		      <tr>
+			<td>
+
+			  
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				February 5
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Computer Architecture</em></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/Architecture-of-the-IBM-System-360.pdf">Architecture of the IBM System/360</a>, Amdahl et al. 1964 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/liptay68.pdf">Structural aspects of the System/360 Model 85: The cache</a>, Liptay 1968 <em>(read)</em><br />
+			    </div>
+			  </div>
+			  
+
+		      
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				February 12
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Multicore and Parallelism</em></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/moorespaper.pdf">Cramming More Components onto Integrated Circuits</a>, Moore 1965 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Conc/Amdahl-04785615.pdf">Validity of the Single Processor Approach to Achieving Large Scale Computing Capabilities</a>, Amdahl 1967 <em>(review)</em><br />
+			      <a href="http://www.cs.wisc.edu/multifacet/papers/ieeecomputer08_amdahl_multicore.pdf">Amdahl&#8217;s Law in the Multicore Era</a>, Hill &amp; Marty 2008 <em>(review)</em><br />
+			      <a href="http://en.wikipedia.org/wiki/Amdahl's_law">Wikipedia: Amdahl&#8217;s Law</a> <em>(background)</em>
+			      <br />
+			    </div>
+			  </div>
+
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				February 14
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Hardware/Software Interface</em></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/RISC-patterson.pdf">The Case for the Reduced Instruction Set Computer</a>, Patterson &amp; Ditzel 1980 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/RISC-clark.pdf">Comments on the Case for RISC</a>, Clark &amp; Strecker 1980 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/p272-jouppi.pdf">Available Instruction-Level Parallelism for Superscalar and Superpipelined Machines</a>, Jouppi &amp; Wall 1991 <em>(review)</em><br />
+			    </div>
+			  </div>
+
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				February 21
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Concurrency</em><br /></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Conc/Mesa.pdf">Experience with Processes and Monitors in Mesa</a>, Lampson &amp; Redell 1980 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/pubs/dthreads-sosp11.pdf">Dthreads: Efficient Deterministic Multithreading</a>, Liu et al. 2011 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Conc/birrel89introduction.pdf">An Introduction to Programming with Threads</a>, Birrell 1989 <em>(background)</em><br />
+			    </div>
+			  </div>
+
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				February 26
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>OS Design and Internals</em><br /></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/OS/the.pdf">The Structure of the &#8220;THE&#8221;-Multiprogramming System</a>, Dijkstra 1968 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/OS/The-UNIX-Time-Sharing-System-BSTJ.pdf">The Evolution of the UNIX Time-Sharing System</a>, Ritchie 1984 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Misc/Worse-is-Better.pdf">The Rise of &#8220;Worse is Better&#8221;</a>, Gabriel 1991 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/OS/multics-overview.pdf">Introduction and Overview of the MULTICS System</a>, Corbató &amp; Vyssotsky 1965 <em>(skim)</em><br />
+			      <a href="http://www.oreilly.com/openbook/opensources/book/appa.html">The Torvalds-Tanenbaum Debate</a> <em>(read)</em><br />
+			    </div>
+			  </div>
+			  
+			  
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				February 28
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Networked Systems Principles</em></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/OS/saltzer84endtoend.pdf">End-to-End Arguments in System Design</a>, Saltzer, Reed and Clark 1981 <em>(review)</em><br />
+			      <a href="http://dl.acm.org/citation.cfm?id=52336">The Design Philosophy of the DARPA Internet Protocols</a>, Clark 1988 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/OS/Lampson-Hints.pdf">Hints for Computer System Design</a>, Lampson 1983 <em>(review)</em><br />
+			    </div>
+			  </div>
+
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				March 5
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Security</em><br /></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Sec/lampson73note.pdf">A Note on the Confinement Problem</a>, Lampson 1973 <em>(review)</em><br />
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Sec/Reflections-on-Trusting-Trust.pdf">Reflections on Trusting Trust</a>, Thompson 1984 <em>(review)</em><br />
+			      <a href="https://spectreattack.com">Spectre</a>/<a href="https://meltdownattack.com/">Meltdown</a> papers, <em>(read)</em>
+			    </div>
+			  </div>
+			  
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				March 7
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>class cancelled (snow day)</em><br /></h5>
+			    </div>
+			  </div>
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				March 19
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Privacy &amp; Cryptography</em><br /></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Sec/Rsapaper.pdf">A Method for Obtaining Digital Signatures and Public Key Cryptosystems</a>, RSA 1978<em>(review)</em><br />
+			      <a href="https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf">Tor: The Second-Generation Onion Router</a>, Dingledine et al., 2004<em>(read)</em><br />
+			    </div>
+			  </div>
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				March 21
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Fault Tolerance</em><br /></h5>
+			      <a href="http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Reliability/RAID-patterson.pdf">A Case for Redundant Arrays of Inexpensive Disks (RAID)</a>, Patterson, Gibson &amp; Katz, 1988<em>(review)</em><br />
+			      <a href="http://www.hpl.hp.com/techreports/tandem/TR-85.7.pdf">Why Do Computers Stop and What Can Be Done About It?</a>, Gray 1985<em>(review)</em><br />
+			    </div>
+			  </div>
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				March 26
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>class cancelled</em><br /></h5>
+			    </div>
+			  </div>
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				March 28
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>MIDTERM EXAM</em><br /></h5>
+			    </div>
+			  </div>
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				April 2
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <!-- <h5><em>Concurrent / Queueing Systems</em><br /></h5> -->
+			      <h5><em>Fault Tolerance</em><br /></h5>
+			      <em>guest lecture: <a href="http://blogs.ubc.ca/karthik/">Karthik Pattabiraman</a></em> (<a href="presentations/karthik-pattabiraman-2018-04.pdf">presentation</a>)
+			    </div>
+			  </div>
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				April 4
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <!-- <h5><em>Performance Analysis</em><br /></h5> -->
+			      <h5><em>Security &amp; Privacy</em></h5>
+			      Secure Outsourced Databases: Past, Present, and Future,
+			      <a href="http://people.cs.georgetown.edu/~adam/">Adam O'Neill</a> (GaTech), <b>room 151</b>
+			    </div>
+			  </div>
+			  
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				April 9
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Distributed Systems Principles</em><br /></h5>
+			      Bringing Distributed Data Systems to End Users,
+			      <a href="http://heather.miller.am/">Heather Miller</a> (Northeastern), <b>room 151</b>
+			      <br />
+			      <a href="https://www.usenix.org/system/files/conference/atc14/atc14-paper-ongaro.pdf">In Search of an Understandable Consensus Algorithm</a>, Ongaro &amp; Ousterhout, 2014<em>(review)</em><br />
+			      <a href="https://people.eecs.berkeley.edu/~luca/cs174/byzantine.pdf">The Byzantine Generals Problem</a>, Lamport, Shostak &amp Pease, 1982<em>(read, skim proofs)</em><br />
+			    </div>
+			  </div>
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				April 11
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Distributed Systems Principles</em><br /></h5>
+			      Byzantine Generals, RAFT<br />
+<!--			      <h5><em>Databases</em><br /></h5> -->
+			    </div>
+			  </div>
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				April 17
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>no papers</em><br /></h5>
+			    </div>
+			  </div>
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				April 18
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Distributed and Concurrent Systems</em><br /></h5>
+			      <br />
+			      <a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf">Time, Clocks, and the Ordering of Events in a Distributed System</a>, Lamport, 1978<em>(review)</em><br />
+			      <a href="https://users.soe.ucsc.edu/~cormac/papers/pldi09.pdf">FastTrack: Efﬁcient and Precise Dynamic Race Detection</a>, Flanagan and Freund, 2009<em>(read)</em><br />
+			    </div>
+			    </div>
+			  </div>
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				April 23
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Cryptocurrencies</em><br /></h5>
+			      <a href="https://bitcoin.org/bitcoin.pdf">Bitcoin: A Peer-to-Peer Electronic Cash System</a>, Nakamoto, 2008<em>(review)</em><br />
+			      <a href="https://d28rh4a8wq0iu5.cloudfront.net/bitcointech/readings/princeton_bitcoin_book.pdf">Bitcoin and Cryptocurrency Technologies</a>, Narayanan et al., 2016<em>(reference)</em><br />
+
+			    </div>
+			  </div>
+
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				April 25
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Static &amp; Dynamic Analysis</em><br /></h5>
+			      <a href="https://cacm.acm.org/magazines/2010/2/69354-a-few-billion-lines-of-code-later/fulltext">A Few Billion Lines of Code Later: Using Static Analysis to Find Bugs in the Real World</a>, Bessey et al. (review)<br />
+			      <a href="https://www.cs.columbia.edu/~junfeng/09fa-e6998/papers/valgrind.pdf">Valgrind: A Framework for Heavyweight Dynamic Binary Instrumentation</a>, Nethercote &amp; Seward (review)
+			    </div>
+			  </div>
+			  
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				April 30
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>Testing</em><br /></h5>
+			      <a href="http://ftp.cs.wisc.edu/paradyn/technical_papers/fuzz.pdf">
+				An empirical study of the reliability of UNIX utilities</a>, Miller et al. (review)<br />
+			      <a href="https://web.eecs.umich.edu/~weimerw/2011-6610/reading/p213-godefroid.pdf">DART: Directed Automated Random Testing</a>, Godefroid et al. (review)<br />
+			    </div>
+			  </div>
+			  
+			  <div class="card mb-12">
+			    <div class="card-header">
+			      <h4 id="users" class="my-0 font-weight-normal">
+				May 4
+			      </h4>
+			    </div>
+			    <div class="card-body">
+			      <h5><em>FINAL EXAM</em><br /></h5>
+			      3:30pm-5:30pm, Hasbrouck 124<br />
+			    </div>
+			  </div>
+			  
+
+			</td>
+		      </tr>
+		    </table>
+		  </div>
+		</div>
+	      </td>
+	    </tr>
+	  </table>
+	</div>
+	<div class="page-footer">
+	  <div class="copyright text-muted">
+	    <font size="-1">
+	      <a href="http://plasma.cs.umass.edu">PLASMA @ UMass</a>
+	    </font>
+	  </div>
+	</div>
+      </div>
+    </div>
+    
+  </body>
+</html>
