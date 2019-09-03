@@ -80,6 +80,13 @@ with open('schedule.csv') as csvfile:
                 author = row['author2']
                 url_str = f'<a href="{url}">{title}</a>, {author}<br/>'
                 print(url_str)
+            if row['optionalpaper1'] != "":
+                title = row['optionalpaper1']
+                url = row['optionalurl1']
+                author = row['optionalauthor1']
+                url_str = f'<font color="darkgreen"><a href="{url}">{title}</a>, {author} [skim]<br/></font>'
+                print(url_str)
+            
             #print process_date(row['date'])
             #print row['topic'].title() # Capitalize every word
         print(epilog_body)
