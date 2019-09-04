@@ -5,13 +5,11 @@ import csv
 # Read in a date in MM/DD/YYYY format and return a string of the form "Dayname, Month dd"
 # process_date("03/13/2020") --> "Friday, March 13"
 def process_date(date_str):
-    # date_str = "6/13/2018"
     date_obj = datetime.datetime.strptime(date_str, '%m/%d/%Y')
-    #year = date_obj.date().year
-    #month = date_obj.date().month
-    #day = date_obj.date().day
-    # x = datetime.datetime(year, month, day)
     return date_obj.strftime("%A, %B %d")
+
+
+
 
 with open('header.html') as header_file:
     header = header_file.read()
@@ -19,8 +17,6 @@ with open('footer.html') as footer_file:
     footer = footer_file.read()
 
 print(header)
-
-# print(process_date("03/13/2020"))
 
 prolog = '<div class="card mb-12">'
           
@@ -83,8 +79,6 @@ with open('schedule.csv') as csvfile:
                         # Default, review
                         url_str = f'<a href="{url}">{title}</a>, {author} <font color="red">[review]</font><br/>'
                     print(url_str)
-            #print process_date(row['date'])
-            #print row['topic'].title() # Capitalize every word
         print(epilog_body)
         print(epilog)
 
