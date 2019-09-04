@@ -68,25 +68,21 @@ with open('schedule.csv') as csvfile:
             topic = f"{row['topic'].title()}"
             print(topic)
             print(epilog_topic)
-            if row['paper1'] != "":
-                title = row['paper1']
-                url = row['url1']
-                author = row['author1']
-                url_str = f'<a href="{url}">{title}</a>, {author}<br/>'
-                print(url_str)
-            if row['paper2'] != "":
-                title = row['paper2']
-                url = row['url2']
-                author = row['author2']
-                url_str = f'<a href="{url}">{title}</a>, {author}<br/>'
-                print(url_str)
-            if row['optionalpaper1'] != "":
-                title = row['optionalpaper1']
-                url = row['optionalurl1']
-                author = row['optionalauthor1']
-                url_str = f'<font color="darkgreen"><a href="{url}">{title}</a>, {author} [skim]<br/></font>'
-                print(url_str)
-            
+            for key in ['1', '2', '3']:
+                if row['paper'+key] != "":
+                    title = row['paper'+key]
+                    url = row['url'+key]
+                    author = row['author'+key]
+                    if row['status'+key] == "review":
+                        url_str = f'<a href="{url}">{title}</a>, {author} <font color="red">[review]</font><br/>'
+                    elif row['status'+key] == "read":
+                        url_str = f'<a href="{url}">{title}</a>, {author} [read]<br/>'
+                    elif row['status'+key] == "skim":
+                        url_str = f'<a href="{url}">{title}</a>, {author} <font color="darkgreen">[skim]</font><br/>'
+                    else:
+                        # Default, review
+                        url_str = f'<a href="{url}">{title}</a>, {author} <font color="red">[review]</font><br/>'
+                    print(url_str)
             #print process_date(row['date'])
             #print row['topic'].title() # Capitalize every word
         print(epilog_body)
