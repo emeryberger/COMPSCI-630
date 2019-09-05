@@ -1,7 +1,7 @@
 sequence,type,date,topic,paper1,url1,author1,status1,paper2,url2,author2,status2,paper3,url3,author3,status3
 1,class,9/3/2019,introduction,,,,,,,,,,,,
 2,class,9/5/2019,compilers,The Education of a Computer,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/p243-hopper.pdf,Hopper,read,The FORTRAN Automatic Coding System,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/FORTRAN-102663113.05.01.acc.pdf,Backus,review,The Night Watch,http://scholar.harvard.edu/files/mickens/files/thenightwatch.pdf,Mickens,read
-3,class,9/10/2019,programming languages,Recursive Functions of Symbolic Expressions and Their Computation by Machine,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/LISP.pdf,McCarthy,review,Algol-60 Translation,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/Algol60-Dijkstra-MR35.PDF,Dijsktra,read,,,,
+3,class,9/10/2019,programming languages,Recursive Functions of Symbolic Expressions and Their Computation by Machine,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/LISP.pdf,McCarthy,review,Algol-60 Translation,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/Algol60-Dijkstra-MR35.PDF,Dijsktra,read,Go To Statement Considered Harmful,https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf,Dijkstra,read
 ,noclass,9/12/2019,,,,,,,,,,,,,
 4,class,9/17/2019,runtime systems,Garbage Collection in an Uncooperative Environment,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/GC-Uncooperative.pdf,Boehm and Weiser,review,,,,,,,,
 ,noclass,9/19/2019,,,,,,,,,,,,,
