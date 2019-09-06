@@ -40,6 +40,11 @@ with open('schedule.csv') as csvfile:
             print(f" &mdash; {row['topic'].capitalize()}")
             print('</font>')
             print(epilog_header)
+            print(prolog_body)
+            print(prolog_topic)
+            print(row['paper1'])
+            print(epilog_topic)
+            print(epilog_body)
             continue
             
         if row['type'] == 'noclass':
