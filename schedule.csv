@@ -5,7 +5,7 @@ sequence,type,date,topic,paper1,url1,author1,status1,paper2,url2,author2,status2
 ,noclass,9/12/2019,,,,,,,,,,,,,
 4,class,9/17/2019,runtime systems,Garbage Collection in an Uncooperative Environment,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/GC-Uncooperative.pdf,Boehm and Weiser,review,,,,,,,,
 ,noclass,9/19/2019,,,,,,,,,,,,,
-5,class,9/24/2019,computer architecture,Architecture of the IBM System/360,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/Architecture-of-the-IBM-System-360.pdf,Amdahl et al.,review,Structural aspects of the System/360 Model 85: The cache,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/liptay68.pdf,Liptay,read,,,,
+5,class,9/24/2019,computer architecture,Architecture of the IBM System/360,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/Architecture-of-the-IBM-System-360.pdf,Amdahl et al.,review,Structural aspects of the System/360 Model 85: The cache,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/liptay68.pdf,Liptay,read,Bringing the Web Up to Speed with WebAssembly,"https://people.mpi-sws.org/~rossberg/papers/Haas,%20Rossberg,%20Schuff,%20Titzer,%20Gohman,%20Wagner,%20Zakai,%20Bastien,%20Holman%20-%20Bringing%20the%20Web%20up%20to%20Speed%20with%20WebAssembly.pdf",Rossberg et al.,review
 6,class,9/26/2019,multicore and parallelism,Cramming More Components onto Integrated Circuits,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/moorespaper.pdf,Moore,review,Validity of the Single Processor Approach to Achieving Large Scale Computing Capabilities,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Conc/Amdahl-04785615.pdf,Amdahl,review,Amdahl’s Law in the Multicore Era,http://www.cs.wisc.edu/multifacet/papers/ieeecomputer08_amdahl_multicore.pdf,review,
 7,class,10/1/2019,hardware/software interface,The Case for the Reduced Instruction Set Computer,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/RISC-patterson.pdf,Patterson & Ditzel,review,Comments on the Case for RISC,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/RISC-clark.pdf,Clark & Strecker,review,Available Instruction-Level Parallelism for Superscalar and Superpipelined Machines,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/p272-jouppi.pdf,review,
 8,class,10/3/2019,concurrency,Experience with Processes and Monitors in Mesa,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Conc/Mesa.pdf,Lampson & Redell ,review,,,,,,,,
@@ -29,3 +29,5 @@ sequence,type,date,topic,paper1,url1,author1,status1,paper2,url2,author2,status2
 2,project-due,,,,,,,,,,,,,,
 3,project-due,,,,,,,,,,,,,,
 ,,,hardware security,"Spectre, Meltdown",,,,,,,,,,,
+,,,performance analysis,"Roofline: An Insightful Visual Performance Model
+for Floating-Point Programs and Multicore Architectures",,,,,,,,,,,
