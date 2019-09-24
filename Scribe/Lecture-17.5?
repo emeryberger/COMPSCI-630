@@ -1,0 +1,224 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~ Systems
+                       \hfill Fall 2014} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribes: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{18}{November 12}{Emery Berger}{Shaylyn Adams, Amee Trivedi}
+\section{Database Systems}
+Databases were a big business for a long time. Dewitt and Gray belonged to companies that made database systems. 
+\subsection{Relational Algebra}
+ \underline{Relational Algebra} is a formalization for databases in a declarative language. Before this in the 1970's, the standard was iterating over all relations. \emph{Note}: It is important to 'normalize' database to reduce duplication.
+ \begin{figure}[h]
+\centering
+\includegraphics[width=40mm]{Diagram1}
+\end{figure}
+
+{\scriptsize Tables/relations consists of stored tuples or "records".  Originally, cursor would look through everything but then indices were included to make look up more efficient. Indices are created and maintained manually.}
+
+RA operators work over relations with formalized queries.
+\begin{itemize}
+\item[-] \emph{select}, $\sigma$ ex: chose predicate, $\sigma_{name}$ = Joe
+\item[-] \emph{project}, $\pi$ ex: $\pi_{empId, Name}$
+\item[-] \emph{join}, $\times$ ex: cartesian product $t_{1} \times t_{2}$
+\end{itemize}
+\begin{figure}[h]
+\centering
+\includegraphics[width=90mm]{Diagram2}
+\end{figure}
+No updates are allowed, only queries, thus there is no state to maintain. \\
+\begin{description}
+\item[Structured Query Language] or 'SQL' captures relational algebra.
+\begin{verbatim}
+SELECT empId, name
+FROM T1, T2
+WHERE T2, empId = T2, empId (implicit join)
+\end{verbatim}
+ These queries can be transformed into multiple equivalent versions. They make use of indices. \\
+ How powerful is SQL though?
+ \begin{itemize}
+ \item Equal to formal logic plus transitive closure
+ \item Strictly less expressive than Turing complete programming languages
+ \end{itemize}
+ Like with many specialized mechanisms, there is an inherent tradeoff with SQL. You cannot do everything with it but you do get easy parallelism. 
+\item[Hash joins] Build hash table, which serves as an inexact index for the larger relation and then visit the smaller relation linearly.
+\emph{Note}: Sorting is less ideal with sortMerge costing, $nlogn$ whereas hash joins are only $n$.
+\end{description}
+\subsection{Query Optimizers}
+Databases have \emph{query optimizers}. Upon receiving a query, the query is compiled to a plan based off of information the optimizer knows about database, i.e. indices, past statistics, cache results or whether or not an intermediate store database needs to be used ('selectivity').  Since there are no updates, the query optimizer can generate a parallelized query plan. Thus, there is no need for parallelism at the user level since the query optimizer handles it all. MapReduce does not perform query optimization. 
+\subsection{Shared-nothing Architecture}
+\begin{description}
+\item[Shared-nothing] This is the best mechanism for distributed database systems since it makes everything arbitrarily paralellizable. No need to worry about state updates since each processor has its own private memory. Parallelizes across all available machines and achieves near linear speedup. You may not get linear speedup if \underline{data skew} is present. 
+\item[Partitioning] To offset \underline{data skew} and load balance data, \textbf{partitioning} of the data is necessary. 
+However, even if you perfectly partition, all relevant tuples could still be one machine so care must be taken when deciding the size of and which tables to use when partitioning.\begin{itemize}
+\item[-] Creating mirrors or replicas can help reduce partition problems and enhance parallelism i.e. "RAID" mirroring or striping.
+\item[-] But, striping may cause a lot of queries to become non-dispatchable from one machine.
+\item[-] Thus, people generally \textbf{shard} to partition.
+\end{itemize}
+\item[Shard] This is a manual process in which you grab chunks from the database that are latently important to the queries. Ex: geographically shard, 'vertical partitioning'.
+\end{description}
+Read-only databases would be ideal since there would be no changes or updates and thus replication is not an issue. But databases \emph{do} get updated and scalability becomes a problem.\\
+
+\textbf{Mem-Cached}
+\begin{itemize}
+\item Key value store in memory
+\item Keeps load off of the database
+\item Caching is complicated by updates
+\item \textbf{Consistent hashing} can be used to handle this
+\end{itemize}
+\textbf{Consistent hashing} is important for fault tolerance and insertion efficiency. Uses a hash table that is conceptually a ring and no snooping is necessary since no one will have a different copy. Ex: Cord. 
+\subsection{ACID Properties and Databases}
+In updating databases, ACID must be maintained. ACID corresponds to:
+\begin{itemize}
+\item \textbf{A}tomicity = transactions happen or they do not, all or nothing paradigm
+\item \textbf{C}onsistency = everyone sees the same valid state of the world
+\item \textbf{I}solation = concurrency control 
+\item \textbf{D}urability = persistent store
+\end{itemize}
+The goal standard is typically atomicity, consistency and isolation. With databases, ACID can be achieved through \emph{locks}. These locks are sensitive since databases are open world and all queries cannot be anticipated. Thus, databases run deadlock detection algorithms which build graphs to discover cycles. If a cycle is found, it is broken by killing/aborting a query that is in a deadlock. To avoid starvation the longest running query is usually allowed to finish and smaller queries are aborted. To avoid deadlock altogether, could have one, big lock, OBL (Linux kernel used to operate on OBL). \emph{Note}: The \underline{closed world} assumption states that the world is exactly how you currently see it and nothing will change it. 
+\subsection{Locks}
+\begin{description}
+\item[Concurrency Control:] Databases have table-level, row-level, and column-level locks which provide multiple layers of granularity. There are also advisory locks and reader-writer locks that allow as many readers but only one writer at a time. Database locking consists of a 2 phase locking, 2PL, mechanism. 
+\begin{itemize}
+\item[1)] Growing = acquire all locks
+\item[2)] Shrinking = release all locks
+\end{itemize}
+Locks impair parallelism since they effectively serialize everything. On the other hand, serializability is can be an ideal property since it is deterministic. 
+\item[Pessimistic synchronization versus optimistic concurrency:]
+How optimistic concurrency works: conceptually the mechanism goes and tries to do something but if something bad happens, it effectively "undoes" the action by either aborting or just pretending it went through with it. Kung, et al. in 1981 devised this idea of total isolation where private copies of the database are kept and checks are done to see if the copy was changed simultaneously with another and if not, the copy is allowed to be merged to the real world and everything is updated. If another change is detected however, the mechanism aborts and retries. 
+\item[Multi version concurrency control] or MVCC, builds off of OC but uses a timestamp or transaction ID that gets incremented with every transaction. Multiple versions are maintained in the database, and everything with a higher transaction ID is ignored.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=30mm]{Diagram3}
+\end{figure}
+\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad{\scriptsize transaction 14 would only see *}
+
+Locks are no longer needed but serializability is also no longer guaranteed. Snapshot isolation MVCC is widely used because it scales. 
+\end{description}
+\subsection{MapReduce}
+\begin{description}
+\item[BASE]
+Eric Brewer argues against ACID and transactions. Instead, came up with BASE.
+\begin{itemize}
+\item \textbf{B}asically \textbf{A}vailable = responsive in the face of failure, i.e. fault tolerance through replication
+\item \textbf{S}oft State = state in flux over time
+\item \textbf{E}ventual  consistency= eventually all updates will merge if not in steady state
+\end{itemize}
+\item[CAP theorem] or:
+\begin{itemize}
+\item \textbf{C}onsistency 
+\item \textbf{A}vailability 
+\item \textbf{P}artitioning tolerant = part of network is completely disconnected from other networks.
+\end{itemize}
+\begin{figure}[h]
+\centering
+\includegraphics[width=70mm]{Diagram4}
+\end{figure}
+The theorem states that only 2 of the 3 can be achieved at one time. People tend to relax consistency but since partitions are rare, especially in data centers, partition-tolerance is often irrelevant. 
+\end{description}
+\end{document}
