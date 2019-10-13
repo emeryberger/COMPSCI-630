@@ -1,0 +1,236 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Fall 2009} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{9-26}{April 16}{Emery Berger}{Jane Tangen}
+Ontology recapitulates phylogeny:
+
+\begin{itemize}
+\item notion: evolution or organism follows the development of evolution.
+\end{itemize}
+
+This is not true currently, every computer system goes through the exact same evolutionary stages.
+
+\begin{itemize}
+\item Very first OS’s: single user, single process, no protection.
+\begin{itemize}
+\item Then added multiple users and multiple processes through time sharing.
+\item Now protection is needed! Then more advanced protections!
+\begin{itemize}
+\item File system protection (technically happened later), memory protection
+\item VM’s introduced: MMU (memory management unit)
+\end{itemize}
+\end{itemize}
+\item Now personal computers and PCs come around
+\begin{itemize}
+\item Apple (1984) and IBM PC (1981)
+\item Now single user, single process, no protection. Went back to beginning for ease and cheapness and to not repeat mistakes of the past
+\item No MMU
+\begin{itemize}
+\item Side note: current automotive and small IOT have no MMU .
+ARM has the option, but not added because that’s expensive. 
+People bet on hardware and software being done properly (scary).
+\end{itemize}
+\item Evoultion of MS-DOS:
+\begin{itemize}
+\item story: previous os for 8080 called CP/M, with idea of lattices. Invented by Gary Kildall (idea of lattices and OS based on this). IBM wanted to buy an OS, so approached him and wanted him to do his thing on a new one (8088?). He said no, they couldn't agree. So IBM went to Microsoft. They didn’t really do OS at that time, just BASIC, crappy interpreter (written by Gates and Allen). But Microsoft said they had an OS, and agreed as long as had MS sticker, thats good. Microsoft was like shit so they found guy that made OS for 8080 as hobby, gave MS all rights. Poor dude. 
+\end{itemize}
+\item Macintosh Computers:
+\begin{itemize}
+\item took a decade to separate processes from killing the whole damn thing.
+\item Infinite loop of process and you would have to reboot the machine. This happened a lot.
+\item Unix, which was owned by ATT, was incredibly expensive. Berkley made their own OS based off Unix called BSD. Apple eventually took this OS and built theirs on top of it.
+\end{itemize}
+\item Notion of “security through obscurity” existed at this time. Considered no security at all. 
+\item iPhones: 
+\begin{itemize}
+\item First ones had one user, one processor, no security.
+\item If on a phone call, nothing else would work. Only one user process. For a while even the OS couldn’t run in background.
+\item Would literally exit one process to go to the other process.
+\item Many people hacked the iPhone and found it was a stripped down unix. 
+\item Now: Multiple processes and memory protections and lots of security!
+\end{itemize}
+\end{itemize}
+\item What about Programming Languages?
+\begin{itemize}
+\item Starts out as dynamically typed
+\begin{itemize}
+\item This means types are associated with values. In statically types language, both values and variables have types.
+\item LISP at first was dynamically typed language
+\begin{itemize}
+\item Accidentally dynamically scoped as well. Normally we usually prefer statically/lexically scoped. Scope is about name resolution. Lexically is with globals and nesting with blocks (objects inside objects). Variables resolved by going out. This is what we normally use.
+Dynamic scope is terrible. Here is F(x) which refers to X, foo calls f(x), but here instead of referring to the inner scope, go to bar with has x that calls foo, but also baz that has x which calls foo, then foo’s use of x will use the x in the call stack. It walks up the call stack.
+Not intended in LISP, eval was written incorrectly, stuck for 25 years. Not until Common LISP was this fixed. 
+\end{itemize}
+\end{itemize}
+\item Interpreter: early languages have EVAL.
+\begin{itemize}
+\item EVAL takes string and runs it. Very powerful. Makes code hard to compile in advance, or compile at all into efficient code.
+\end{itemize}
+\item Garbage collection:
+Start with Reference Counting, which is not good but easy.
+\item Why a language takes off:
+Random person wants to fix a problem, then others don't have a choice and have to use it.
+\item This evolution happened again in In perl, ruby, python, JS… kind of java too (but defined by PL people, with lexical scope and real GC from the beginning.) Tends to happen: once finally takes off, people endeavor on decades long process to make faster with JIT compiler, type system, and gradual typing.
+\begin{itemize}
+\item Python now has JIT (pypy)! Still has weird scoping. 
+\item TypeScript has block scoping!
+\end{itemize}
+\item What happened with JS though?
+\begin{itemize}
+\item Before JS was Java applets. JAVA goal was to do this “safe”: with no buffer overflows (check reads and writes), no dangling points, memory safe, type safe. Originally called Oak, made for toasters. Then Sun came out with HotJava browser, which was cool and could upload java, and do it safely? Java had bytecode, interpreter, GC, and connections were only like 9600 bps —> so bloated and slow connection. Startup time terrible. Netscape (with first graphical browser Mosaic that eventually became Mozilla) and then made Netscape Navigator. 
+\item Needed better solution: Brenden Eich was a PL person, not much time to make it, liked small talk, but bosses wanted it to look like Java, so he added curly braces (a “curly-brace language”) 
+\item First called LiveScript, made in 10 days. Not fast, but it was better. Would just work. (1995)
+\item From Emery’s lab: Browsix (and before was Doppio)- can run normal OS programs in browser.
+\item asm.js introduced: JS has monkey patching: redefining anything in the program is OK by JS. Not good for static analysis because anything can be redefined.
+So asm.js said only use a subset of JS that is easy to compile. So use a contract with a magic word at the beginning. Could set things to actually set a type instead of like an object thing and it became more fast.
+\item Weird arguments over asm.js lead (eventually) to WebAssembly (WASM)! Has to be safe, efficient, and fast to parse. Parsing was thought to be solved (process is not much actual parsing) but now its a bottleneck. (Dev tools in chrome can actually show you whats happening, like where all the time is going. Kinda cool.)
+\item Safety was a real problem.
+Banks are running IBM 360 code on VMs,
+Conventional ISA (instruction set architecture) has no memory protection, arbitrary structure (GOTOs) and hard to analyze.
+NaCL and PNaCL (ARM) was result of research for safe ISA.
+ActiveX was very bad for security. Emery is very upset about this.
+\item Ok but WebAssembly: uses suites to test it called PolyBench because it was not a normal program. They rewrote benchmarks for polyhedral operations. Significant gap between native and non-native code performance.
+\end{itemize}
+\item Register based vs stack based architecture: Registers use registers, and stack does push and pop. Stack-based is good for easy analysis.
+\item Attacks: 
+\begin{itemize}
+\item Return Oriented Programming (ROP) you can find any sequence of instructions that are before returns, so call one before return to make that instruction. Seizing control of jumps means taking over computer. 
+\item WASM tries to use CFI (control flow integrity) so that you cant just jump around. 
+\end{itemize}
+\end{itemize}
+
+\end{itemize}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
