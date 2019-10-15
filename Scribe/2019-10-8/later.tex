@@ -1,0 +1,9 @@
+        \begin{verbatim}
+        x = new(...);
+        y = x;
+        delete x;
+        z = new(...);
+        // If z is allocated to the space where
+        // y was present, then y can access z.
+        print(y);
+        \end{verbatim}
