@@ -1,0 +1,199 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf COMPSCI~630~~~Systems
+                       \hfill Fall 2019} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{10}{Oct 10}{Emery Berger}{Priyanka Mary Mammen}
+
+\section{Concurrency Error Detectors}
+There are tools that can help you debug concurrency errors
+\begin{itemize}
+    \item Race detectors
+    \item Replay based debugging
+\end{itemize}
+There are two types of race detection analysis tools: static and dynamic.
+
+Static analysis tool knows the future, and sees only the abstract values, resulting a loss in precision. Static analysis can give rise to false positives. Static analysis cannot prove whether the program halts. 
+ For instance, in the following code
+ \begin{center}
+ \begin{figure}[h!]
+ \includegraphics[totalheight=7cm]{static_analysis.png}
+ \caption{} 
+ \label{Static}
+\end{figure}
+  \end{center}
+ Whereas in dynamic race detection approach, they use only the present and past values. They are always precise and may be not generalizable. There are no false positives and lower RECALL in Dynamic Analysis. They only represent races in a particular execution.
+ 
+Static analysis is very useful for bug detection in a variety of contexts. 
+
+\\
+\textbf{Bug detection v/s Formal verification}
+
+Bug detection needs only partial specification, whereas formal verification needs complete specification.
+
+In formal verification, we need to prove whether program P implements its specifications S. The specification is normally expressed in some sort of logic. Basically, it means if we could have executed S, we should get the same result as when we executed P. It maps all the inputs to all the outputs(that is why it is called complete specification). Formal verification is a work in progress. People are working on things that:
+\begin{itemize}
+    \item have narrow APIs (very easy to specify)
+    \item are well specified
+    \item are really important
+\end{itemize}
+These are the right targets for formal specification.
+Microsoft had a project called Project Everest about https. They used OpenSSL cryptographic library. Sometime later, "Heart bleed bug"(leaks information about SSL private keys) was identified as a vulnerability in OpenSSL after formal verification. 
+
+There is a notion called Trusted Computing Base which may be on the order of 1000 lines of code.
+
+
+
+Bug detection is often much weaker as it needs only a partial specification. For instance,
+program P never derefs NULL. It is totally fine by principle for a program to deref NULL, but if it is a Java program, it will throw a NULL POINT EXCEPTION.   
+
+
+Google has a particular kind of race detector called thread sanitizer.
+ 
+ Right now, we mostly use Dynamic Analysis. Dynamic analysis can be further classified into:
+ 1) Lockset analysis
+ 2) Happens-before-analysis
+ 
+In Lockset analysis, every shared location is protected by a lock.
+\begin{center}
+ \begin{figure}[h!]
+ \includegraphics[totalheight=7cm]{lockset.png}
+ \caption{} 
+ \label{Static}
+\end{figure}
+  \end{center}
+
+Whereas happens before analysis is quite related to distributed systems. You do keep a timer, at the end of the day, you will have a number and get an order in relationships. 
+\begin{center}
+ \begin{figure}[h!]
+ \includegraphics[totalheight=7cm]{happens_before.png}
+ \caption{} 
+ \label{Static}
+\end{figure}
+  \end{center}
+
+\textbf{Why threads are needed?}
+\begin{itemize}
+    \item Parallelism
+    \item Coordination
+    \item Hiding Latency (Major reason for using threads, It give a massive improvement in performance)
+\end{itemize}
+
+"throughput" is the rate of jobs getting done. There is always a throughput-latency trade off. Best example is batch v/s interactive processes.
+
+\section{UNIX - time sharing system}
+Time sharing system lets mutliple users have the effect of using the computer at the same time. Predecessor of Unix is MULTICS, which is developed by a team from MIT, GE and Bell Labs. Some of notions introduced by MULTICS are:
+\begin{itemize}
+\item 'hierarchical' file system, whereas the previous Operating Systems had 'flat' file systems.
+\item  Symbolic Links - It is a pointer to the target file.
+ For instance, "foo" can be used to represent "/bnq/biq". 
+\item Commandline Processor, i.e, Shell
+\item Security rings, where Kernel is the most privileged and applications are the least privileged
+\end{itemize}
+\end{document}
