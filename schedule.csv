@@ -3,7 +3,7 @@ sequence,type,date,topic,paper1,url1,author1,status1,paper2,url2,author2,status2
 2,class,9/5/2019,compilers,The Education of a Computer,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/p243-hopper.pdf,Hopper,read,The FORTRAN Automatic Coding System,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/FORTRAN-102663113.05.01.acc.pdf,Backus,review,The Night Watch,http://scholar.harvard.edu/files/mickens/files/thenightwatch.pdf,Mickens,read
 3,class,9/10/2019,programming languages,Recursive Functions of Symbolic Expressions and Their Computation by Machine,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/LISP.pdf,McCarthy,review,Algol-60 Translation,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/Algol60-Dijkstra-MR35.PDF,Dijsktra,review,Go To Statement Considered Harmful,https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf,Dijkstra,read
 ,noclass,9/12/2019,,,,,,,,,,,,,
-4,class,9/17/2019,runtime systems,Garbage Collection in an Uncooperative Environment,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/GC-Uncooperative.pdf,Boehm and Weiser,review,,,,,,,,
+4,class,9/17/2019,runtime systems,Garbage Collection in an Uncooperative Environment,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/PL/GC-Uncooperative.pdf,Boehm and Weiser,review,Quantifying the Performance of Garbage Collection vs. Explicit Memory Management,,Hertz & Berger,nextyear,,,,
 ,noclass,9/19/2019,,,,,,,,,,,,,
 5,class,9/24/2019,computer architecture,Architecture of the IBM System/360,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/Architecture-of-the-IBM-System-360.pdf,Amdahl et al.,review,Structural aspects of the System/360 Model 85: The cache,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/liptay68.pdf,Liptay,read,Bringing the Web Up to Speed with WebAssembly,"https://people.mpi-sws.org/~rossberg/papers/Haas,%20Rossberg,%20Schuff,%20Titzer,%20Gohman,%20Wagner,%20Zakai,%20Bastien,%20Holman%20-%20Bringing%20the%20Web%20up%20to%20Speed%20with%20WebAssembly.pdf",Rossberg et al.,review
 6,class,9/26/2019,multicore and parallelism,Cramming More Components onto Integrated Circuits,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Arch/moorespaper.pdf,Moore,review,Validity of the Single Processor Approach to Achieving Large Scale Computing Capabilities,http://www.cs.umass.edu/~emery/classes/cmpsci691st/readings/Conc/Amdahl-04785615.pdf,Amdahl,review,Amdahl’s Law in the Multicore Era,http://www.cs.wisc.edu/multifacet/papers/ieeecomputer08_amdahl_multicore.pdf,Hill,review
@@ -17,8 +17,9 @@ sequence,type,date,topic,paper1,url1,author1,status1,paper2,url2,author2,status2
 ,noclass,10/24/2019,,,,,,,,,,,,,
 12,class,10/29/2019,cryptography,A Method for Obtaining Digital Signatures and Public Key Cryptosystems,https://github.com/emeryberger/COMPSCI-630/raw/master/papers/Rsapaper.pdf,RSA,review,,,,,,,,
 13,class,10/31/2019,fault-tolerance (hardware),A Case for Redundant Arrays of Inexpensive Disks (RAID),https://github.com/emeryberger/COMPSCI-630/raw/master/papers/RAID.pdf,"Patterson, Gibson & Katz",review,Why Do Computers Stop and What Can Be Done About It?,https://github.com/emeryberger/COMPSCI-630/raw/master/papers/gray-85.pdf,Gray,review,,,,
-14,class,11/5/2019,fault-tolerance (software),,,,,,,,,,,,
-15,class,11/7/2019,performance analysis,,,,,Coz: Finding Code that Counts with Causal Profiling,,,,,,,
+14,class,11/5/2019,fault-tolerance (software),"Enhancing Server Availability and Security Through
+Failure-Oblivious Computing",https://github.com/emeryberger/COMPSCI-630/raw/master/papers/rinard.pdf,Rinard et al.,review,DieHard: Probabilistic Memory Safety for Unsafe Languages,https://github.com/emeryberger/COMPSCI-630/raw/master/papers/fp014-berger.pdf,Berger and Zorn,review,,,,
+15,class,11/7/2019,performance analysis,GProf: A Call-Graph Execution Profiler,https://github.com/emeryberger/COMPSCI-630/raw/master/papers/gprof.pdf,Graham et al.,review,Coz: Finding Code that Counts with Causal Profiling,https://github.com/emeryberger/COMPSCI-630/raw/master/papers/coz.pdf,Curtsinger & Berger,review,,,,
 16,class,11/12/2019,distributed systems,Bitcoin: A Peer-to-Peer Electronic Cash System,,,review,In Search of an Understandable Consensus Algorithm,,,,,,,
 17,class,11/14/2019,databases,,,,,,,,,,,,
 18,class,11/19/2019,distributed & concurrent systems,,,,,,,,,,,,
@@ -30,6 +31,6 @@ sequence,type,date,topic,paper1,url1,author1,status1,paper2,url2,author2,status2
 1,project-due,,,,,,,,,,,,,,
 2,project-due,,,,,,,,,,,,,,
 3,project-due,,,,,,,,,,,,,,
-,,,hardware security,"Spectre, Meltdown",,,,,,,,,,,
+,,,,,,,,,,,,,,,
 ,,,performance analysis,"Roofline: An Insightful Visual Performance Model
 for Floating-Point Programs and Multicore Architectures",,,,,,,,,,,
