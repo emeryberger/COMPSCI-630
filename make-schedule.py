@@ -33,6 +33,7 @@ with open('schedule.csv') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         print(prolog)
+
         if row['type'] == 'exam':
             print(prolog_header)
             print('<font color="red">')
@@ -80,6 +81,9 @@ with open('schedule.csv') as csvfile:
                         url_str = f'<a href="{url}">{title}</a>, {author} [read]<br/>'
                     elif row['status'+key] == "skim":
                         url_str = f'<a href="{url}">{title}</a>, {author} <font color="darkgreen">[skim]</font><br/>'
+                    # Ignore nextyear
+                    elif row['status'+key] == 'nextyear':
+                        continue
                     else:
                         # Default, review
                         url_str = f'<a href="{url}">{title}</a>, {author} <font color="red">[review]</font><br/>'
