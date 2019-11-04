@@ -37,8 +37,8 @@
   \begin{center}
   \framebox{
      \vbox{\vspace{2mm}
-   \hbox to 6.28in { {\bf COMPSCI~590S~~~Systems for Data Science
-                       \hfill Fall 2016} }
+   \hbox to 6.28in { {\bf COMPSCI~630~~~Systems
+                       \hfill Fall 2019} }
       \vspace{4mm}
       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
       \vspace{2mm}
@@ -108,68 +108,49 @@
 
 %FILL IN THE RIGHT INFO.
 %\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
-\lecture{1}{Memory Allocation}{Emery Berger}{Udit Saxena,Freddie Sanchez}
+\lecture{13}{Fault-Tolerance (Hardware)}{Emery Berger}{Kyle Godinho, YangJunqing Qiao}
 
-\section{Continuation of discussion on Grappa }
+\section{Programming Language Security}
 
-We discussed the concept of 'Work Stealing' and the difference from Work Stealing and Work Sharing.
-
+Hardware was seen as the "Gold Standard" for security. Still, there needed to be ways for programming languages to be more secure and robust against exploits. Some design decisions involve needing to enforce spatial and temporal memory safety, \textit{type} safety, and control-flow integrity. However, these programming language still need to be fast so one cannot sacrifice too much speed in the pursuit of security. Even performance hindrances as much as 5\%, in the case of Microsoft, can be seen as a no-go. One such example of a "safe" programming language is \textit{Rust}. Some of the ideas \textit{Rust} implements are:
 \begin{enumerate}
-
-\item Work Stealing :
-\begin{enumerate}
-\item Proactively go and "steal" work from an overloaded fellow worker.
-\item It is used for load imbalance correction. There can be different strategies -
-\begin{enumerate}
-\item Randomly choosing a victim and then decide how much work to take.
-\item "Half Stealing" - steal half the work of the chosen victim.
-\item "The power of two choices" - between two choices, we pick the victim as the one with more work.
-\end{enumerate}
-\item Work Stealing is more fine grained when looking at degree of load balancing control.
-\item Only the processes with "no work" are doing the load balancing work.
+    \item Memory Safety: Tries to provide certain guarantees, unlike \textit{C}, that pointers always point to valid memory addresses.
+    \item Concurrency
+    \item Ownership Types: One can have data that is "Owned" and can only be written and read following a certain paradigm. One can \textit{loan} out the ability to read the data and this can be given to however many threads as needed. Just reading data does not allow a chance to modify it. One can also \textit{loan} out the ability to write to the data and this can only be controlled by one thread at a time. When this write ability is \textit{loaned} out it also stops other threads with read ability from reading the data in an effort to stop race conditions.
+    \item No Garbage Collector
+    \item "unsafe" sections of code: This is the unfortunate security downfall of \textit{Rust}, however. In trying to get around some of the blocks put in place by the language keeping itself "safe", programmers can declare "unsafe" sections of code that ignore these restrictions. However, that one "unsafe" section can access all of memory and thus this unsafe-ness can be seen as "spreading out", making the whole program unsafe.
 \end{enumerate}
 
-\item Work Sharing :
+\section{Virtualization}
+Virtual machines also leverage the concept of sandboxing by restricting their target processes to a specified environment and forcing them to communicate down the system stack through a specified API. Virtualization can be incorporated into the general system STACK (as defined by DARPA) and also pose various security risks. Virtualization software for various programming languages are a common vector of attack. \\
+DARPA tried to create a secure 'STACK' with no memory vulnerabilities however, even such a secure system will encounter high level vulnerabilities. One example is SQL injection attacks. Due to the way that SQL queries are parsed, an attacker can submit an arbitrary query for processing into the system. This does not exploit any memory safety issues and instead takes advantage of high level design choices in the SQL implementation. \\
+
+\section{Security}
+\subsection{High Level Security}
+High level security vulnerabilities arise due to the implementation of applications. The SQL query injections outlined in the previous section. Such vulnerabilities are application level security issues and have no general solution. The best that security experts can do is to anticipate or quickly fix known bugs and deploy patches before too much damage can be done. This is commonly referred to as a 'cat and mouse game'. \\
+Another more extreme example is that of a 'rubber hose attack' which assumes the attacker has physical access to crucial security devices (such as threatening the DBA with physical violence). \\
+One also needs to consider what their \textit{Threat Model} is. How powerful an attacker is, what attacks you're expecting to be resistant too, and physical access to what you're trying to protect are examples of things to consider. For example, if one's \textit{Threat Model} includes being resistant to attacks from the external internet but then someone on one's internal network performs the attack and they succeed, that is not something that was planned for.
+\subsection{Low Level Security}
+These are the security exploits that a secure system stack would seek to prevent. The issues handled here involve spacial, temporal, memory, type safety, and control flow integrity. \\
 \begin{enumerate}
-\item Another load sharing paradigm where load is "shed" onto other workers. Different strategies include :
-\begin{enumerate}
-\item Random picking
-\item Round Robin
-\item Min-first
-\end{enumerate}
-\item Work Sharing is coarse grained when looking at degree of load balancing control.
-\item Everyone needs to be asked for their load.
-\item When workers are asking/answering to a query for their load, they aren't doing meaningful work - this situation gets worse when everyone is asking everyone for their work. \\
-But to prevent the issue of stopping working when asking/being asked, we the concept of lock-free data structures.
+    \item Drive by attacks: When a user navigates to a malicious website, the site will run plugins and other applets that the browser handles to try and take advantage of zero day vulnerabilities or users who have not updated their software recently. These attacks commonly run known exploits on virtualization software such as the JVM in an attempt to corrupt the stack, deliver their payload, and force the user's machine to execute arbitrary code.
+    \item Heap spraying: The attacker fills the heap with shell code and NOP sleds and attempts to subvert a single pointer to have their code execute. JIT spraying is a more specific version of this attack. Since JIT compilers can not be run in a no-execute-program environment, malicious code takes advantage of this and sprays the heap with JIT compiled code.
+    \item Speculative execution leaks (SPECTRE): Attackers would request an arbitrary address to have it stored into memory, locate its address by exploiting speculative execution, and then expose the information using a covert channel. This attack allowed applications in user space to access arbitrary kernel code.
+    \item Hardware level exploits: The Row hammer exploit used physical principles of how computers are designed to attack their memory. The Row hammer attack depends on the physical phenomenon that a charge can be induced through flipping a bit in RAM; this charge in turn might cause any of its adjacent neighbors to have their values reversed as well. Such an exploit has far reaching consequences. Cloud services depend on the fact that space on hardware can be partitioned into independent sections however, the Row hammer attack negates this assumption as physical storage location is integral to its success. To combat this, cloud service providers such as Amazon physically isolates company secure data on their servers.
 \end{enumerate}
 
+
+\section{Privacy versus Integrity}
+Privacy and Integrity can be seen as "duals" in their function. With Privacy, one is trying to stop data in a safe space from leaving to the unsafe world. With Integrity, one is trying to stop data from the unsafe world from entering your safe space.
+
+\subsection{Integrity Example}
+
+\textit{Perl}:
+\begin{enumerate}
+    \item \textit{Perl's} approach to integrity places focus on data coming in from the world, such as through a network socket, that is considered to be "tainted". If trying to just save the data, you would get an error that the data cannot be saved due to it being "tainted". In order to save the data, you would need to "sanitize" the data and in turn remove its labeling as being "tainted", therefore making it safe.
 \end{enumerate}
 
-\section{Cooperative Scheduling}
-While on a single core, processes go to sleep and are context-switched out on an I/O call. \\
-The process scheduling framework can be thought of as a scheduling - descheduling framework. \\ \\
-There are two kinds of scheduling:
-\begin{enumerate}
-\item: Preemptive Scheduling: Every process gets a time quantum (~5ms). On the expiration of this time slice, the process is context-switched out, and another process is allowed to continue computation. \\
-This kind of scheduling is good for preventing malicious processes from taking an arbitrarily long computation time. \\
-The problem with this kind of scheduling is:
-\begin{enumerate}
-\item High scheduling overhead with lower granularity
-\item Lock Convoying
-\item Warm up or collateral damage or frequent cache flushing.
-\end{enumerate}
-\item: Cooperative Scheduling: In Cooperative scheduling, a process is allowed to continue processing until it explicitly yields the CPU for another process to continue. The onus is on the process to hand over the CPU - if it doesn't, it can keep processing for as long as it wants. This is used in environments which are considered safe and have no malicious processes.
-\end{enumerate}
 
-\section{Page based DSM}
-Page based DSM refers to the Distributed Shared Memory at the level of a page which is the smallest unit of memory being shared across the distributed system. There are two kinds:
-\begin{enumerate}
-\item True Sharing : When the same location on the same page needs to be shared across a distributed system. When the page is both logically and physically shared.
-\item False Sharing: When different locations on the same page need to be shared. Here the locations are logically unshared, but physically shared.
-\end{enumerate}
-False sharing is overcome by using diff merges/updates - it is a cheaper mode of communication.
-Grappa doesn't do this - it batches updates to amortize update overhead.
-
-\section{Delegation}
-This concept of completing work on the local machine rather than remotely doing the work. It is based on the principle that local memory access is way cheaper than remote memory access.
+\section{End-to-End Transfer}
+One method of ensuring a large file gets transferred correctly over a network is through hashing. Before sending, make a hash of the whole file along with hashes for smaller chunks of the file. The receiver, after receiving the whole file, will then check its complete hash. If it's checks out, then they can be pretty positive that there were no errors in receiving the file. If it is wrong, then they can go through checking the chunks of the file they received to the hash of those chunks. This saves time as when they find where the error occurred they can just request only that chunk to be re-sent.
 \end{document}
