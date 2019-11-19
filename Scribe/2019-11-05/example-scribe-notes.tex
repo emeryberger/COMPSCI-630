@@ -1,0 +1,260 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf COMPSCI~630~~~Systems
+                       \hfill Fall 2016} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe(s): #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture {#1}: #2}{Lecture {#1}: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{13}{Fault Tolerance}{Emery Berger}{Emily Herbert}
+
+\section{Admission's Control}
+Admission's control is a term used to describe managing load in a system.
+
+\subsection{Load Shedding}
+The example given was of a bar:
+
+\textit{Imagine a bar. People enter, they are served, and then they exit. The
+load of the bar is determined by a combination of (1) how quickly people arrive
+and (2) how quickly they are served.}
+
+This brings us to \textbf{Little's Law}:
+
+\begin{align}
+L &= \lambda W \\
+\text{average number of customers} &= \text{arrival rate} \cdot \text{service time} \\
+E[L] &= E[\lambda] \cdot E[W]
+\end{align}
+
+This means that the bar is always in one of two states:
+
+\begin{enumerate}
+    \item If the service time is lower than the arrival rate, customers are
+    served as quickly as possible and are happy :)
+    \item If the service time is higher than the arrival rate, this builds a
+    queue. This increases wait times and makes everyone sad :(
+\end{enumerate}
+
+This concept introduces \textbf{load shedding}. The idea that turning away
+customers can (1) improve Quality-of-Service (QoS) and (2) mitigate against
+Denial-of-Service (DoS) attacks.
+
+\subsection{Thread Pools}
+Servers use thread pools for admission's control. Have a set number of threads
+``at the ready'', so that when one is available it can be used. This is instead
+of creating threads on demand.
+
+\section{Cryptography}
+Security used to be done through ``security through obscurity''. This relies on
+the internals of the system being hidden from the users, and it really isn't
+secure at all. Modern security uses a different threat model. It is assumed that
+the resources that you want secure (e.g. a secret message) \textit{will} be
+intercepted, but security is applied to ensure that the details or content are
+unreachable. This is where cryptography comes into play.
+
+Types of cryptography:
+\begin{itemize}
+    \item Stegonography. A key is used to determine the location of the secret
+    things. Codewords.
+    \item Caesar Cipher. Symmetric crypto scheme where the key is a mapping of
+    letters of the alphabet to other letters. The secret message is encrypted
+    with forward mapping and decrypted with the backward mapping. This mapping
+    can take two forms:
+        \begin{enumerate}
+            \item All letters are ``shifted'' by some number. \\
+            A B C D E \\
+            J K L M N \\
+            This is bad because it only takes 26 brute-force attempts to
+            decrypt.
+            \item All letters are mapped to a random letter. \\
+            A B C D E \\
+            Z K T Q N \\
+            This is better because it takes many brute-force attempts to
+            decrypt. But...
+        \end{enumerate}
+    Those ``many brute-force attempts to decrypt'' can be reduced by
+    \textbf{frequency analysis}. Frequency analysis uses common word patterns to
+    make guesses at decryption (e.g. a single encrypted letter is likely ``I''
+    or ``a'' when decrypted). This brings the random letter Caesar Cipher down
+    to a manageable range.
+    \item One time pad. Best thing ever. Theoretically unable to be decrypted.
+    The message is turned into an array of random numbers, where the max of
+    those numbers is the length of the message, and the key is the
+    corresponding mapping.
+    \item Rotating keys + codebooks. If you have a codebook with a bunch of
+    keys, all you have to do is choose a new key each day. This is hard to
+    decrypt. Apparently Germany used this and called it Enigma.
+\end{itemize}
+
+Known plaintext attacks are when you a priori known what part of the message is
+going to say, and you use this information to decrease the huge space of
+possible decryption patterns.
+
+\section{Encryption}
+
+The goal of encryption is to make it as if the encrypted message is just
+random noise. When something is encrypted to be ``random noise'' the best that
+a bad actor can do is brute-force the decryption. So, if we use large encryption
+keys, this becomes difficult. A system such as this offers a probabilistic
+security gaurentees:
+
+\begin{align}
+E[\text{time to decrypt with brute force}] = \frac{1}{2} \cdot \text{key space}
+\end{align}
+
+Of course, a bad actor can attain your key. In this case, they will be unable
+to do both encryption and decryption. This is a property of asymmetric keys.
+
+The best case is if we can encrypt without being able to decrypt. Thus, we want
+some function $F$ that is easy to perform, that has some $F^{-1}$ that is
+difficult to perform. ... prime factoring!
+
+All this leads us to the modern day scheme: \textbf{public keys and private
+keys}. And also our cast of characters:
+\begin{itemize}
+    \item Alice and Bob are good actors, and they are attempting to send
+    messages back and forth.
+    \item Mallory is malicious.
+    \item Eve is an evesdropper.
+    \item Sybil is the representation of reputation based systems (?)
+\end{itemize}
+
+A public key consists of multiple components: $(e, d, n)$, where $e$ is
+computed from $d$, and $d$ is relatively prime to $(p-1, q-1)$. Using a
+combination of public and private keys, Alice and Bob can achieve:
+\begin{align}
+\text{Signature} &= D_{bob} (message) -> secret \\
+\text{Encrypt} &= E_{alice} (secret) -> secret_{alice} \\
+\text{Decrypt} &= D_{alice} (secret_{alice}) -> secret_* \\
+\text{now} &= message = E_{bob} (secret_*)
+\end{align}
+
+Encrypted messages must be of a certain length, so they are filled up to a
+certain size with random numbers.
+
+Who keeps they keys? Some public key infrastructure (PKI). It is a known
+condition, so to speak, that there must ultimately be one key origin, from
+which all trusted exchanges originate. If this is compromised, the whole
+system is compromised.
+
+\section{Fault Tolerance}
+
+\begin{align}
+\text{availablity} &= \frac{MTBF}{MTBF + MTTR} \\
+MTBF &= \text{mean time between failures} \\
+MTTR &= \text{mean time to recover} \\
+\end{align}
+
+So to increase fault tolerance, you can either increase the MTBF or reduce the
+MTTR. There is a system, ROC, that seeks to reduce MTTR.
+
+Fault tolerance recover can either be fail-safe, fail-stop, or fail-over.
+Fail-safe systems rollback or undo the error, fail-stop systems blowup on error,
+and fail-over systems rely on replicas to vote on errors.
+
+\end{document}

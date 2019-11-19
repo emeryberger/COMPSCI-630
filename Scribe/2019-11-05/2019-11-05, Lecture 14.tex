@@ -1,0 +1,289 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~ Systems
+                       \hfill Fall 2019} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+  &$\displaystyle{{}##}$\hfil\tabskip\@centering
+  &\llap{$##$}\tabskip\z@skip\crcr
+  #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+  &$\displaystyle{{}##}$\hfil\tabskip\@centering
+  &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+  #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{14}{October 17}{Emery Berger}{Adeel Hassan}
+
+\section{Load management}
+
+\subsection{Little's Law}
+\begin{align}
+    L = \lambda * w
+\end{align}
+where\\
+\begin{align}
+    L &= \text{number of customers waiting in line or being served}\\
+    \lambda &= \text{arrival rate}\\
+    w &= \text{service time}
+\end{align}
+
+The law holds under the assumption that the system is \textbf{backlogged} i.e. there are always some customers waiting in line.
+
+\subsection{Load shedding}
+This is a form of load management where you turn away customers to avoid degradation of service or overload. This strategy is also a form of \textbf{admission control}.
+\begin{itemize}
+    \item \textbf{Example:} a bouncer outside a bar refusing to let more customers in.
+\end{itemize}
+
+Degradation of service can be further sub-categorized as:
+\begin{itemize}
+    \item Degradation of \textbf{Quality of Service (QoS)}
+    \item \textbf{Denial of Service (DoS)}
+\end{itemize}
+
+\subsection{Multi-threading}
+Two strategies:
+\begin{enumerate}
+    \item Spawn a new thread for every new customer
+        \begin{itemize}
+            \item Bad if too many customers show up
+        \end{itemize}
+    \item Maintain a thread pool. When a new customer arrives assign a thread (if available) from the pool. If all threads in the pool are busy, the customer will simply have to wait.
+    \begin{itemize}
+        \item Acts as a sort of admission control mechanism, since the system cannot take on more load than it can handle.
+    \end{itemize}
+\end{enumerate}
+
+\section{Cryptography}
+\textbf{Crypt} is Greek for "secret".
+
+\subsection{Security through obscurity}
+A security strategy that involves hiding the details of the system implementation as a form of security mechanism.
+
+A \textbf{VERY BAD} idea. Considered to be no security at all.
+
+\subsection{Steganography}
+Hiding a message inside another message. The "key" is the embedding method.
+
+\textbf{Example:} Hiding a message in the least significant bits of an image. The change in pixel color values will be too small for the human eye to notice.
+
+\subsection{Caesar Cipher}
+"Shift" all characters in the message by a fixed amount so that they map to different characters. The key is the shift amount. For example, if the key is 5, the characters map as follows:
+\begin{align}
+    A &\rightarrow E\\
+    B &\rightarrow F\\
+    C &\rightarrow G\\
+    &\;\;\vdots \notag
+\end{align}
+
+Not a very strong encryption scheme. Requires max 26 tries to break.
+
+\subsection{A better version}
+Create a unique mapping for each character. The key, in this case, is all the character mappings.
+
+There are $26!$ possible mappings, so a brute force decryption attempt will require $26! = 403291461126605635584000000$ attempt, which is impractical.
+
+A cleverer way to break this kind of encryption is to use \textbf{frequency analysis}.
+\begin{itemize}
+    \item The most frequent letters in English are known to be (in decreasing order):  ETAOINSHRDLU. One can try to match the most frequent letters in the cipher text to these.
+    \item If some random letter appears as a one-letter word in the cipher text, it is very likely to be the mapping for \textit{a} or \textit{i}.
+    \item Similarly if a 3-letter word appears very often, it is likely to be \textit{the}, which gives you the mappings for \textit{t}, \textit{h}, and \textit{e}.
+\end{itemize}
+
+Frequency analysis works really well and allows such ciphers to be easily broken.
+
+\subsection{The Perfect cipher}
+There exists an encryption scheme known to be theoretically unbreakable: the \textbf{one-time pad}.
+
+\textbf {How it works}: create a unique mapping for each character in the message. Use it once for that message and never again. The key length is equal to the message length.
+
+(This is distinct from the previous cipher because here the same character will have a different mapping for each position that it occurs in the message.)
+
+In terms of binary strings, encryption is performed by, XOR'ing the message with the key. The encrypted message can be XOR'ed with the key again to decrypt it.
+\begin{align}
+    msg &= 01101101\;\;01110011\;\;01100111\\
+    key &= 01101011\;\;01100101\;\;01111001\\
+    E(msg, key) &= msg \otimes key\\
+    &= 00000110\;\;00010110\;\;00011110\\
+    msg &= E(msg, key) \otimes key\\
+    &= 01101101\;\;01110011\;\;01100111
+\end{align}
+
+The reason this is not used for everything is that it is impractical. For every message, you have to generate and safely transmit the key to the recipient.
+
+\subsection{The Enigma machine}
+Encryption machine used by the German during WW2. Used a complicated encryption scheme that defies frequency analysis. The character mappings change with every key stroke.
+
+It was broken by Polish and British mathematicians using, among other things, a \textbf{known plaintext attack}. This involves somehow figuring out what the plaintext for a part of the ciphertext is, and using that to decrypt the reset of the message.
+
+\textbf{Anecdote}: during the first gulf war, the Iraqis were using encrypted walkie-talkies bought from the British that did not actually work, resulting in their communication being aired out in the plain. This allowed the American forces to eavesdrop easily and gain a significant advantage.
+
+\section{Encryption/Decryption}
+\textbf{Goal}: encrypted message should look like random noise. 
+
+\textbf{Goal}: The best an attacker should be able to do is brute force.
+
+One way to do this is to make the key long. The key length can be used to obtain a probabilistic guarantee for the time to decrypt by brute force:
+
+\begin{align}
+    \mathbb{E}[\text{time to decrypt}] = \frac{1}{2} \times |\text{key space}|
+\end{align}
+
+For example, Stripe uses a key length of 2048 bits. $\Rightarrow |\text{key space}| = 2^{2048}$.
+
+\subsection{Asymmetric key encryption}
+In a paper, Diffie and Helman proposed an encryption scheme based on a \textbf{one-way function} AKA a function that is easy to compute but whose inverse is hard to compute.
+    \begin{align}
+        f(\alpha) &= \beta & \text{"easy"}\\
+        f'(\beta) &= \alpha & \text{"hard"}
+    \end{align}
+\subsubsection{RSA}
+Uses the prime factoring as the one-way function. In this case, the easy direction is the multiplication of two large prime numbers and the hard direction is factoring that large number into its prime factors.
+
+Prime factorization is not NP-complete. We don't know exactly how hard it is.
+
+key = $(e, d, n)$. $n=pq$. $e$ computed from $d$. $d$ relatively prime to ($p-1$, $q-1$).
+
+$e$ is public. $d$ is private.
+
+\textbf{Signing and encryption:}
+
+\begin{align}
+    d_{Bob}(m) &= s & \text{(sign - Bob encrypts with his private key)}\\
+    e_{Alice}(s) &= s_{Alice} & \text{(encrypt - Bob encrypts with Alice's public key)}\\
+    d_{Alice}(s_{Alice}) &= s & \text{(decrypt - Alice decrypts with her private key)}\\
+    e_{Bob}(s) &= m & \text{(decrypt - Alice decrypts with Bob's public key to obtain the message)}
+\end{align}
+
+RSA is used in TLS.
+
+\textbf{Where to get the public key?}
+\begin{itemize}
+    \item PKI - Public Key Infrastructure
+    \item Root Certificate Authorities
+    \item Who to trust? \textit{Quis custodiet ipsos custodes}. "Who guards the guardians?" Turtules all the way down
+\end{itemize}
+
+\section{Fault Tolerance}
+
+\begin{align}
+    \text{availability} &= \frac{\text{MTBF}}{\text{MTBF}+\text{MTTR}}\\\\
+    \text{MTBF} &= \text{mean time between failures}\\
+    \text{MTBF} &= \text{mean time to recover}
+\end{align}
+
+\textbf{ROC - Recovery Oriented Programming}
+\begin{itemize}
+    \item reduce MTTR
+\end{itemize}
+
+\textbf{Fail safe vs fail stop}
+\begin{itemize}
+    \item rollback/undo error vs stop on error
+\item \begin{tabular}{c|c}
+     rollback/undo error & stop on error\\
+     Tandem computers & fail over - replicas\\
+\end{tabular}
+\end{itemize}
+
+\end{document}
