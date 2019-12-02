@@ -1,0 +1,153 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~ Systems
+                       \hfill Fall 2019} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribes: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{16}{November 12}{Emery Berger}{Shashwat Singh}
+
+\section{Failure Oblivious Computing}
+Software fault tolerant systems can be used through the use of assert(0), throwing an exception like for eg. x=1/0, x= *0, x=(null)
+
+Latent programmer intent can be specified using exit(0) in UNIX.
+
+Memory safety errors include buffer overflows(spatial), dangling pointers(temporal)
+
+Race condition is specified as if two threads try to compete for the same memory location then it accounts as race condition. 
+
+Emery talks about Hans Boehm designing the android calculator which was designed to give accurate precisions. 
+
+An Undefined behavior can result in a compiler to delete codes.
+
+Acquiring a lock is sometimes expensive so people sometimes dont do it. 
+
+In Hogwild paper there is no concurrency control as it never loses locks. It carefully leads to convergence and gives right result and has higher performance but gives undefined behavior.
+
+Emery talks about the phenomenon in which we don't really notice a significant difference between the colors of the clothes of the characters since humans are not much perceptive towards colors. 
+
+The concept of automatic data structure repair was discussed in which for eg. like in a linkedlist if the backpointer is missing then a back-pointer is added.
+
+Failure oblivious mentions taking a C program and making it a safe C program. If an out of bounds allocation occurs, it is stored in a separate buffer and retrieved later. 
+
+Failstop basically stops the program from running whenever a failure occurs in the program.
+
+Emery told a trick to save the space occupied by backward pointers in doubly linkedlist, in which he told that the backward pointers can be calculated using A XOR C for B, B XOR D for C etc.
+
+Emery talks about why ATC towers are located at a higher elevation, so that when the software fails, the staff can use binoculars to located the aircraft and can use walkie talkie to transmit or receive the messages.
+
+Emery mentions why sometimes reinstalling an app can help in getting rid of corrupted data which was earlier causing the app to fail while running.
+
+Linux has a Out of Memory killer in which it finds if the system is consuming a lot of memory then it exits it.
+
+Fault tolerant systems use the concept of infinite heap semantics.
+
+The Expectation[No of user failures]= p * N
+
+The companies like IBM, Boeing and AT&T are given as examples of N variant systems. It was assumed that the softwares developed by these companies will be independent but was not. 
+
+
+\end{document}

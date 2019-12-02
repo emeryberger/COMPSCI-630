@@ -1,0 +1,149 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~ Systems
+                       \hfill Fall 2019} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribes: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{17}{November 19}{Emery Berger}{Yash Bidasaria}
+
+\section{Replicated State Machines}
+
+Distributed systems are  conventionally created as Replicated State Machines. This paradigm has every machine operate on their own state machines assuming inputs come in deterministically. This assumption even allows for asynchronous inputs. This is the standard way of implementing distributed systems. One drawback is that algorithms need to be created by hand to account for these assumptions.
+
+As RSMs need determinism, one cannot implement RSMs with threads as they are non-deterministic. There are various cases like User Input, Scheduling and even the local Time of machines that make them non-deterministic. DieHard in a way get RSMs for free to an extent as they get probabilistic errors. RSM with determinism leads to Bohr Bugs while RSM with DieHard leads to Heisen Bugs.
+
+\section{DieHard, DieHarder}
+
+DieHard was reimplemented at Microsoft due to licensing issues and first named it Robust Heap and later Fault Tolerant Heap. 
+
+DieHarder was created as a successor to DieHard while keeping the Threat Model and several other security cases in mind. This project was aimed to better understand the security of memory allocations. The modifications to DieHard for security led to a security - reliability tradeoff. For example, in a brute force attack, if the someone keeps attacking you, you can just stop. But as the system is secure, it is not available. 
+
+In DieHard when some memory is freed, the system becomes susceptible to a after free bug as DieHard does not actually change the contents. To combat this bug, DieHarder fills it with random values. DieHarder as contributed to a lot of changes in Windows 8. It is one of the most secure memory allocators. There is another tradeoff between Bits of Entropy used for random values and scalability. 
+\section{Profilers}
+
+Profilers are used to analyse the programs time/memory usage in order to create better software systems. 
+
+prof is one of the earliest profilers. At every line of execution, it increment the counter for that line. This created a lot of overhead resulting in a slow program. This profiler had another assumption of every line having the same cost. This technique although does allow to identify the lines that are executed the most and are the performance bottleneck. 
+
+A solution could be to measure the time consumed for each line. The time although needs to be corrected as the cpu might context switch causing the time consumed to be a lot more. There are three times: Wall Clock Times, User Time and the System Time. For profilers, User Time should be used. This solution also adds a lot of overhead to the program. It disrupts the cache having the Probe effect. The Probe Effect states that the program might change when adding an instrument to measure its performance. 
+
+Another profiler called gprof takes into account the above problems. It has a low overhead. is accurate and is unbiased. It uses statistical profiling which uses the Law of Large numbers. This kind of profiling samples the memory and intervals, and then using the Law of Large Numbers eventually converges to the true value. But with sampling at a constant interval can create a bias. To combat this problem, sampling is conducted at random intervals. 
+\section{Key Terms}
+
+\begin{enumerate}
+    \item Replicated State Machines 
+    \item Never Role your own Cryto (or anything else)
+    \item Fear Uncertainty Doubt
+    \item Threat Model
+    \item Security - Reliability Tradeoff
+    \item Bits of Entropy - Scalability Tradeoff
+    \item Probe Effect
+    \item Statistical Profiling
+\end{enumerate}{}
+
+
+\end{document}
