@@ -26,7 +26,7 @@ Failure-Oblivious Computing",https://github.com/emeryberger/COMPSCI-630/raw/mast
 19,class,11/21/2019,43790,distributed systems,Bitcoin: A Peer-to-Peer Electronic Cash System,https://github.com/emeryberger/COMPSCI-630/raw/master/papers/bitcoin.pdf,Satoshi Nakamoto,review,,,,,,,,
 20,class,12/3/2019,43802,distributed systems,In Search of an Understandable Consensus Algorithm,https://github.com/emeryberger/COMPSCI-630/raw/master/papers/raft.pdf,Ongaro and Ousterhout,review,,,,,,,,
 21,class,12/5/2019,43804,catch-up,,,,,,,,,,,,
-22,class,12/10/2019,43809,TBD,,,,,,,,,,,,
+22,class,12/10/2019,43809,catch-up,,,,,,,,,,,,
 2,exam,12/13/2019,43812,Final,"ILC S140, 1:00pm-3:00pm",,,,,,,,,,,
 1,project-due,10/28/2019,43766,"Smash, A Compacting Memory Allocator",,https://docs.google.com/document/d/1ryGR0CU6r39Uv6s062ftf15Jy8yndlrAQoia86rypDk/edit?usp=sharing,,,,,,,,,,
 2,project-due,12/6/2019,43805,"SnakeProf, A Space and Time Profiler for Python",,https://docs.google.com/document/d/1-bqe5SRXHi19vII_plXKIzp3urI-SgJLGQiQT1Is8Bo/edit?usp=sharing,,,,,,,,,,
