@@ -1,0 +1,328 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Fall 2019} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{12/5}{September 10}{Emery Berger}{Arta Razavi}
+
+\section{Testing}
+
+In the past software developers would develop code and have testers test it to find bugs
+\newline
+Today testing has been pushed out to the users
+\newline
+"you are the tester" = the users are the testers
+
+\section{Correctness is an Economic Issue}
+correctness is more of an economic question
+\newline
+In 1968 there was a "software crisis" and that somehow lead to the start of software engineering
+\newline
+It used to cost lots of money and take a long time to develop useful software
+\newline
+The big question became how can we make programs more correct?
+\newline
+There needed to be software architecture improvements made in order to make software development profitable. This lead to the development of:
+\begin{itemize}
+    \item waterfall
+    \item agile
+    \item scrum
+    \item TDD (test driven development)
+\end{itemize}
+\newline
+Because of these software architecture improvements today software developers can create code that is "good enough". This Means they are able to ship software quickly and efficiently to the hands of costumers and make profit from it.
+
+\section{Solve Economic Issues}
+Users are more forgiving about failures today. For example we do not care if our cellphone drops a call every now and then. 
+\newline
+Users favor features so they don't mind trading off correctness for an increase in feature releases
+\newline
+\textbf{"first mover advantage"} means first to the market will get user base and crowd everyone else out. A good example of this is social media sites because it is hard to convince everyone to migrate to a new service if there is no one there.
+\newline
+\textbf{network effect} means that products and services gain additional value as they gain more users
+\newline
+\textbf{"second system advantage"} is when a company learns from the mistakes of companies that came before it. Facebook did this when they came after Myspace.
+\newline
+This reinforces the notion that it is more profitable to ship products that are kind of crappy but be able to push them out quickly versus spending a really long time developing perfect products
+\newline
+how do we know when the software is ready / good enough?
+\newline
+We study the relationship between product value and the time it took to ship it to land at a certain threshold for correctness that the costumer will put up with. 
+
+\section{Bug Reports}
+user reports and bug feedback are space and not perfect 
+\newline
+In order to reproduce the error we need all the steps that lead to it
+\newline
+bug reports often fail to tell you the steps you need to take to reproduce the problem because ordinary people do not know this is necessary. 
+\newline
+Microsoft can bypass this issue and get quality bug reports automatically without any user intervention
+\newline
+Watson (Windows error reporting) is the tool developed by Microsoft to track bugs
+\newline
+When a program fails it asks you "do you want to send a error report?"
+\newline
+\textbf{why people say yes:}
+\begin{itemize}
+    \item give up privacy in exchange for fixing errors important to you
+    \item want to help make application better
+    \item usually pretty easy to just say "yes" on bug popup
+\end{itemize}
+\textbf{why people say no:}
+\begin{itemize}
+    \item invasion of privacy
+    \item there is a high volume of error so there is a chance yours will get ignored
+    \item too much work its not just "yes"/"no" sometimes there are follow up questions that annoy users
+\end{itemize}
+
+\section{What Happens to Crash Reports?}
+a mini dump is created containing metadata from the crash
+\newline
+this metadata contains:
+\begin{itemize}
+    \item software versions
+    \item operating system version
+    \item some meaningful state information. This is usually the stack and not the heap because the heap is too large. 
+    \item PID (personally identifiable information)
+\end{itemize}
+When personally identifiable information is shared then we start running into user privacy issues
+\newline
+\textbf{GDPR:} Europe has privacy protection laws for its users that require websites to disclose when they collect personally identifiable information like cookies and be transparent about their use for that information. This means the website must give the user a clear warning when their data is being collected and stored. 
+\newline
+lots of companies decided it was just easier to become GDPR compliant all across the board instead of only being GDPR compliant for their Europe based users to make everything easier
+\newline
+GDPR also states that user data cannot be retained for longer than 120 days which makes it a time sensitive issue for bug fixes because you can only keep the bug reports for 120 days
+\newline
+\textbf{differential privacy:} we want to be able to release user data but make it hard for people to gain access to personally identifying information. This is done through randomization and some stats magic.
+\newline
+this is a hard issue to solve because less info is better for privacy but also horrible for bug reports
+\newline
+for debugging the best case is getting entire user session and perform root cause analysis on it
+\newline
+\textbf{min dumps:} are stack traces that contain function calls. They bucket errors into groups by hashing their metadata and when that bucket is full they notify a developer
+
+\section{Ways to Hunt Errors}
+Microsoft uses Watson to triage errors
+\newline
+Companies can perform field experiments because they believe the bugs they should be focusing on are the ones that the users are experiencing. This is a form of uncontrolled testing that is different from traditional lab controlled testing. 
+\newline
+companies also deploy software as an experiment to part of the user base. A segment of users will see new versions / features. This testing is randomized and evenly distributed over the user base. Software is tested this way and then gradually rolled out to more users. 
+\newline
+this gradual deployment model makes it to test software without effecting the whole population and Facebook used to do this all the time.
+\newline
+also can be refereed to as a "gradual roll out"
+\newline
+There are some downsides to the gradual roll out approach:
+\newline
+people do not want to be exposed to experiences that makes their software crash. Breaking a few things sometimes is fine but if you do it all the time you will annoy your users. There is some measurable threshold for this.
+\newline
+Facebook had to return to traditional testing approaches because users were getting annoyed of their constant tests
+
+\section{Logging}
+logs are very long and hard to process
+\newline
+logging often will slow the program down 
+\newline
+logging not enough times cannot reconstruct meaningful errors
+\newline
+sampling at random will not find rare errors it is only able to find those that happen often
+
+\section{Kinds of Testing}
+we now have access to:
+\begin{itemize}
+    \item program
+    \item inputs
+    \item you control everything
+    \item deterministic program
+    \item observable results
+\end{itemize}
+If the end results do not match expectation you must then debug the program for errors
+\newline
+if any of the things from the above list are missing what do you do? think harder? be smarter? you cannot anticipate the un-anticipated and write tests for it.
+\newline
+\textbf{end to end test:} this is the worst kind of testing it can only tell you if there was an issue in the entire program and not specifically where it was. This is especially problematic in very large programs.
+\newline
+\textbf{Unit tests:} every time the program is run I can run tests on specific parts of it and see if there are any issues. 
+\newline
+The issue with unit tests is that you cannot test everything as there are infinite possibilities. Also if underlying code changes many tests might have to be updated because they rely on internal state. 
+\newline
+unit tests are restricted to particular class / module and cannot test module level dependencies.
+\newline
+Unit tests can be wrong because they are software too
+\newline
+if the developer writes the tests they introduce bias and a skewed sense of correctness
+\newline
+often times today unit tests are written after the software has been written
+\newline
+\textbf{integration tests} modules are combined and tested as a group to define cross module dependencies. Most software undergoes continuous integration testing.
+
+\section{When are Tests Written?}
+a priori is the "best practice"
+\newline
+\textbf{TDD:} (test driven development) write all tests first don't write any code and when you are done write software to fit the tests. This was somehow supposed to remove bias but that didn't really happen. This kind of testing was morale crushing and no one really wants to test all day they want to write code.
+\newline
+\textbf{XP:}(extreme programming) an agile software development framework
+\newline
+\textbf{pair programming:} when two or more software developers work on the same piece of code together using the same computer
+\newline
+companies were somehow aiming to amortise reduce the cost of hiring software developers by making them work harder and more efficiently 
+\newline
+generally tests are written after or during software development. Usually you run across a bug and write a test case to test for it. This is known as \textbf{regression testing}
+
+\section{Test Coverage}
+Cannot know how bug free the program is without some sort of metric
+\newline
+\textbf{line coverage:} write a test for every line of code
+\newline
+line coverage does not imply good tests were written
+\newline
+line coverage is a poor approximation for path coverage
+\newline
+the number of possible paths grows exponentially while the number of lines grows linearly. You cannot use a linear means to cover an exponential cases exhaustively. 
+\newline
+\textbf{flakey tests:} when a test fails it could be non deterministic meaning its failure does not necessarily imply the program is incorrect. Multi threaded programs are non deterministic and run into this issue. 
+
+\section{Fuzzing}
+hugely important for security
+\newline
+This is done automatically you just push a button and get a bunch of tests
+\newline
+these tests are unbiased and randomly generated
+\newline
+Fuzzing makes it more likely to explore cases you have not considered
+\newline
+Fuzzing automatically exposes bugs
+\newline
+Fuzzing is able to explore the state space in an unbiased manner exploring unanticipated corner and edge cases
+\newline
+Fussing has its own issues: complex inputs are unlikely to be randomly generated correctly due to infinite input space leading to the state \textbf{space explosion}.
+
+\section{AFL American Fuzzy Lop}
+try all mutations of a running program path
+\newline
+coverage driven (branch coverage)
+\newline
+take inputs and mutate them see what happens
+\newline
+randomized process
+
+\section{DART (direct automatic random testing)}
+while running program if we come across a branch that is not taken we take note. We then send all program constraints to a SAT solver to find a set of constraints that would set the program down the branch not taken. 
+\newline
+this works best for systems that do not interact with the heap much this is because adding constraints for all program variables will overwhelm the SAT solver. The SAT solver will run out of time or be unable to solve problem in state space.
+\newline
+Windows device drivers are an excellent candidate for DART because they do not use the heap
+\newline
+Microsoft use to blue screen all the time in the past due to faulty device drivers
+\newline
+Microsoft now ships DART with the DDK (device driver development kit) and device drivers must pass DART tests in order to be varified
+
+
+
+\end{document}
