@@ -1,0 +1,209 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Fall 2019} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{18}{November 21}{Emery Berger}{Sahil Mishra}
+
+\section{Profilers}
+
+The class began with a review from the previous class which covered profiling. 
+
+\textbf{What is gprof?}
+
+\textbf{gprof} is a profiling program that uses statistical sampling to periodically interrupt programs and extrapolate the distribution of execution times if there are enough samples. 
+
+Profilers, today, in general, are not very useful. Profiling was easy back in the day! Most profilers were created in the era of single-threaded programs. 
+
+Multi-threaded programs can run slower even if some parts are made to run faster. This is due to contention - some parts may be accessing the same resources leading to multiple locks. This can also lead to "accidental" Denial-of-Service attacks. 
+
+Here's an example. Let's say you are given two CPUs; CPU \textbf{A} with a clock speed of 3GHz and CPU \textbf{B} with a clock speed of 1GHz. Would you be able to correctly predict which one is faster?
+
+The answer is that we don't know. Actually, there's a lot we don't know. In order to correctly answer our question we first need to first answer a few other questions:
+How big is the cache?
+How many registers do they have?
+How big is the TLB?
+What kind of bus are they connected to?
+How fast is the RAM?
+
+Unfortunately, a generic profiler does not answer any of these questios. Hence, \textbf{performance prediction} is extremely difficult! It has been shown that you could a run a program on your machine on a Monday and it may run 20/30\% faster/slower the next day. This is due to variety of reasons. Prior to running the program, your machine will first load the program into memory and load the environment variables as well. Environment length can change depending upon a variety of variables like time, date, current working directory and username. Hence, some environment variables may fit in the cache and some may not. This may result in conflict/capacity misses. As a result, programs may take up to 30\% longer due to cache misses.
+
+Modern on-chip hardware have in-built performance counters. They provide the number of cache misses and branch prediction misses. 
+
+Another problem with most Profilers is that most of them only inform which thread/function takes the longest. But where a program spend most of its time is not necessarily where one must optimize. For example, a numpy function may take a lot of time to run within a Python program even though numpy functions are highly optimized. Instead, a Profiler must be able to inform the programmer what to optimize. 
+
+\section{Performance Evaluation}
+
+Performance evaluation is hard! Typical performance evaluation involves running two different versions of a program just once. This is not good enough because there is variation due to cache misses, context stitches, etc. The speed of execution of a program depends heavily on its layout. Even a malloc can change the layout of program. Layout is brittle; it is predictable but can break very easily. 
+
+In order the remove the effect of layout performance evaluation is done using a Stabilizer. A Stabilizer completely randomized the layout before running a program, thus, removing the bias. Usually, a Stabilizer generates a new random layout every 1/2 second. 
+
+Here's a fallacy; where a programs spends most of its time \emph{does not} imply where you should optimize! Sometime profilers give non-actionable actions. For example, a profiler may state that a numpy function or a system (Linux) level function is taking the most time. Well, a programmer can't do much about it. Hence, a \emph{good} profiler must be able to tell where we should optimize!
+
+\section{Performance Analysis}
+
+In order the correctly analyse the performance of a program, one must conduct a null hypothesis significance testing. Basically, we are trying to answer if $A^{'} > A$, what is the probability of measuring a speed up this large by chance? If there is a low probability, then speed up is real. 
+
+% We reviewed per-class allocators, custom pattern allocators, and
+% region allocators from last lecture.
+
+% \section{DieHard Allocator}
+
+% Allocators can also be used to avoid problems with unsafe languages.
+% C and C++ are pervasive, with huge amounts of existing code. They are
+% also memory-unsafe languages, in that they allow many errors and
+% security vulnerabilities. Some examples include double {\tt free()},
+% invalid {\tt free()}, uninitialized reads, dangling pointers,
+% and buffer overflows in both stack and heap buffers.
+
+% DieHard is an allocator developed at UMass which provides (or at least
+% improves) soundness for erroneous programs.
+
+% There are several hardware
+% trends which are occurring: multicore processors are becoming the norm,
+% physical memory is relatively inexpensive, and \mbox{64-bit} architectures
+% are increasingly common, with huge virtual address spaces. Meanwhile,
+% most programs have trouble making full use of multiple processors.
+% The net result is that there may soon be unused processing power and
+% enormous virtual address spaces.
+
+% If you had an infinite address space,
+% you wouldn't have to worry about freeing objects. That would mostly eliminate
+% the double {\tt free()}, invalid {\tt free()}, and dangling pointer bugs.
+% And if your heap objects were infinitely far apart in memory, you wouldn't
+% need to worry about buffer overflows in heap objects.
+
+% DieHard tries to provide something along these lines, within the constraints
+% of finite physical memory. It uses randomized heap allocation, so objects
+% are not necessarily contiguous in virtual memory. Since the address space
+% is actually finite, objects won't actually be infinitely far apart, and
+% buffer overruns might actually cause collisions between heap objects. But this
+% is where the multicore processors come in: With the unused processor cores,
+% run multiple copies of the application, say three copies,
+% each allocating into their own randomized heap. So the heap errors are
+% independent among the three copies of the application.
+% All copies get the same input,
+% and the output is the result of voting among the three copies of the program.
+% If one instance of the application disagrees with the other two, it is killed,
+% since there was likely a collision between heap objects in that one. Similarly,
+% if one instance dies with a segfault or other error, the others remain running.
+% Surviving copies can be forked to replace copies which were killed off, though
+% this reduces the independence among copies.
+
+% This is transparent to correct applications, and allows erroneous applications
+% to survive longer, which will make their users happier. Furthermore, when
+% a copy dies or is killed off, the error can be noted and sent to the software
+% maintainers automatically.
+
+% DieHard increases the chances of turning problematic errors into
+% benign errors. It trades memory space for robustness, which is probably
+% fine as memory prices continue to drop. It uses randomization and
+% replication to provide fault-tolerance.
+
+\end{document}
