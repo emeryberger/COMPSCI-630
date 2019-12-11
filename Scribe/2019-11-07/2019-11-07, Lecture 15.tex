@@ -136,13 +136,13 @@ For this reason, service providers often try to ensure that backup data is store
 A uniquely challenging problem for hardware fault tolerance is that hardware is nondeterministic.
 It is possible for physical bits in memory to be flipped by interactions with cosmic radiation or alpha particles (more common on Earth).
 These errors are relatively rare for computers operating on Earth, but they become a serious problem for memory on satelites or space vehicles.
-The space shuttle used "trimodular redundancy," i.e.\ three identical copies of the controller, which vote on each computation so that collectively they can tolerate a failure in any one controller.
+The space shuttle used ``trimodular redundancy,'' i.e.\ three identical copies of the controller, which vote on each computation so that collectively they can tolerate a failure in any one controller.
 Other defenses involve physical shielding of the memory by dense materials, and ECC (error-correcting code) RAM, which can survive many bit flips before becoming unrecoverable.
 
 \subsection{RAID}
 RAID (redundant arrays of inexpensive disks) was developed in response to a general trend of disks becoming larger and more expensive.
 The core idea is to obtain high storage capacities by using an assortment of smaller disks.
-Usually, data that is logically contiguous is "striped" across multiple physical disks in order to increase the potential for parallelism in reading/writing.
+Usually, data that is logically contiguous is ``striped'' across multiple physical disks in order to increase the potential for parallelism in reading/writing.
 
 Splitting data across multiple disks has the drawback of increasing failure rates.
 Assuming each disk independently has some probability $(1-p)$ of success, the probability of $d$ disks succeeding on a given operation is $(1-p)^d$, which becomes significantly less than $(1-p)$ as more disks are added.
