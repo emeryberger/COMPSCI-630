@@ -1,0 +1,200 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf COMPSCI~630~~~Systems
+                       \hfill Fall 2016} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe(s): #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture {#1}: #2}{Lecture {#1}: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{15}{Fault Tolerance, cont.}{Emery Berger}{Jackson Warley}
+
+\section{Replication}
+Fault tolerance depends on replication; if data/control is lost in one part of the system, problems will ensue unless it can be restored from an auxilliary part of the system.
+Replication prevents a system from having a single point of failure; any system with a single point of failure is, by definition, not fault tolerant.
+
+A topical example of a non-fault-tolerant system is the 737 MAX airplane, which caused two crashes in 2018 and 2019.
+These airplanes had a sensor to measure the angle of attack in order to detect a potential stall.
+The sensors fed into an automatic stall-prevention system that would lower the nose of the plane when the attack angle was sufficiently high.
+However, because the sensor erroneously reported a high attack angle, and there was no duplicate sensor to compare against, the stall-prevention system began to lower the plane automatically despite its having an appropriate angle of attack.
+Because there was no mechanism to transfer control from the stall-prevention device to the pilot, the continued lowering of the plane's nose eventually caused the plane to crash.
+
+For replication to be effective, replicas should ideally be independent.
+In other words, for any two replica nodes $N_1$ and $N_2$, we should have \[P(N_1 \textnormal{ fails} \cap N_2 \textnormal{ fails}) = P(N_1 \textnormal{ fails})P(N_2 \textnormal{ fails}).\]
+Otherwise, replicas may be subject to \textit{correlated failures}, where multiple nodes are likely to fail at the same time.
+Correlated failures greatly increase the risk of the entire system failing.
+For hardware, this idea applies across many aspects, including geographic location, manufacturer, and manufacturing date.
+For instance, servers that are all in one datacenter are likely to fail simultaneously if there's an earthquake there, and hard drives made in the same batch have been shown to have correlated failure timings.
+For this reason, service providers often try to ensure that backup data is stored in completely different locations from its original copies, and often use tape backups as a final layer of redundancy.
+
+\section{Hardware Fault Tolerance}
+\subsection{Nondeterminism}
+A uniquely challenging problem for hardware fault tolerance is that hardware is nondeterministic.
+It is possible for physical bits in memory to be flipped by interactions with cosmic radiation or alpha particles (more common on Earth).
+These errors are relatively rare for computers operating on Earth, but they become a serious problem for memory on satelites or space vehicles.
+The space shuttle used ``trimodular redundancy,'' i.e.\ three identical copies of the controller, which vote on each computation so that collectively they can tolerate a failure in any one controller.
+Other defenses involve physical shielding of the memory by dense materials, and ECC (error-correcting code) RAM, which can survive many bit flips before becoming unrecoverable.
+
+\subsection{RAID}
+RAID (redundant arrays of inexpensive disks) was developed in response to a general trend of disks becoming larger and more expensive.
+The core idea is to obtain high storage capacities by using an assortment of smaller disks.
+Usually, data that is logically contiguous is ``striped'' across multiple physical disks in order to increase the potential for parallelism in reading/writing.
+
+Splitting data across multiple disks has the drawback of increasing failure rates.
+Assuming each disk independently has some probability $(1-p)$ of success, the probability of $d$ disks succeeding on a given operation is $(1-p)^d$, which becomes significantly less than $(1-p)$ as more disks are added.
+To overcome this downside, commonly used RAID schemes use checksums so that data on a failed disk can be recovered from the other disks.
+However, in practice, it is unlikely that all data from a failed disk will be able to be recovered, though some of it usually can be.
+
+RAID's desiderata of storage capacity, speed, parallelism, and fault tolerance are in some tension, and the various RAID schemes represent attempts to find points on the Pareto frontier of these axes.
+
+\subsection{Aside: Writing to Disk}
+Data is not written to a hard drive in ``real time,'' as this would be prohibitively slow.
+The reason is that fragmentation often occurs, whereby data that is logically contiguous is stored in distant physical locations on the disk platter.
+The seek time of the drive's write head is enormously slower than any other mechanism in the entire system, so having the drive constantly write to potentially fragmented locations would be an unacceptable bottleneck.
+Instead, the disk controller caches blocks of data to be written all at once, so that more data can be written per seek.
+This is a hardware implementation detail invisible to the operating system, which means that if a fault occurs after the OS has ``written,'' some data to disk, but before the disk controller has physically written it from the cache, the data will be lost.
+
+\section{Software Fault Tolerance}
+Fault tolerance is one of the reasons Heisenbugs may be preferable to Bohr bugs.
+Heisenbugs are mostly independent across instances of a piece of code, whereas Bohr bugs are fully correlated.
+Thus, replication provides no additional tolerance against Bohr bugs, whereas it can effectively mitigate the effects of Heisenbugs.
+
+\subsection{Transactions}
+Some usually desirable properties of transactions are:
+
+\begin{itemize}
+  \item \textbf{Atomicity.} All of the transaction's logic occurs or fails as a single unit, unable to be interrupted by other operations.
+  \item \textbf{Consistency.} The transaction does not induce invalid states.
+  \item \textbf{Isolation/Integrity.} The transaction is robust against execution in a concurrent environment. Semantically equivalent sequences of transactions should have the same effects whether they are executed concurrently or serially.
+  \item \textbf{Durability.} Upon completion, the transaction's effects should be committed to stable storage.
+\end{itemize}
+
+These desiderata are commonly abbreviated as ACID.\footnote{There is also BASE, which cares more about eventual consistency.}
+A standard implementation keeps a log of updates as each transaction is being executed.
+Right before the transaction completes, a message is written indicating that the transaction is about to commit.
+Once the transaction is committed successfully, its log data leading up to the commit can be dropped.
+
+\subsection{Concurrency Control}
+Locks are \textit{pessimistic} concurrency control.
+They assume that shared mutable access to data will always cause a fault, and so shared mutable access should be categorically denied to prevent even the possibility of a concurrency bug.
+
+There is also \textit{optimistic} concurrency control, wherein an attempt is made to execute transactions concurrently with no locks.
+If another accessor actually appears during the course of a transaction, the transaction is aborted, the system is restored to a checkpoint, and another attempt is made.
+Otherwise, the transaction is committed.
+Optimistic control tends to be better when either (a) the cost of acquiring a lock is very high, or (b) there is a very low probability of conflict.
+Otherwise, the cost of retrying a transaction many times may outweigh the overhead cost of just using locks in the first place.
+
+An even more aggressive extension of this idea is \textit{failure-oblivious computing}, which allows certain (usually memory safety) errors to occur and simply continues program execution as though they had not happened.
+Despite making many people highly uncomfortable, this approach works better than one might expect, often transmuting fatal program errors into smaller errors that can be caught by the program's existing error-handling logic.
+A closely related approach is probabilistic memory safety, which also sacrifices a guarantee that no memory errors will occur, but differs from failure-oblivious computing in that it admits provable bounds on the probability of an unsafe operation.
+
+Another related idea is \textit{approximate computing}, which sacrifices some degree of accuracy or determinism in exchange for speed and fault-tolerance.
+A drastic example is \textit{loop perforation}, which simply skips some percentage of the executions of a loop, in order to speed up a computation.
+Another example is Bolt, which is a program that attempts to automatically break out of infinite loops by analyzing the branches that are taken.
+
+
+\end{document}
