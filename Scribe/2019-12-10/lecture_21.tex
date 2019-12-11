@@ -1,0 +1,186 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~ Systems
+                       \hfill Fall 2019} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+  &$\displaystyle{{}##}$\hfil\tabskip\@centering
+  &\llap{$##$}\tabskip\z@skip\crcr
+  #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+  &$\displaystyle{{}##}$\hfil\tabskip\@centering
+  &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+  #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{21}{December 10}{Emery Berger}{Vincent Pun, Wenjun Huang}
+
+\section{Property-based Testing}
+
+Traditional fuzzing is like testing with an oracle. If the program doesn't crash, then it's good; if the program crashes, then it's bad. But this oracle is imperfect and is not always available, so we would like to perform testing with a spec instead of with an oracle.
+
+A full spec would usually be impractical, so we settle for something that's between an oracle and a spec. In property-based testing, we have some basic spec (e.g. $x + 0 = x$ and $x + y = y + x$) and we do fuzzing based on that.
+
+Another approach, which is arguably not as good, is differential testing. In differential testing, we compare multiple implementations of the same thing (e.g. different browsers and different compilers) and find bugs.
+
+\section{Distributed Systems}
+
+Advantages of distributed systems:
+
+\begin{itemize}
+    \item geographical locality (geo-colocation): reduced latency
+    \item scale: more computational power
+    \item fault-tolerance: no single point of failure (helps scaling)
+\end{itemize}
+
+Distributed systems are usually not fully connected, which requires $n (n-1)$ links and doesn't scale. Achieving scalability should normally be on the order of $n$, or even $\log n$.
+
+To get fault-tolerance, we need (consistent) replication. When network links fail in a way that there is a complete split between nodes, we get \textit{network partition}. Under this condition, there is no way to keep states in sync.
+
+Add in availability, this leads to the CAP theorem, which states that you can only get two of [consistency, availability, parition tolerance], but not all three of them.
+
+Consistency here means the replicas are in sync with each other. Consistency can be strong or eventual. Eventual consistency means that replication happens in an asynchronous manner. This might sound undesirable, but for some domains (e.g. FB likes) this is fine. There are domains where consistency is crucial (e.g. Google Doc), but there is no generic solution to this problem.
+
+\section{Consensus}
+
+In the early days, before distributed systems became a thing, the consensus problem is phrased as follows. There is a group of nodes in a system, and each of them picks a random binary value. Consensus is reached if (1) the system terminates (2) the nodes agree on a value (3) the final value is valid.
+
+This is easy to do synchronously via taking a majority vote for some number of rounds: you would know which nodes have crashed if they went missing after a round. However, doing it asynchronously is hard, as there's no upper bound on message delivery time, and you don't know which nodes have crashed.
+
+People have come up with various ways to know the unknown:
+
+\begin{itemize}
+    \item timeouts: protocols must support the case where nodes rejoin the system later
+    \item leader: leader can crash and is a single point of failure
+    \item Paxos: hard to understand/implement
+    \item Raft: easier than Paxos, but still not trivial
+\end{itemize}
+
+\subsection{Raft}
+
+Raft separates Paxios into separate components. It regularly elects leaders and detects crashes using timeouts. Only servers with the most up-to-date log are eligible to become a leader.
+
+When a message comes from a client to the leader, the leader appends to the logs and they are replicated to the servers. If the leader crashes during this time, future leaders can replay the logs.
+
+\section{Byzantine Faults}
+
+First, there is the Byzantine Generals problem. Suppose there is a group of generals who must agree upon a time of attack by sending messages back and forth. Additionally, any one of them might be a traitor, so messages might be randomly forged/changed/dropped/delayed. How do you reach consensus in such cases? If servers in a distributed system start acting like Byzantine generals, then you have Byzantine faults.
+
+If all servers are Byzantine, there is no way to reach consensus. This situation is rather bleak, and this is the strongest fault model. Any system resistant to this fault will be able to resist anything, because this is the strongest adversary. If a limited portion of the servers are Byzantine, then it might still be possible for you to get Byzantine fault tolerance (BFT): Lamport shows that $3n + 1$ servers are needed to tolerate $n$ faults. This number can be lowered to $2n + 1$ if the messages are encrypted, so no messages can be forged, or if there are suspended clones of servers such that if a Byzantine fault is detected it can just wake up the clones.
+
+However, BFT isn't really useful in practice: if an adversary is able to take down $\frac{1}{3}$ of the servers in a system, what's stopping the adversary from compromising the other $\frac{2}{3}$?
+
+\section{Bitcoin}
+
+\begin{itemize}
+    \item it doesn't solve any real problem
+    \item it's not anonymous
+    \item thanks to its ``proof of work'' mechanism, it uses power inefficiently
+    \item it is decentralized
+    \item it runs true transactions in a decentralized setting
+\end{itemize}
+
+Bitcoin works by having all nodes build logs. Only the longest log is accepted as truth. A SHA hash of data to be added to the log is to be computed and added to the log based on the previous block in the log (hence the term \textit{blockchain}). The incentive is there is bitcoin rewarded for each successful addition to the log.
+
+Bitcoin was intended to support micro-transactions. The problem with micro-transactions is that the transaction costs might be higher than the transaction itself (e.g. the bank charges you 1 dollar for sending 1 cent). Obviously, Bitcoin doesn't support this usage very well right now, and the problem remains unsolved.
+
+There are Bitcoin mining groups that splits the rewards based on people's share of work. To measure the compute power that people contributed, each node guesses a random number and broadcasts the maximum number of 0s it has seen in the random numbers it generated. This can be used as a proxy for the amount generated.
+
+\end{document}
