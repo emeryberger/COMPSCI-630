@@ -181,6 +181,6 @@ Bitcoin works by having all nodes build logs. Only the longest log is accepted a
 
 Bitcoin was intended to support micro-transactions. The problem with micro-transactions is that the transaction costs might be higher than the transaction itself (e.g. the bank charges you 1 dollar for sending 1 cent). Obviously, Bitcoin doesn't support this usage very well right now, and the problem remains unsolved.
 
-There are Bitcoin mining groups that splits the rewards based on people's share of work. To measure the compute power that people contributed, each node guesses a random number and broadcasts the maximum number of 0s it has seen in the random numbers it generated. This can be used as a proxy for the amount generated.
+There are Bitcoin mining groups that split the rewards based on people's share of work, but how do you know that someone has actually made contributions? Bitcoin's difficulty is based on the number of leading zeros in the computed hash. To (probabilistically) measure the compute power that people have contributed, the number of leading zeros in their ``best'' hashes can serve as a proxy of their contribution.
 
 \end{document}
