@@ -108,30 +108,30 @@
 \begin{document}
 %FILL IN THE RIGHT INFO.
 %\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
-\lecture{17}{November 19}{Emery Berger}{Yash Bidasaria}
+\lecture{17}{November 19}{Emery Berger}{Yash Bidasaria, Gursimran Kaur}
 
 \section{Replicated State Machines}
 
-Distributed systems are  conventionally created as Replicated State Machines. This paradigm has every machine operate on their own state machines assuming inputs come in deterministically. This assumption even allows for asynchronous inputs. This is the standard way of implementing distributed systems. One drawback is that algorithms need to be created by hand to account for these assumptions.
+Distributed systems are  conventionally created as Replicated State Machines. This paradigm has every machine operate on their own state machines assuming inputs come in deterministically. This assumption even allows for asynchronous inputs. This is the standard way of implementing distributed systems. If you have non-determinism, you can't run a Replicated State Machine. One drawback is that algorithms need to be created by hand to account for these assumptions.
 
-As RSMs need determinism, one cannot implement RSMs with threads as they are non-deterministic. There are various cases like User Input, Scheduling and even the local Time of machines that make them non-deterministic. DieHard in a way get RSMs for free to an extent as they get probabilistic errors. RSM with determinism leads to Bohr Bugs while RSM with DieHard leads to Heisen Bugs.
+As RSMs need determinism, one cannot implement RSMs with threads as they are non-deterministic. There are various cases like User Input, Scheduling and even the local Time of machines that make them non-deterministic. DieHard in a way get RSMs for free to an extent as they get probabilistic errors. RSM with determinism leads to Bohr Bugs while RSM with DieHard leads to Heisen Bugs with probabiities.
 
 \section{DieHard, DieHarder}
 
-DieHard was reimplemented at Microsoft due to licensing issues and first named it Robust Heap and later Fault Tolerant Heap. 
+DieHard was reimplemented at Microsoft due to licensing issues and first named it Robust Heap and later Fault Tolerant Heap in Windows 7. In this, the heap is used only when the frequency of program crashes is over some threshold value. 
 
-DieHarder was created as a successor to DieHard while keeping the Threat Model and several other security cases in mind. This project was aimed to better understand the security of memory allocations. The modifications to DieHard for security led to a security - reliability tradeoff. For example, in a brute force attack, if the someone keeps attacking you, you can just stop. But as the system is secure, it is not available. 
+DieHarder was created as a successor to DieHard while keeping the Threat Model and several other security cases in mind. This project was aimed to better understand the security of memory allocations. The modifications to DieHard for security led to a security - reliability tradeoff. For example, in a brute force attack, if the someone keeps attacking you, you can just shut down. But as the system is secure, it is not available. 
 
-In DieHard when some memory is freed, the system becomes susceptible to a after free bug as DieHard does not actually change the contents. To combat this bug, DieHarder fills it with random values. DieHarder as contributed to a lot of changes in Windows 8. It is one of the most secure memory allocators. There is another tradeoff between Bits of Entropy used for random values and scalability. 
+In DieHard when some memory is freed, the system becomes susceptible to a after free bug as DieHard does not actually change the contents. To combat this bug, DieHarder fills the free memory with random values. DieHarder also divided it's memory into same sized memory chunks so that when you reach the end, a seg fault is triggered. DieHarder has contributed to a lot of changes in Windows 8. It is one of the most secure memory allocators. There is another tradeoff between Bits of Entropy used for random values and scalability. 
 \section{Profilers}
 
-Profilers are used to analyse the programs time/memory usage in order to create better software systems. 
+Profilers are used to analyse and report to the user, the program's time/memory usage so that the user can know where the program is taking time and which parts are consuming a lot of memory, in order to create better software systems. They have low throughput, high latency and are end-to-end.
 
-prof is one of the earliest profilers. At every line of execution, it increment the counter for that line. This created a lot of overhead resulting in a slow program. This profiler had another assumption of every line having the same cost. This technique although does allow to identify the lines that are executed the most and are the performance bottleneck. 
+prof is one of the earliest profilers. At every line of execution, it increments the counter for that line. This created a lot of overhead resulting in a slow program. This profiler had another assumption of every line having the same cost. This technique although does allow to identify the lines that are executed the most and are the performance bottleneck. It could profile only serial code.
 
-A solution could be to measure the time consumed for each line. The time although needs to be corrected as the cpu might context switch causing the time consumed to be a lot more. There are three times: Wall Clock Times, User Time and the System Time. For profilers, User Time should be used. This solution also adds a lot of overhead to the program. It disrupts the cache having the Probe effect. The Probe Effect states that the program might change when adding an instrument to measure its performance. 
+A solution could be to measure the time consumed for each line. The time although needs to be corrected as the cpu might context switch causing the time consumed to be a lot more. There are three times: Wall Clock Times, User Time and the System Time. For profilers, User Time should be used. This solution also adds a lot of overhead to the program. Since extra instructions are needed to calculate the time, it pollutes the cache, resulting in the probe effect. The Probe Effect states that the program might change when adding an instrument to measure its performance. 
 
-Another profiler called gprof takes into account the above problems. It has a low overhead. is accurate and is unbiased. It uses statistical profiling which uses the Law of Large numbers. This kind of profiling samples the memory and intervals, and then using the Law of Large Numbers eventually converges to the true value. But with sampling at a constant interval can create a bias. To combat this problem, sampling is conducted at random intervals. 
+Another profiler called gprof takes into account the above problems. It has a low overhead. is accurate and is unbiased, since it uses time and not line counts. It stops the program at intervals and asks where it is at. It uses statistical profiling which uses the Law of Large numbers, which can be exploited if the program runs long enough. This kind of profiling samples the memory and intervals, and then using the Law of Large Numbers eventually converges to the true value. But with sampling at a constant interval can create a bias. To combat this problem, sampling is conducted at random intervals. Sampling rate can be changed, which results in adjustable overhead. The risk of this technique is that if something important happens between the samples, you'll miss it. 
 \section{Key Terms}
 
 \begin{enumerate}
