@@ -1,0 +1,272 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+\usepackage{listings}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[5]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~ Systems
+                       \hfill Spring 2023} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1:#2  \hfill} }
+       \hbox to 6.28in { { \hfill Date: #3  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #4 \hfill Scribe: #5} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+            %\vspace{0.2 in}
+            \centerline{\includegraphics[scale=#2]{#4}}
+            \begin{center}
+            Figure \thelecnum.#1:~#3
+            \end{center}
+    }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**Title**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{3}{Compiler Optimizations}{Feb 14}{Emery Berger}{Walid A. Hanafy}
+
+\section{Register Allocation}
+Register allocation is a key problem in designing compilers.
+Registers are super fast, but are available in limited numbers.
+\subsubsection*{Example:}
+Operations on Registers (A, B) \\
+ADD EAX, EBX, ECX, $C \leftarrow A+B$
+
+
+In the following example, we can see that the limitations of register might affect the performance.
+\begin{lstlisting}[language=c++]
+    void do_something(){
+        int a,b,c;       // Can fit in registers
+        float x,y,z;     // Can fit in registers
+        float arr[1024]; // Cannot fit in registers (may be even cache memory)
+    }
+\end{lstlisting}
+Registers usally are accessed with ~1~Cycle. In comparison, the L0 Cache require 5--7 Cycles.
+
+\subsection{Compiler Role in Register Allocation}
+Compilers play an important role in register allocation optimizations by trying to:
+\begin{enumerate}
+    \item Identify Live Variables. i.e. Identifying the start and the end of each variable usage.
+    \item Maximize number of variables in registers over time.
+    \item Minimize ``Spills''. Spilling is moving a variable from a register to memory.
+\end{enumerate}
+The Register Allocation problem is reducible to graph coloring, so it is NP-Complete. However, even if there exist a polynomial time algorithm, the process is still too slow especially for JIT compilers.
+
+\subsection{Just In Time (JIT) Compilation}
+JIT is a background compilation, on demand, for ``hot'' code (code that executes often).
+JIT uses a compiler and an interpreter: code is interpreted until the virtual machine decides it is worthwhile to compile.
+
+
+\fig{1}{0.6}{Type of Compilations}{jit.drawio.png}
+
+Checkout: \url{https://accidentallyquadratic.tumblr.com/}
+
+
+\noindent{\bf Solution}
+The register allocation process requires expensive analysis. They are very difficult to use in large code bases and for JITs. The solutions usually use greedy heuristics, which often try to reduce \emph{register pressure}.
+
+
+\subsubsection*{Note:}
+Web Assembly: The authors of webassembly tried to solve thread management by dedicating a register for thread location data and garbage colection by dedicating a register to the root (Pointer to root). The solution created a register pressure that made webassembly 30\% slower than native.
+
+
+The following figure explains the mark-sweep GC technique as well as how webassembly utilized the register.
+\fig{2}{0.6}{Reachability Analysis}{reachabilityanalysis.drawio.png}
+
+
+\section{FORTRAN is Alive!}
+\subsubsection*{Note:}
+APL (``Array Programming Language'') introduced the notation for list comprehension:
+\begin{lstlisting}[language=Python]
+    arr = [x * x for x in range(100)]
+\end{lstlisting}
+Created by Kenneth Iverson at IBM.
+
+FORTRAN is very influential as it allows for automatic parallelization, including loops.
+FORTRAN is used in the \texttt{numpy} Python package, which depends on BLAS ``Basic Linear Algebra Subprograms'' and
+LPACK ``Linear Algebra PACKage''.
+
+\subsubsection*{Note:}
+The automatic ability to parallize code in FORTRAN made code written in it faster than that written in C.
+For example, after translating code from FORTRAN to C using F2C library it became 20-40\% slower.  
+
+Languages like C/C++ are only able to parallelize code using special constructs and libraries like pthreads, MPI, OpenMP, etc.
+
+\subsection{Why FORTRAN Allows for automatic parallelization?}
+Same argument allows for SQL.
+
+\subsubsection*{Note:}
+What is turing complete? A language that can be used to program any problem, at least in theory.\\
+Non-Turing Complete Languages: SQL, Excel, Datalog, regex, ..\\
+Turing Complete Languages: All general purpose programming languages \\
+Most Domain Specific languages are not turing Complete. \\
+Turing Completeness can be achived by simple constructs.\\
+
+\subsubsection*{Example:}
+Read Tape, Write 0, Write 1. \\
+If R0 go left, if not R0 go right, If R1 go left, If not R1 go right.
+
+
+\subsubsection*{Note:}
+Low-level languages are hard to optimize as the intent is not clear.\\
+High-level language are easier to compile as the intent is clear.\\
+Peephole optimization "Replacing instructions with more efficient instructions",
+which is the last step in compiler optimization, applies to both.
+
+    
+So, back to our question why FORTRAN code can be parallelized? Because it doesn't have pointers, which means no variables could point to the same memory location.  Therefore, no ``race'' conditions happen and the parallel must be equal to the sequential.
+Example codes include:
+\begin{lstlisting}[language=c++]
+    void matrixvec(float *m, float *v, float *r, int x, int y){
+        // A code that does matrix vec multiplication
+    }
+\end{lstlisting}
+Although this code is ``Embarrassingly parallel'', speed up is linear with number of added nodes, since loops results are independent. The compiler can't fully guess whether there is some dependency or not. The compiler can be informed to treat them as independent by using the `restrict' keyword. 
+
+Compiler usually try to find such cases by disambiguating pointers, pointer analysis, alias analysis, nested loop optimizations, inter-procedural analysis, flow sensitivity, unification, path sensitivity, branch prediction, etc.
+
+The situation in which multiple pointers point to the same data is known as \emph{aliasing}. \\
+See: \url{https://en.wikipedia.org/wiki/Aliasing_(computing)}
+
+\subsubsection*{Quote:}
+``Good Ideas might have ramifications" -- A theme common in our course.
+
+\subsubsection*{Note:}
+    Path sensitivity is not scalable and cases $2^n$ explosion. 
+    Ex: 
+\begin{lstlisting}[language=c++]
+    if ()
+        if()
+            if()
+                if() 
+\end{lstlisting}
+
+FORTRAN is a High level language for scientists.
+\begin{enumerate}
+    \item Portable
+    \item Readable
+    \item Fast
+\end{enumerate}
+
+\section{LISP}
+Symbolic data structures:
+\begin{enumerate}
+    \item Supports lists
+    \item Nested
+    \item Heterogenous
+\end{enumerate}
+\begin{lstlisting}[language=lisp]
+    ("Hello" 5 (name "emery" "height" 64)) // looks like json
+\end{lstlisting}
+LISP supports linked lists out of the box. FORTRAN doesn't support pointers and hence linked list is not supported. The language can be used to implement linkeds list by using offset list as shown below.
+\fig{3}{0.6}{Offset List}{offsetlist.drawio.png}
+\subsubsection*{Note:}
+LISP was used to build ``SHRDLU'' an NLP and 3D simulator tool.
+
+\section{Garbage Collection}
+Garbage collection is the automation of memory management. The two main techniques are 1) Reference Counting and 2) Mark-Sweep.
+
+
+\subsection{Reference Counting}
+This is a method is a continuos way of Garbage Collection. 
+
+\fig{4}{0.6}{Offset List}{refcounting.drawio.png}
+RC can leak memory in the case of cycles. In the next example, when X is removed the branch it was pointing to should be removed. 
+
+\fig{5}{0.6}{Reference Counting Can leak memory}{rc_leak.drawio.png}
+
+\subsection{Mark-Sweep}
+The mark-sweep GC works by iterating over all allocated memory objects and marking as reachable or not, as shown in figure 3.2.
+
+Python uses Reference Counting and Mark-Sweep.
+\subsection*{GC languages}
+Java, C\#, GO, Lisp, ruby, DART, Python, Kotlin, TCL, Swift, OCamel, Perl, Modula, ADA.
+\subsection*{Non-GC languages}
+RUST, C/C++, FORTRAN, ALGOL, PASCAL.
+\end{document}

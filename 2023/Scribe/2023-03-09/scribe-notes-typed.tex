@@ -1,0 +1,235 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{amssymb}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Spring 2023} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{8}{March 9}{Emery Berger}{Allison Poh}
+
+\section{Project Details}
+
+Project Title: OUROBOROS (named after snake eating its own tail)
+\begin{itemize}
+  \item Python makes it easy to see byte code: use dis (disassembler) module
+  \item In below example, we may think that if we see foo, we can just replace foo with 42. But this is incorrect since python is a dynamic language.
+	\begin{verbatim}
+	def foo(n):
+	    return 42
+	\end{verbatim}
+  \item Other dynamics: can change the way operators work (e.g., +); in C++ this is called operator overloading
+  \item Take a best effort approach: try to write compiler optimizations; rather than looking for every single one, find ones that will not destroy everything
+  \item IR = low level representation (usually looks like a control flow graph)
+	\begin{itemize}	
+		\item Static Single Assignment (SSA) is a widely used IR that introduced new variables (e.g., x $\rightarrow$ x$\_$prime) and essentially turned imperative language into funcitonal language.
+		\item For this project, we will build a src-to-src compiler (i.e., python code $\rightarrow$ do something $\rightarrow$ python code)
+	\end{itemize}
+  \item Visitor pattern: ast$\_$functionDef( ... )
+	\begin{itemize}	
+		\item Have a class that, by default, does nothing for nodes
+		\item When we have a class that's special, then the visitor will visit it
+		\item For this project, we have to use this to process ASTs (or we could alternatively write a function that walks the tree)
+	\end{itemize}
+  \item First step: write simple visitors just to get the feel for the code (start small and get accustomed to this way of programming)
+  \item Project may seem straightforward but there are a lot of gotchas. Juan created over 100 tests, so make a lot of tests and share tests with each other in the class
+\end{itemize}
+
+\section{FDIV Bug}
+
+\begin{itemize}
+  \item Dividing a float in a certain range with another float in another range caused a substantial error. 
+  \item This error was baked into a chip, leading to a recall of intell processors (there are known errors all the time, but they aren't nearly as bad as this one).
+  \item Led to verification:
+	\begin{itemize}
+		  \item 1 bit / 1 bit requires 4 tests
+		  \item 32 bits / 32 bits requires $2^64$ tests
+		  \item 64 bits / 64 bits requires $2^128$ tests
+		  \item Exhausive testing does not work for large state spaces
+	\end{itemize}
+\end{itemize}
+
+\section{Verification}
+
+\begin{itemize}
+  \item Formal verification: prove using math (someones PhD dissertation was on formal verification of FDIV bug)
+	\begin{itemize}	
+		\item ``Testing can only reveal the presence of bugs but not their absence'' (not exactly true, but justifies formal verificaiton)
+	\end{itemize}
+  \item Model checking: the in-between of exhaustive testing and formal verification
+	\begin{itemize}	
+		\item The standard approach is to perform automatic testing up to size $n$, collapsing identical states.
+	\end{itemize}
+  \item What does TicTok do? What is the formal specificaiton of TickTok?
+	\begin{itemize}	
+		\item What does it mean to be correct? Well, correct with respect to its specification. But is the specificaiotn correct? Is the meta specificaiton correct? ...
+		\item Formal verificaiton is hard since it's hard to specify things.
+	\end{itemize}
+  \item quicksort example:
+	\begin{itemize}	
+		\item Requirements of quicksort: needs to terminate and, if the input is a multiset, it needs to output a sequence
+		\item Fairly simple specification: $\forall  i, j $ where $ i \geq 0, i \leq n, j \geq 0, j \leq n \therefore i \leq j :$ output[$i$] $\leq$ output[$j$]
+		\item But what if sorting strings? What does $\leq$ mean then? And what about empty string? Lowercase vs. uppercase? ... Specification becomes long and, once specification is long, it's just another ``identical program'' that is hard to read.
+	\end{itemize}
+  \item The Spec Problem: the specification is not useful as it is not ``clearly'' correct
+  \item The Oracle Problem: where's the truth? if no oracle, then no truth and specification could be wrong
+  \item Total correctness: the program = the specification
+  \item Partial correctness: the program properties are a subset of the specification (e.g., program never divides by 0)
+\end{itemize}
+
+\section{EPIC}
+
+\begin{itemize}
+
+  \item EPIC: Explicitly Parallel Instruction Computing; created by Intel and HP (originally called VLIW for Very Long Instruction Word)
+  \item If all the below are independent, then they can run in parallel:
+	\begin{verbatim}
+	ADD
+	ADD
+	MULT
+	SUB
+	\end{verbatim}
+  \item Only make a big chunk if you know that everything can be run in parallel
+  \item This shifts the responsibility of parallelism to the compiler ... But there's a big problem as this can't be done (e.g., 18 car lane example)
+  \item The plan was to create a new chip, Itanium, that uses EPIC. The chip was an unbelievable failure and was nicknamed Itanic. 
+	\begin{itemize}	
+		\item Major compatibility problems since it used a totally different instruction set
+		\item This is impossible in C because of aliasing of pointers (i.e., pointers $p$ and $q$ can point to the same object)
+		\item Cominatorial/state space explosion
+	\end{itemize}
+
+\end{itemize}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
