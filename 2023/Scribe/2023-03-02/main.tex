@@ -1,0 +1,150 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{amssymb}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Spring 2023} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+\begin{document}
+\lecture{3}{March 2}{Emery Berger}{Bryan McCaffery}
+
+
+
+\section{Lecture Notes}
+Ahmadal's Law \\
+       Some tasks must be done sequentially, so there will not be a 1 to 1 ratio between number of processors and performance. There will be a serial part of the program that can only be done on a single processor. As such no matter how many processors you use, there will be a limit to how much faster you can make it. Parallelizing a program is bound by the sequential part.   \\
+  
+Parallel Programming  
+Programs Split into two parts
+\begin{itemize}
+    \item Part Parallelizable - Can be perfectly parallelized 
+    \item Serial Part - Sequential, can only be done on one core
+\end{itemize}
+Totally Parallel = T / P \\
+where T is time, and P is number of cores \\
+Totally Serial = T \\
+${Maximum Speed Up = \frac{T}{\frac{Parallel Part}{P} + S}} $$ \\
+
+Where T is total time, Parallel Part is time for Parallel Part and S is time for sequential part\\
+
+Gustafsson's Law \\
+As the number of processors grow, the amount of work we want to get done grows at least linearly. The idea of gustafsson's law is built upon, "If you build it they will come". In essence as processing power increases, user will develop larger problems to use the increase in processing power.   \\
+
+
+Chip Dependence analysis \\
+The processor will attempt to parrallelize non dependent parts of the program. Using one of three processes ILP, SMT or SMP. SMP is no longer used in most machines, as it was designed upon utilizing multiple processors which no longer is common.   
+\begin{itemize}
+    \item ILP - Instruction Level Parallelism
+    \item SMT - Simultaneous Multi Threading
+    \item SMP - Simultaneous Multi Processors (Came before multi threading, when multiple processors used on same board)
+\end{itemize}
+
+Memory Wall \\
+Processors are limited by retrieving data from memory which can take over a hundred cycles. As such, processors are attempt to retrieve memory before it is necessary or keep relevant data in the cache hierarchies. Two of the processes that are used are batching and speculation. \\
+
+Batching is the process of retrieving N elements at a time instead of one. For example rather than retrieving one element, retrieve a whole array if you know that it is needed. If you know for certain data is needed retrieving it all at once is highly effective, if you have space in the cache.\\
+
+Speculation attempts to retrieve data before it is necessary, by predicting/guessing what memory will be needed in the future. Predicting what will be needed is not an exact science, rather it use past patterns to predict what will be needed in the future. These patterns use very primitive machine learning, using past history as data. If speculation is accurate, it is highly effective, however over aggressive prefetching can lead to poor utilization rates. A poor utilization rate, can lead to wasted time and slowing down of the program. 
+
+
+Memory Visibility \\
+Memory should be observable, however the cache is not observable. The cache is meant to be private, meaning that it is hard to observe the effectiveness of different memory techniques. The most effective way to monitor how effective the cache is, is to monitor how often memory is acquired. Security researchers did find a way to decipher things in the cache by monitoring the latency of memory, however this exposed private information and as such systems added processes to slow down things to hide information. This slow down added 15 to 20 percent speed reductions, but prevented information from being exposed. 
+
+
+
+
+\end{document}
