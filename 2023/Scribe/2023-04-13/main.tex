@@ -1,0 +1,155 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{pgfplots}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Spring 2023} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{13}{April 13}{Emery Berger}{Fadhil I. Kurnia}
+
+In this lecture, we are discussing three main topics: Jim Gray's paper on fault-tolerant systems, RAID, and Bitcoin. The common goal of those topics is building a fault-tolerant system.
+
+
+\section{Fault-Tolerant Systems}
+
+As the name suggest, a fault-tolerant system should handle failures. 
+Generally failures can be random (e.g random failure model) or coordinated (e.g coordinated attack). 
+The coordinated failures, in particular, is related to system security that we learn in the previous lectures.
+
+Each system has their own failure model, i.e failure that the system tries to mitigate. 
+For example, the machine described by Jim Gray assumes fail-stop failures, RAID assumes disk failures, and the Bitcoin paper assumes integrity failures. 
+That is, each system has different design based on the failure model it assumes.
+
+Next, we are discussing some failure models and impossibility regarding some failures.
+
+\textbf{Byzantine Failure. } This failure model assume arbitrary failures, such as message drop, long-time wait, duplicate messages, and even forged messages. 
+However, the adversary still can not break the law of physics or computation; for example, an adversary still can not break an encryption or hash function. 
+That being said, encryption could help mitigate some failures in this failure model. 
+For instance, RSA algorithm -- which uses public \& private key and becomes the basis for all encryption that we use today in HTTPS -- can be used to prevent adversary from changing the messages.
+To function properly, a good encryption techniques should use \textit{one-way functions}, as illustrated below.
+
+\begin{verbatim}
+    f(x) can be computed easily.
+    f'(f(x)) is hard to be computed.
+\end{verbatim}
+
+\textbf{CAP: Consistency, Availability, and Partition-tolerant.} CAP defines a fundamental rule for system that operate under availability and partition-tolerant failures. The theorem says that among the three properties in CAP, we can only pick two. The consistency property ensures that every client gets the latest (the most up to date) values from the system, the availability property ensures that the system \textit{always} responds to client's requests, while the partition-tolerant property ensures that the system can handle any network partition. The theorem is obvious, for example if we have a partitioned system then the system can not synchronize the latest data, thus the system can either stop serving requests (unavailable) or keep serving requests with stale data (no consistency).
+
+\textbf{FLP Impossibility.} This theorem says that in an asynchronous system, it is impossible to design a deterministic consensus algorithm that can satisfy agreement, termination, and fault tolerance. 
+Thus, the system can not even agree on a single bit (achieving consensus for a single bit) under certain failures.
+This impossibility stems from the fact that the system can not differentiate between failures and timeout (long delayed response).
+
+
+\textbf{The Byzantine General Problem. } This problem was proposed by Leslie Lamport using an analogy of parliament which tries to reach a consensus in an ancient city of Paxos. 
+The protocol is so complex, making multiple papers trying to explain the protocol differently. 
+In particular, Raft, simplifies the explanation by using leader election and logging abstraction. To keep the system available under $f$ failures machines, the protocol needs $3f+1$ nodes under byzantine model or $2f+1$ under fail-stop model.
+
+\textbf{Problem with Crypto Finance.} Crypto, arguably, solves no actual problem that the society should care about. It uses wasteful proof-of-work and append-only ledger abstraction. The proof-of-work (PoW) mechanism requires the system to solve a cryptographic puzzle first before it can do anything. People use CPU, GPU, and even ASIC to do the PoW, specifically to mine a new block in Bitcoin; this requires a lot of energy. Moreover, some researchers start to find issue with how the protocol works. For instance, in the selfish miner attack, a group of machines can hold the newly created block so that they have higher chance of getting the next blocks.
+
+
+\end{document}

@@ -1,0 +1,185 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{amssymb}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Spring 2023} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{15}{May 2}{Emery Berger}{Bryan McCaffery}
+
+\section{Raid}
+
+\begin{itemize}
+  \item RAID stands for Redundant Array of Independent Disks.  
+  \item The idea is to store data on multiple disks to increase performance and redundancy.
+  \item Normally disks are limited to by writing bandwidth, by increasing the number of disks and striping the data you can get around a n way speed up for n disks.
+    \begin{itemize}
+    \item Striping is the process of writing parts of the data to multiple different disks. 
+    \end{itemize}
+  \item As the number of disks increase the probability of any one disk failing also exponentially increases.
+  \begin{itemize}
+      \item If the probability of any one disk failing is 1 percent, 
+        \begin{itemize}
+            \item The probability 10 disks do not fail is approximately 90 percent
+            \item The probability 100 disks do not fail is around 36.6 percent
+            \item Probability any fails p(any) $= 1 - (1-(1-0.01)^{n} $
+
+        \end{itemize}
+      \end{itemize}
+  \item Max Reliability but minimum parallelism(slowest) is one disk
+  \item Max Parallelism(fastest) but minimum reliability is N disks
+  \item Levels of Raid
+  \begin{itemize}
+      \item RAID 1 - Mirroring of Data
+      \item RAID 2 - Hamming Code
+      \item RAID 3 - Byte level striping, plus level II functionality
+      \item RAID 4 - Block level interleaving/striping
+      \item RAID 5 - Block level interleaving/striping and check information 
+  \end{itemize}
+\item Recovery From Failures
+\begin{itemize}
+    \item  Raid has issues recovering from failures
+    \item If a disk totally dies, all information has to be retrieved from replicated disks
+    \item There is a high chance of failure as millions of blocks could have to be rewritten 
+    \item In many cases, back ups are kept in tape as it is easier to just recover from a backup than replicate data from disks
+\end{itemize}
+\end{itemize}
+
+\section{Robustness}
+\begin{itemize}
+    \item SSD's
+    \begin{itemize}
+        \item SSD's have wear. The crystals can only reshape themselves so many times until they can no longer reshape themselves
+        \item They keep track of this and do not put things in the bad blocks of memory
+    \end{itemize}
+    \item N Variant Systems
+    \begin{itemize}
+        \item Have three different machines running program that should produce the same output
+        \item If two of the machines get same output, and third does not use the value that two machines got
+        \item Used by NASA
+
+        \item These machines if on the same spacecraft, can not be truly independent as they are subject to same environmental conditions
+    \end{itemize}
+    \item Failures are not normally Independent of Each Other
+    \begin{itemize}
+        \item Paper by Google discovered unusual ways things were not independent
+        \item Things as simple as buying all hard drives at the same time from same factory can lead to data centers having multiple failures around the same number of cycles
+        \item Contractors hired to right similar programs independent of each other commonly find similar solutions
+        
+    \end{itemize}
+    \item Failure Oblivous Computing
+    \begin{itemize}
+        \item In the case of a bad address/seg fault put value in map with bad address pointing to value
+        \item In the case of read from a bad address, retrieve value from map
+    \end{itemize}
+\end{itemize}
+
+\end{document}
+
+
+
