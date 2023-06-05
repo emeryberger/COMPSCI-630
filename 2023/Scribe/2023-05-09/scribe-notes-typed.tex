@@ -1,0 +1,268 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{amssymb}
+
+%
+% The following commands sets up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+\newcommand{\dnl}{\mbox{}\par}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+  \pagestyle{myheadings}
+  \thispagestyle{plain}
+  \newpage
+  \setcounter{lecnum}{#1}
+  \setcounter{page}{1}
+  \noindent
+  \begin{center}
+  \framebox{
+     \vbox{\vspace{2mm}
+   \hbox to 6.28in { {\bf CMPSCI~630~~~Systems
+                       \hfill Spring 2023} }
+      \vspace{4mm}
+      \hbox to 6.28in { {\Large \hfill Lecture #1  \hfill} }
+%       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+      \vspace{2mm}
+      \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+     \vspace{2mm}}
+  }
+  \end{center}
+  \markboth{Lecture #1: #2}{Lecture #1: #2}
+  \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+%
+\renewcommand{\cite}[1]{[#1]}
+
+% \input{epsf}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{FIGURE-SIZE}{CAPTION}{FILENAME}
+\newcommand{\fig}[4]{
+           \vspace{0.2 in}
+           \setlength{\epsfxsize}{#2}
+           \centerline{\epsfbox{#4}}
+           \begin{center}
+           Figure \thelecnum.#1:~#3
+           \end{center}
+   }
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% Some useful equation alignment commands, borrowed from TeX
+\makeatletter
+\def\eqalign#1{\,\vcenter{\openup\jot\m@th
+ \ialign{\strut\hfil$\displaystyle{##}$&$\displaystyle{{}##}$\hfil
+     \crcr#1\crcr}}\,}
+\def\eqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\llap{$##$}\tabskip\z@skip\crcr
+   #1\crcr}}
+\def\leqalignno#1{\displ@y \tabskip\@centering
+ \halign to\displaywidth{\hfil$\displaystyle{##}$\tabskip\z@skip
+   &$\displaystyle{{}##}$\hfil\tabskip\@centering
+   &\kern-\displaywidth\rlap{$##$}\tabskip\displaywidth\crcr
+   #1\crcr}}
+\makeatother
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+
+
+% Some general latex examples and examples making use of the
+% macros follow.
+
+\begin{document}
+
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{17}{May 9}{Emery Berger}{Allison Poh}
+
+\section{Correctness}
+
+\begin{itemize}
+	\item performance was last class (QoS - quality of service); correctness is this class
+	\item correctness is always important (e.g., compilers, query optimizers, etc.,)
+	\item 2 kinds of correctness: total correctness and partial correctness
+	\begin{itemize}
+		  \item you can argue there's a third type: no correctness
+	\end{itemize}
+\end{itemize}
+
+\section{Total Correctness}
+
+\begin{itemize}
+	\item assumes there is a complete spec (usually written in logic)
+	\item you are trying to show that the original program is behaviorally equivalent to the spec (i.e., $P \equiv spec$)
+	\item what you're really trying to do is show that the original program is a subset of the spec (i.e., $P \subseteq spec$)
+	\item that is, show that $\forall i : O(spec) \equiv O(P)$, where $O$ is output
+	\item considered strong correctness
+\end{itemize}
+
+\section{Partial Correctness}
+
+\begin{itemize}
+	\item there's a set of implicit specs for programs, however partial correctness does not have a complete spec
+	\item implicit specs may include:
+	\begin{itemize}
+		\item program never dereferences null
+		\item no uninitialized variables
+		\item no use after free (C/C++ problem)
+		\item no buffer overflow
+		\item exceptions handled (e.g., no file not found errors)
+	\end{itemize}
+	\item error checkers: tools that look for the errors in the implicit specs
+	\item linters: pattern checkers that report bad programming practices (e.g., if (x = 0) vs. if (x == 0) )
+	\begin{itemize}
+		\item disadvantages of linters:
+		\begin{itemize}
+			\item false positives (e.g., 1000s of warning messages but they're not all errors)
+			\item false negatives (e.g., bug is not part of pattern so not flagged)
+		\end{itemize}
+	\end{itemize}	
+	\item weaker than total correctness
+\end{itemize}
+
+\section{Recall v. Precision}
+
+\begin{itemize}
+	\item recall: measures completeness of positive predictions (bug $\Rightarrow$ report)
+	\item precision: measures accuracy of positive predictions (report $\Rightarrow$ bug)
+	\item precision-recall tradeoff: people now prefer high precision in general (use to be the other way)
+\end{itemize}
+
+\section{The Spec Problem}
+
+\begin{itemize}
+	\item writing specs is hard
+	\item spec is a program, just in another language (so spec is long and complicated as well)
+	\item is the spec correct? we don't know ... (who guards the guardians?)
+	\item some say program is the spec! (i.e., there's no real spec)
+	\item Bugs as Deviant Behavior paper says that, if a program acts weird sometimes, then there's probably a bug
+\end{itemize}
+
+\section{Static Analysis}
+
+\begin{itemize}
+	\item static: looks at code
+	\item Coverity is a static analysis tool:
+	\begin{itemize}
+		\item collects factual information by running a program in abstract interpretation (i.e., execute symbolically)
+		\item infeasible paths: paths that no set of inputs will cause (static analysis does not know about these paths)
+		\item state space explosion: as the number of state variables increases, the size of the system state space increases exponentially
+		\begin{itemize}
+			\item example: if, by static analysis, we know the bounds are $x \geq 12$ and $x \leq 130$, then there are many states between the start and end bounds, and thus we lose precision
+			\item another example: if there's a while(true) loop, we lose precision because we don't know how many iterations
+			\item therefore, there's a must analyses v. may analyses tradeoff
+		\end{itemize}
+		\item Coverity ranks errors based on state space, precision, etc., (giving a ranked list is better than giving 1mil errors and having someone try to figure out which are important)
+	\end{itemize}
+	\item there are also static analysis tools that focus on security over correctness (called security-based analysis):
+	\begin{itemize}
+		\item exploitable bug $\Rightarrow$ \$\$\$
+		\item classic bugs: use after free, tainted, and writing to a file (e.g., overwrite password file)
+	\end{itemize}
+\end{itemize}
+
+\section{Dynamic Analysis}
+\begin{itemize}
+	\item dynamic: looks at execution
+	\item Valgrind is a dynamic analysis tool:
+	\begin{itemize}
+		\item shadow memory: version of the memory (identical or compact representation)
+		\item precision is super high (not much recall though)
+		\item if no error is found, then the particular execution path doesn't have an error (we do not say that there are no errors in the program)
+		\item generally do not generalize (although static analysis can generalize)
+		\item Valgrind uses memory check, cache grind, helgrind (race detection)
+	\end{itemize}
+\end{itemize}
+
+\section{Testing}
+\begin{itemize}
+	\item if people don't write specs, will they write tests?
+	\begin{itemize}
+		\item unit tests
+		\item assertions
+		\item regression tests
+		\item integration tests
+		\item end-to-end tests
+	\end{itemize}
+	\item as the number of tests grows, so do the costs (time between commits grows)
+	\item but people hate writing tests, and written tests aren't great (people can't anticipate the unanticipated; edge cases go untested)
+	\item moral hazard of developers v. testers: if testers are there, then developers will write worst code (this turned out to be true!)
+	\item coverage: need tests to increase coverage (e.g., line coverage, branch coverage, full path coverage)
+	\item flaky tests: fail to produce the same outcome with each run (basically a heisenbug in tests)
+	\item fuzzing:
+	\begin{itemize}
+		\item discovered by accident (found that all Unix tools crashed on random inputs)
+		\item no one anticipated randomness!
+		\item it is easy to generate randomness, but it's not easy to generate random structured inputs (e.g., random JSONs)
+		\item we now have great fuzzers that have found tons of bugs
+		\item DART: concrete and symbolic analysis using randomness
+		\item AFL: American Fuzzy Lop; mutates inputs to see if any further converge using genetic algorithms (one of the most effective fuzzers)
+	\end{itemize}
+\end{itemize}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
